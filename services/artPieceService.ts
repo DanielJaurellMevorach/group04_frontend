@@ -1,5 +1,6 @@
 import { uploadArtPieceInput } from "./types";
 
+
 const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 const uploadNewArtPiece = async (artPiece: uploadArtPieceInput) => {
@@ -45,8 +46,27 @@ const uploadNewArtPiece = async (artPiece: uploadArtPieceInput) => {
   return response.json();
 };
 
+
+const getAllProducts = async () => {
+  const token = sessionStorage.getItem("token");
+
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/item`,
+    {
+      method: 'GET',
+      headers:{
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        Authorization: `Bearer ${token}` 
+    },
+    }
+  );
+  return response;
+};
+
 const artPieceService = {
   uploadNewArtPiece,
+  getAllProducts
 };
 
 export default artPieceService;

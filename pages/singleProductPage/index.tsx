@@ -7,6 +7,7 @@ import paintingImage2 from './public/painting2.jpg'
 import monaLisaImage from './public/monaLisa.jpg';
 import dinner from './public/dinner.jpg';
 
+
 const SingleProductPage: React.FC = () => {
     const productImages = [paintingImage1, paintingImage2];
     
