@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/router';
-import artPieceService from '../../services/artPiece.service';
+import artPieceService from '../../services/artPieceService';
 
 interface ImageItem {
   id: string;
