@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/router';
-import artPieceService from '../../services/artPieceService';
+import artPieceService from '../../services/artPiece.service';
+import Navbar from '@/components/navbar';
 
 interface ImageItem {
   id: string;
@@ -189,6 +190,16 @@ const AddProductPage: React.FC = () => {
   }, [addImageFiles]);
 
   return (
+    <div className="min-h-screen bg-[#F9F2EA] text-[#8A5A3B]">
+      <Navbar />
+      <section className="relative overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <div className="absolute inset-0 bg-[#F9F2EA]/90 z-10"></div>
+        </div>
+
+        <div className="container relative z-20 mx-auto px-4 py-2 md:py-2"></div>
+
+      </section>
     <div className="max-w-screen-lg mx-auto p-6">
       <nav className="text-gray-600 mb-8">
         <a href="/" className="hover:underline">Shop</a> <span>{'>'}</span> <a href="/admin" className="hover:underline">Admin</a> <span>{'>'}</span> Create Listing
@@ -389,6 +400,7 @@ const AddProductPage: React.FC = () => {
           </div>
         </div>
       </form>
+    </div>
     </div>
   );
 };

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import authService from '../../services/user.service';
+import Navbar from '@/components/navbar';
 
 const LoginPage: React.FC = () => {
   const router = useRouter();
@@ -34,12 +35,17 @@ const LoginPage: React.FC = () => {
   };
 
   return (
+    <div className="min-h-screen bg-[#F9F2EA] text-[#8A5A3B]">
+      <Navbar />
+      <section className="relative overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <div className="absolute inset-0 bg-[#F9F2EA]/90 z-10"></div>
+        </div>
+
+        <div className="container relative z-20 mx-auto px-4 py-2 md:py-2"></div>
+
+      </section>
     <div className="max-w-screen-lg mx-auto p-6">
-      <nav className="text-gray-600 mb-8">
-        <Link href="/" className="hover:underline">Shop</Link>
-        <span className="mx-2">&gt;</span>
-        <span>Login</span>
-      </nav>
       <div className="max-w-md mx-auto">
         <h1 className="text-3xl font-bold mb-6">Login</h1>
 
@@ -97,6 +103,7 @@ const LoginPage: React.FC = () => {
             </Link>
           </p>
         </div>
+      </div>
       </div>
     </div>
   );

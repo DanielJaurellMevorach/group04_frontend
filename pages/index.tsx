@@ -15,13 +15,13 @@ export default function LandingPage() {
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-[#F9F2EA]/90 z-10"></div>
-          <Image
+          {/* <Image
             src="/placeholder.svg?height=1080&width=1920"
             alt="Art Gallery Background"
             fill
             className="object-cover"
             priority
-          />
+          /> */}
         </div>
 
         <div className="container relative z-20 mx-auto px-4 py-24 md:py-32">
@@ -34,15 +34,14 @@ export default function LandingPage() {
               masterpiece.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button className="bg-[#C8977F] hover:bg-[#B78370] text-white border-none rounded-none px-8 py-6">
+              <Link href={"/allProductPage"} className="bg-[#C8977F] hover:bg-[#B78370] text-white border-none rounded-none px-5 py-3">
                 Browse Gallery
-              </Button>
-              <Button
-                variant="outline"
-                className="border-[#C8977F] text-[#C8977F] hover:bg-[#C8977F]/10 rounded-none px-8 py-6"
-              >
-                Sell Your Art
-              </Button>
+              </Link>
+              <Link href={"/addProduct"}
+              className="border border-[#C8977F] text-[#C8977F] hover:bg-[#C8977F]/10 rounded-none px-5 py-3"
+            >
+              Sell Your Art
+            </Link>
             </div>
           </div>
         </div>

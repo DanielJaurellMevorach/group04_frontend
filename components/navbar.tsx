@@ -50,13 +50,13 @@ const Navbar = () => {
             <div className="flex space-x-8">
               <Link
                 className="px-3 py-2 text-sm tracking-wider hover:text-[#C8977F] transition-colors duration-200"
-                href={""}
+                href={"/"}
               >
                 HOME
               </Link>
               <Link
                 className="px-3 py-2 text-sm tracking-wider hover:text-[#C8977F] transition-colors duration-200"
-                href={""}
+                href={"/allProductPage"}
               >
                 SHOP
               </Link>
@@ -78,8 +78,14 @@ const Navbar = () => {
               <button aria-label="Shopping cart" className="p-2 hover:text-[#C8977F] transition-colors duration-200">
                 <ShoppingBag className="h-5 w-5" />
               </button>
-              <Button className="bg-[#C8977F] hover:bg-[#B78370] text-white border-none rounded-none">Sign In</Button>
-            </div>
+              <Link
+                  href="/login"
+                  className="bg-[#C8977F] hover:bg-[#B78370] text-white border-none rounded-none p-1.5 rounded-md"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Sign In
+                </Link>
+              </div>
           </div>
         </nav>
 
@@ -116,9 +122,13 @@ const Navbar = () => {
                 ABOUT
               </Link>
               <div className="px-4 py-3 border-t border-[#E8D7C9]">
-                <Button className="w-full bg-[#C8977F] hover:bg-[#B78370] text-white border-none rounded-none">
+                <Link
+                  href="/login"
+                  className="block w-full py-2 text-center bg-[#C8977F] hover:bg-[#B78370] text-white transition-colors duration-200"
+                  onClick={() => setIsMenuOpen(false)}
+                >
                   Sign In
-                </Button>
+                </Link>
               </div>
             </div>
           </nav>
