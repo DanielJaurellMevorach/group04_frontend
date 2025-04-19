@@ -2,6 +2,7 @@ import React from 'react';
 import Image from 'next/image';
 import service from '../../services/artPieceService';
 import useSWR from 'swr';
+import Navbar from '@/components/navbar';
 
 const AllProductPage: React.FC = () => {
   const fetcher = async () => {
