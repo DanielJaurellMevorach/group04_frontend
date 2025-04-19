@@ -2,13 +2,15 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { Menu, X } from "lucide-react"
+import { Menu, ShoppingBag, User, X } from "lucide-react"
+
+import { Button } from "@/components/ui/button"
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   return (
-    <header className="w-full bg-[#F9F2EA] text-[#A67C52] font-normal">
+    <header className="w-full bg-[#F9F2EA] text-[#A67C52] font-normal top-0 z-50 shadow-sm">
       <div className="flex flex-col justify-center items-center w-full max-w-7xl mx-auto px-4">
         {/* Logo */}
         <div className="py-4 md:py-6">
@@ -19,80 +21,105 @@ const Navbar = () => {
         </div>
 
         {/* Mobile Menu Button */}
-        <div className="sm:hidden w-full border-t border-[#E8D7C9] py-3">
-          <button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="flex items-center mx-auto px-3 py-2 text-sm tracking-wider"
-            aria-expanded={isMenuOpen}
-            aria-label="Toggle navigation menu"
-          >
-            {isMenuOpen ? <X className="h-5 w-5 mr-2" /> : <Menu className="h-5 w-5 mr-2" />}
-            MENU
-          </button>
+        <div className="md:hidden w-full border-t border-[#E8D7C9] py-3">
+          <div className="flex justify-between items-center">
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="flex items-center px-3 py-2 text-sm tracking-wider"
+              aria-expanded={isMenuOpen}
+              aria-label="Toggle navigation menu"
+            >
+              {isMenuOpen ? <X className="h-5 w-5 mr-2" /> : <Menu className="h-5 w-5 mr-2" />}
+              MENU
+            </button>
+
+            <div className="flex items-center gap-3">
+              <button aria-label="Shopping cart" className="p-2">
+                <ShoppingBag className="h-5 w-5" />
+              </button>
+              <button aria-label="User account" className="p-2">
+                <User className="h-5 w-5" />
+              </button>
+            </div>
+          </div>
         </div>
 
         {/* Desktop Navigation */}
-        <nav className="hidden sm:flex justify-center w-full py-4 border-t border-b border-[#E8D7C9]">
-          <div className="flex justify-between w-full max-w-xl">
-            <Link
-              className="px-6 py-2 text-sm tracking-wider hover:text-[#8A5A3B] transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#E8D7C9] focus:ring-offset-2 focus:ring-offset-[#F9F2EA] rounded"
-              href={""}
-            >
-              HOME
-            </Link>
-            <Link
-              className="px-6 py-2 text-sm tracking-wider hover:text-[#8A5A3B] transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#E8D7C9] focus:ring-offset-2 focus:ring-offset-[#F9F2EA] rounded"
-              href={""}
-            >
-              SHOP
-            </Link>
-            <Link
-              className="px-6 py-2 text-sm tracking-wider hover:text-[#8A5A3B] transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#E8D7C9] focus:ring-offset-2 focus:ring-offset-[#F9F2EA] rounded"
-              href={""}
-            >
-              ABOUT
-            </Link>
-            <Link
-              className="px-6 py-2 text-sm tracking-wider hover:text-[#8A5A3B] transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#E8D7C9] focus:ring-offset-2 focus:ring-offset-[#F9F2EA] rounded"
-              href={"/login"}
-            >
-              LOGIN/REGISTER
-            </Link>
+        <nav className="hidden md:flex justify-center w-full py-4 border-t border-b border-[#E8D7C9]">
+          <div className="flex justify-between w-full max-w-4xl items-center">
+            <div className="flex space-x-8">
+              <Link
+                className="px-3 py-2 text-sm tracking-wider hover:text-[#C8977F] transition-colors duration-200"
+                href={""}
+              >
+                HOME
+              </Link>
+              <Link
+                className="px-3 py-2 text-sm tracking-wider hover:text-[#C8977F] transition-colors duration-200"
+                href={""}
+              >
+                SHOP
+              </Link>
+              <Link
+                className="px-3 py-2 text-sm tracking-wider hover:text-[#C8977F] transition-colors duration-200"
+                href={""}
+              >
+                ARTISTS
+              </Link>
+              <Link
+                className="px-3 py-2 text-sm tracking-wider hover:text-[#C8977F] transition-colors duration-200"
+                href={""}
+              >
+                ABOUT
+              </Link>
+            </div>
+
+            <div className="flex items-center gap-4">
+              <button aria-label="Shopping cart" className="p-2 hover:text-[#C8977F] transition-colors duration-200">
+                <ShoppingBag className="h-5 w-5" />
+              </button>
+              <Button className="bg-[#C8977F] hover:bg-[#B78370] text-white border-none rounded-none">Sign In</Button>
+            </div>
           </div>
         </nav>
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <nav className="sm:hidden w-full border-b border-[#E8D7C9]">
+          <nav className="md:hidden w-full border-b border-[#E8D7C9]">
             <div className="flex flex-col w-full" style={{ animation: "fadeIn 0.3s ease-out forwards" }}>
               <Link
-                className="px-4 py-3 text-sm tracking-wider hover:text-[#8A5A3B] hover:bg-[#F3EAE0] transition-colors duration-200 text-center"
+                className="px-4 py-3 text-sm tracking-wider hover:text-[#C8977F] hover:bg-[#F3EAE0] transition-colors duration-200"
                 href={""}
                 onClick={() => setIsMenuOpen(false)}
               >
                 HOME
               </Link>
               <Link
-                className="px-4 py-3 text-sm tracking-wider hover:text-[#8A5A3B] hover:bg-[#F3EAE0] transition-colors duration-200 text-center"
+                className="px-4 py-3 text-sm tracking-wider hover:text-[#C8977F] hover:bg-[#F3EAE0] transition-colors duration-200"
                 href={""}
                 onClick={() => setIsMenuOpen(false)}
               >
                 SHOP
               </Link>
               <Link
-                className="px-4 py-3 text-sm tracking-wider hover:text-[#8A5A3B] hover:bg-[#F3EAE0] transition-colors duration-200 text-center"
+                className="px-4 py-3 text-sm tracking-wider hover:text-[#C8977F] hover:bg-[#F3EAE0] transition-colors duration-200"
+                href={""}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                ARTISTS
+              </Link>
+              <Link
+                className="px-4 py-3 text-sm tracking-wider hover:text-[#C8977F] hover:bg-[#F3EAE0] transition-colors duration-200"
                 href={""}
                 onClick={() => setIsMenuOpen(false)}
               >
                 ABOUT
               </Link>
-              <Link
-                className="px-4 py-3 text-sm tracking-wider hover:text-[#8A5A3B] hover:bg-[#F3EAE0] transition-colors duration-200 text-center"
-                href={"/login"}
-                onClick={() => setIsMenuOpen(false)}
-              >
-                LOGIN/REGISTER
-              </Link>
+              <div className="px-4 py-3 border-t border-[#E8D7C9]">
+                <Button className="w-full bg-[#C8977F] hover:bg-[#B78370] text-white border-none rounded-none">
+                  Sign In
+                </Button>
+              </div>
             </div>
           </nav>
         )}
