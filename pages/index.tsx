@@ -55,7 +55,7 @@ export default function LandingPage() {
               <Link href={"/allProductPage"} className="bg-[#C8977F] hover:bg-[#B78370] text-white border-none rounded-none px-5 py-3">
                 Browse Gallery
               </Link>
-              <Link href={"/addProduct"}
+              <Link href={`/addProduct`}
               className="border border-[#C8977F] text-[#C8977F] hover:bg-[#C8977F]/10 rounded-none px-5 py-3"
             >
               Sell Your Art
@@ -74,14 +74,14 @@ export default function LandingPage() {
             <h2 className="text-2xl md:text-3xl font-light tracking-wider">
               Featured <span className="font-medium">Artworks</span>
             </h2>
-            <Link href="/shop" className="flex items-center text-[#C8977F] hover:text-[#B78370] transition-colors">
+            <Link href="/allProductPage" className="flex items-center text-[#C8977F] hover:text-[#B78370] transition-colors">
               View all <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
             {!isLoading ? data?.slice(0,4).map((item) => (
-              <div key={item} className="group">
+              <div key={item.id} className="group hover:bg-[#EFE6DC] duration-100 cursor-pointer p-2">
                 <div className="relative aspect-[3/4] mb-4 overflow-hidden bg-[#EFE6DC]">
                   <Image
                     src={item.url}
@@ -90,16 +90,16 @@ export default function LandingPage() {
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                   />
                 </div>
-                <h3 className="font-medium">Artwork Title</h3>
-                <p className="text-sm text-[#A67C52] mb-2">Artist Name</p>
+                <h3 className="font-medium">{item.title}</h3>
+                <p className="text-sm text-[#A67C52] mb-2">{item.artist}</p>
                 <div className="flex justify-between items-center">
-                  <span className="font-medium">$40</span>
-                  <Button size="sm" className="bg-[#C8977F] hover:bg-[#B78370] text-white border-none rounded-none">
+                  <span className="font-medium">${item.price}</span>
+                  <Button size="sm" className="bg-[#C8977F] hover:bg-[#B78370] text-white border-none rounded-none cursor-pointer">
                     Add to Cart
                   </Button>
                 </div>
               </div>
-            )) : <p>Loading.......</p>}
+            )) : <p>Loading.......</p>}{error ? <p>error</p> : null}
           </div>
         </div>
       </section>
@@ -114,9 +114,10 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center">
             <div className="relative aspect-square">
               <Image
-                src="/placeholder.svg?height=800&width=800&text=Artist%20Portrait"
+                src={data ? data[6]?.url : "/"}
                 alt="Featured Artist"
                 fill
+                quality={100}
                 className="object-cover"
               />
             </div>
@@ -133,7 +134,9 @@ export default function LandingPage() {
                 deeply meaningful.
               </p>
               <Button className="bg-[#C8977F] hover:bg-[#B78370] text-white border-none rounded-none">
+                <Link href={'/allProductPage'}>
                 View Collection
+                </Link>
               </Button>
             </div>
           </div>
@@ -277,7 +280,9 @@ export default function LandingPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button className="bg-[#C8977F] hover:bg-[#B78370] text-white border-none rounded-none px-8 py-6">
+                <Link href={"/login"}>
                 Create Account
+                </Link>
               </Button>
               <Button
                 variant="outline"
