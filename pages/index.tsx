@@ -5,8 +5,26 @@ import { ArrowRight, Brush, CreditCard, Globe, ShoppingBag, Users } from "lucide
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import Navbar from "@/components/navbar"
+import artPieceService from "@/services/artPiece.service"
+import useSWR from "swr"
 
 export default function LandingPage() {
+
+
+
+  const getProducts = async() =>{
+    const response = await artPieceService.getAllProducts();
+    if (response.ok){
+      const products = await response.json();
+      return products;
+    } 
+  }
+
+  const { data,isLoading, error} = useSWR("products",getProducts);
+  
+
+
+
   return (
     <div className="min-h-screen bg-[#F9F2EA] text-[#8A5A3B]">
       <Navbar />
@@ -62,12 +80,12 @@ export default function LandingPage() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
-            {[1, 2, 3, 4].map((item) => (
+            {!isLoading ? data?.slice(0,4).map((item) => (
               <div key={item} className="group">
                 <div className="relative aspect-[3/4] mb-4 overflow-hidden bg-[#EFE6DC]">
                   <Image
-                    src={`/placeholder.svg?height=600&width=450&text=Artwork%20${item}`}
-                    alt={`Featured Artwork ${item}`}
+                    src={item.url}
+                    alt={`Featured Artwork ${item.title}`}
                     fill
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                   />
@@ -81,7 +99,7 @@ export default function LandingPage() {
                   </Button>
                 </div>
               </div>
-            ))}
+            )) : <p>Loading.......</p>}
           </div>
         </div>
       </section>
