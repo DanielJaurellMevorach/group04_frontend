@@ -8,18 +8,25 @@ import { Button } from "@/components/ui/button"
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [isLogged,setIsLogged] = useState(false);
+const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
 
-  useEffect(() => {
-    if (sessionStorage.getItem("token")) {
-      setIsLogged(true);
-    }
-  }, [])
+useEffect(() => {
+  const sessionKey = sessionStorage.getItem('token');
+  if (sessionKey) {
+    setIsLoggedIn(true);
+  } else {
+    setIsLoggedIn(false);
+  }
+}, []);
+
+  if (isLoggedIn === null) {
+    return null; 
+  }
   
   const logoutHandler = () => {
     sessionStorage.removeItem("token");
     setIsMenuOpen(false);
-    setIsLogged(false);
+    setIsLoggedIn(false);
   }
 
   return (
@@ -86,7 +93,7 @@ const Navbar = () => {
                 ABOUT
               </Link>
             </div>
-            {!isLogged ?
+            {!isLoggedIn ?
             <div className="flex items-center gap-4">
             <button aria-label="Shopping cart" className="p-2 hover:text-[#C8977F] transition-colors duration-200">
               <ShoppingBag className="h-5 w-5" />
@@ -147,7 +154,7 @@ const Navbar = () => {
               >
                 ABOUT
               </Link>
-              {!isLogged ?
+              {!isLoggedIn ?
                  <div className="px-4 py-3 border-t border-[#E8D7C9]">
                  <Link
                    href="/login"
