@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import { Menu, ShoppingBag, User, X } from "lucide-react"
 
@@ -8,6 +8,19 @@ import { Button } from "@/components/ui/button"
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isLogged,setIsLogged] = useState(false);
+
+  useEffect(() => {
+    if (sessionStorage.getItem("token")) {
+      setIsLogged(true);
+    }
+  }, [])
+  
+  const logoutHandler = () => {
+    sessionStorage.removeItem("token");
+    setIsMenuOpen(false);
+    setIsLogged(false);
+  }
 
   return (
     <header className="w-full bg-[#F9F2EA] text-[#A67C52] font-normal top-0 z-50 shadow-sm">
@@ -37,9 +50,9 @@ const Navbar = () => {
               <button aria-label="Shopping cart" className="p-2">
                 <ShoppingBag className="h-5 w-5" />
               </button>
-              <button aria-label="User account" className="p-2">
+              {/* <button aria-label="User account" className="p-2">
                 <User className="h-5 w-5" />
-              </button>
+              </button> */}
             </div>
           </div>
         </div>
@@ -73,19 +86,32 @@ const Navbar = () => {
                 ABOUT
               </Link>
             </div>
-
+            {!isLogged ?
             <div className="flex items-center gap-4">
-              <button aria-label="Shopping cart" className="p-2 hover:text-[#C8977F] transition-colors duration-200">
-                <ShoppingBag className="h-5 w-5" />
-              </button>
-              <Link
-                  href="/login"
-                  className="bg-[#C8977F] hover:bg-[#B78370] text-white border-none rounded-none p-1.5 rounded-md"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Sign In
-                </Link>
-              </div>
+            <button aria-label="Shopping cart" className="p-2 hover:text-[#C8977F] transition-colors duration-200">
+              <ShoppingBag className="h-5 w-5" />
+            </button>
+            <Link
+                href="/login"
+                className="bg-[#C8977F] hover:bg-[#B78370] text-white border-none rounded-none p-1.5"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Sign In
+              </Link>
+            </div> :
+            <div className="flex items-center gap-4">
+            <button aria-label="Shopping cart" className="p-2 hover:text-[#C8977F] transition-colors duration-200">
+              <ShoppingBag className="h-5 w-5" />
+            </button>
+            <Link
+                href="/"
+                className="bg-[#C8977F] hover:bg-[#B78370] text-white border-none rounded-none p-1.5"
+                onClick={() => logoutHandler()}
+              >
+                Log Out
+              </Link>
+            </div>
+            }
           </div>
         </nav>
 
@@ -95,14 +121,14 @@ const Navbar = () => {
             <div className="flex flex-col w-full" style={{ animation: "fadeIn 0.3s ease-out forwards" }}>
               <Link
                 className="px-4 py-3 text-sm tracking-wider hover:text-[#C8977F] hover:bg-[#F3EAE0] transition-colors duration-200"
-                href={""}
+                href={"/"}
                 onClick={() => setIsMenuOpen(false)}
               >
                 HOME
               </Link>
               <Link
                 className="px-4 py-3 text-sm tracking-wider hover:text-[#C8977F] hover:bg-[#F3EAE0] transition-colors duration-200"
-                href={""}
+                href={"/allProductPage"}
                 onClick={() => setIsMenuOpen(false)}
               >
                 SHOP
@@ -121,15 +147,26 @@ const Navbar = () => {
               >
                 ABOUT
               </Link>
+              {!isLogged ?
+                 <div className="px-4 py-3 border-t border-[#E8D7C9]">
+                 <Link
+                   href="/login"
+                   className="block w-full py-2 text-center bg-[#C8977F] hover:bg-[#B78370] text-white transition-colors duration-200"
+                   onClick={() => setIsMenuOpen(false)}
+                 >
+                   Sign In
+                 </Link>
+               </div> :
               <div className="px-4 py-3 border-t border-[#E8D7C9]">
-                <Link
-                  href="/login"
-                  className="block w-full py-2 text-center bg-[#C8977F] hover:bg-[#B78370] text-white transition-colors duration-200"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Sign In
-                </Link>
-              </div>
+              <Link
+                href="/login"
+                className="block w-full py-2 text-center bg-[#C8977F] hover:bg-[#B78370] text-white transition-colors duration-200"
+                onClick={() => logoutHandler()}
+              >
+                Log Out
+              </Link>
+            </div>
+            }
             </div>
           </nav>
         )}
