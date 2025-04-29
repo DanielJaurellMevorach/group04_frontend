@@ -4,14 +4,11 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   images: {
     domains: [
-      "upload.wikimedia.org",
-      "cdn.britannica.com",
-      "www.artble.com",
-      "historiek.net",
-      "moaonline.org",
-      "www.artic.edu"
+      "cloudnativeproject.blob.core.windows.net",
+      "https://cloudnativeproject.blob.core.windows.net"
     ],
   },
 };
 
 export default nextConfig;
+ 
