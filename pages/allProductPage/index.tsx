@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import service from '../../services/artPiece.service';
 import useSWR from 'swr';
 import Navbar from '@/components/navbar';
 import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 
 const AllProductPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -13,6 +14,7 @@ const AllProductPage: React.FC = () => {
     const response = await service.getAllProducts();
     const result = await response.json();
     return result;
+    
   };
 
   const { data, isLoading, error } = useSWR('artPieces', fetcher);
@@ -29,6 +31,7 @@ const AllProductPage: React.FC = () => {
 
   if (isLoading) return <p className="text-center text-[#A67C52] mt-10">Loading...</p>;
   if (error) return <p className="text-center text-[#B78370] mt-10">Failed to load art pieces</p>;
+  
 
   return (
     <div className="min-h-screen bg-[#F9F2EA] text-[#8A5A3B]">
@@ -96,9 +99,16 @@ const AllProductPage: React.FC = () => {
                 <h2 className="text-lg font-semibold text-[#8A5A3B] mb-1">{artPiece.title}</h2>
                 <p className="text-sm text-[#A67C52]">By: {artPiece.artist}</p>
                 <p className="text-sm text-[#A67C52]">Year: {artPiece.year}</p>
+                <div className='flex w-full justify-between'>
                 <p className="text-sm text-[#8A5A3B] font-medium mt-2">
                   {artPiece.price.toLocaleString()} €
                 </p>
+                <Link href={`/singleProductPage/${artPiece.id}`}>
+                <Button size="sm" className="bg-[#C8977F] hover:bg-[#B78370] text-white border-none rounded-none cursor-pointer">
+                    More info
+                  </Button>
+                </Link>
+                </div>
               </div>
             </div>
           ))}

@@ -64,9 +64,46 @@ const getAllProducts = async () => {
   return response;
 };
 
+const getProductById = async (id : string) => {
+
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/item/${id}`,
+    {
+      method: 'GET',
+      headers:{
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+    },
+    }
+  );
+  return response;
+};
+
+const getProductsByArtist = async (name: string, excludeId?: string) => {
+  const url = new URL(`${process.env.NEXT_PUBLIC_API_URL}/item/artist/${name}`);
+
+  if (excludeId) {
+    url.searchParams.append('exclude', excludeId);
+  }
+
+  const response = await fetch(url.toString(), {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    },
+  });
+
+  return response;
+};
+
+
+
 const artPieceService = {
   uploadNewArtPiece,
-  getAllProducts
+  getAllProducts,
+  getProductById,
+  getProductsByArtist
 };
 
 export default artPieceService;

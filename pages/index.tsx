@@ -95,7 +95,7 @@ export default function LandingPage() {
                 <div className="flex justify-between items-center">
                   <span className="font-medium">${item.price}</span>
                   <Button size="sm" className="bg-[#C8977F] hover:bg-[#B78370] text-white border-none rounded-none cursor-pointer">
-                    Add to Cart
+                    More info
                   </Button>
                 </div>
               </div>
