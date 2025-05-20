@@ -7,6 +7,8 @@ import { Card, CardContent } from "@/components/ui/card"
 import Navbar from "@/components/navbar"
 import artPieceService from "@/services/artPiece.service"
 import useSWR from "swr"
+import { StaticImport } from "next/dist/shared/lib/get-img-props"
+import { Key, ReactElement, JSXElementConstructor, ReactNode, ReactPortal } from "react"
 
 export default function LandingPage() {
 
@@ -80,7 +82,7 @@ export default function LandingPage() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
-            {!isLoading ? data?.slice(0,4).map((item) => (
+            {!isLoading ? data?.slice(0,4).map((item: { id: Key | null | undefined; url: string | StaticImport; title: string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<string | number | bigint | boolean | ReactPortal | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | null | undefined> | null | undefined; artist: string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<string | number | bigint | boolean | ReactPortal | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | null | undefined> | null | undefined; price: string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<string | number | bigint | boolean | ReactPortal | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | null | undefined> | null | undefined }) => (
               <div key={item.id} className="group hover:bg-[#EFE6DC] duration-100 cursor-pointer p-2">
                 <div className="relative aspect-[3/4] mb-4 overflow-hidden bg-[#EFE6DC]">
                   <Image

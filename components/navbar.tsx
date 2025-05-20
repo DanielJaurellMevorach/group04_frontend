@@ -9,10 +9,15 @@ import { Button } from "@/components/ui/button"
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isLogged,setIsLogged] = useState(false);
+  const [userName, setUserName] = useState<string>("");
 
   useEffect(() => {
     if (sessionStorage.getItem("token")) {
       setIsLogged(true);
+    }
+    const user = sessionStorage.getItem("username");
+    if (user) {
+      setUserName(user);
     }
   }, [])
   
@@ -108,7 +113,7 @@ const Navbar = () => {
                 className="bg-[#C8977F] hover:bg-[#B78370] text-white border-none rounded-none p-1.5"
                 onClick={() => logoutHandler()}
               >
-                Log Out
+                Log Out, {userName}
               </Link>
             </div>
             }
@@ -163,7 +168,7 @@ const Navbar = () => {
                 className="block w-full py-2 text-center bg-[#C8977F] hover:bg-[#B78370] text-white transition-colors duration-200"
                 onClick={() => logoutHandler()}
               >
-                Log Out
+                Log Out {userName}
               </Link>
             </div>
             }
