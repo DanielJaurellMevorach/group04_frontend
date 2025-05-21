@@ -14,18 +14,19 @@ export default function LandingPage() {
 
 
 
-  const getProducts = async() =>{
+  const getProducts = async () => {
     const response = await artPieceService.getAllProducts();
-    if (response.ok){
+    if (response.ok) {
       const products = await response.json();
-      return products;
-    } 
-  }
+      // Always return an array
+      if (Array.isArray(products)) return products;
+      if (products && Array.isArray(products.artPieces)) return products.artPieces;
+      return [];
+    }
+    return [];
+  };
 
-  const { data,isLoading, error} = useSWR("products",getProducts);
-  
-
-
+  const { data = [], isLoading, error } = useSWR("products", getProducts);
 
   return (
     <div className="min-h-screen bg-[#F9F2EA] text-[#8A5A3B]">
@@ -54,7 +55,7 @@ export default function LandingPage() {
               masterpiece.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href={"/allProductPage"} className="bg-[#C8977F] hover:bg-[#B78370] text-white border-none rounded-none px-5 py-3">
+              <Link href={"/gallery"} className="bg-[#C8977F] hover:bg-[#B78370] text-white border-none rounded-none px-5 py-3">
                 Browse Gallery
               </Link>
               <Link href={`/addProduct`}
@@ -76,13 +77,13 @@ export default function LandingPage() {
             <h2 className="text-2xl md:text-3xl font-light tracking-wider">
               Featured <span className="font-medium">Artworks</span>
             </h2>
-            <Link href="/allProductPage" className="flex items-center text-[#C8977F] hover:text-[#B78370] transition-colors">
+            <Link href="/gallery" className="flex items-center text-[#C8977F] hover:text-[#B78370] transition-colors">
               View all <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
-            {!isLoading ? data?.slice(0,4).map((item: { id: Key | null | undefined; url: string | StaticImport; title: string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<string | number | bigint | boolean | ReactPortal | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | null | undefined> | null | undefined; artist: string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<string | number | bigint | boolean | ReactPortal | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | null | undefined> | null | undefined; price: string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<string | number | bigint | boolean | ReactPortal | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | null | undefined> | null | undefined }) => (
+            {!isLoading && Array.isArray(data) ? data.slice(0, 4).map((item: any) => (
               <div key={item.id} className="group hover:bg-[#EFE6DC] duration-100 cursor-pointer p-2">
                 <div className="relative aspect-[3/4] mb-4 overflow-hidden bg-[#EFE6DC]">
                   <Image
@@ -101,7 +102,8 @@ export default function LandingPage() {
                   </Button>
                 </div>
               </div>
-            )) : <p>Loading.......</p>}{error ? <p>error</p> : null}
+            )) : isLoading ? <p>Loading.......</p> : null}
+            {error ? <p>error</p> : null}
           </div>
         </div>
       </section>
@@ -136,7 +138,7 @@ export default function LandingPage() {
                 deeply meaningful.
               </p>
               <Button className="bg-[#C8977F] hover:bg-[#B78370] text-white border-none rounded-none">
-                <Link href={'/allProductPage'}>
+                <Link href={'/gallery'}>
                 View Collection
                 </Link>
               </Button>
