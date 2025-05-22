@@ -27,7 +27,10 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Rebuild native modules for Linux
+      - name: Reinstall lightningcss
+        run: npm install lightningcss --force
+
+      - name: Rebuild native modules
         run: npm rebuild
 
       - name: Build project
