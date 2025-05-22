@@ -28,11 +28,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          PACKAGE_NAME="frontend-bcs19"  # Replace with your package name
+          PACKAGE_NAME="group04_frontend"  # Replace with your package name
           PACKAGE_TYPE="npm"  # For Maven packages, use "maven"
-          ORG="DanielJaurellMevorach"  # Replace with your GitHub organization or username
+          USER="DanielJaurellMevorach"  # Replace with your GitHub organization or username
           VERSION="1.0.0"  # The version to delete
-          DELETE_URL="https://api.github.com/orgs/${ORG}/packages/${PACKAGE_TYPE}/${PACKAGE_NAME}"
+          DELETE_URL="https://api.github.com/users/${USER}/packages/${PACKAGE_TYPE}/${PACKAGE_NAME}"
           echo "Attempting to delete package version: $DELETE_URL"
   
           curl -L \
