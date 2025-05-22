@@ -27,8 +27,8 @@ jobs:
         run: |
           npm pack @DanielJaurellMevorach/group04_frontend --registry=https://npm.pkg.github.com          
           mkdir extracted-package
-          tar -tzf DanielJaurellMevorach-group04_frontend-1.0.0.tgz
-          tar -xzf DanielJaurellMevorach-group04_frontend-1.0.0.tgz -C extracted-package --strip-components=1
+          tar -tzf DanielJaurellMevorach-group04_frontend-0.1.0.tgz
+          tar -xzf DanielJaurellMevorach-group04_frontend-0.1.0.tgz -C extracted-package --strip-components=1
           ls
           echo "new ls"
           ls extracted-package
