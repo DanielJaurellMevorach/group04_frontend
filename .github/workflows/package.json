@@ -1,5 +1,5 @@
 {
-  "name": "DanielJaurellMevorach/group04_frontend",
+  "name": "@DanielJaurellMevorach/group04_frontend",
   "version": "0.1.0",
   "private": false,
   "scripts": {
@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@DanielJaurellMevorach/group04_frontend": "file:",
     "@radix-ui/react-slot": "^1.2.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
