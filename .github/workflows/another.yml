@@ -3,8 +3,8 @@ name: Publish to GitHub Packages
 on:
   push:
     branches:
-      - 'main'  # Triggers on version tags like v1.0.0
-    workflow_dispatch:
+      - 'main'  # Trigger on push to main branch
+  workflow_dispatch:  # Allow manual trigger
 
 jobs:
   publish:
@@ -31,9 +31,7 @@ jobs:
         run: npm rebuild
 
       - name: Build project
-        run: npm run build # Optional
-
-      - name: Change Current Directory
+        run: npm run build
 
       - name: Publish to GitHub Packages
         run: npm publish
