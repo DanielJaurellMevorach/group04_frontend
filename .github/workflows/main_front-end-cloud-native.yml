@@ -3,9 +3,6 @@ name: Deploy to Azure
 
 
 on: 
-  push:
-    branches:
-      - workflow
   workflow_dispatch:
 
 jobs:
@@ -35,10 +32,10 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # - name: Install dependencies
-      #   working-directory: extracted-package
-      #   run: |
-      #     npm install
+      - name: Install dependencies
+        working-directory: extracted-package
+        run: |
+          npm install
 
 
 
