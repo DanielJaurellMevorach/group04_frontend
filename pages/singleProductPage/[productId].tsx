@@ -231,7 +231,7 @@ return (
               <p>No other painting found</p>
             ) : (
               <div className={styles.moreFromAuthorGrid}>
-                {artistData?.map((art) => (
+                {artistData?.map((art: any) => (
                   <div key={art.id} className={styles.moreFromAuthorItem}>
                     <Link href={`/singleProductPage/${art.id}`}>
                       <div className={styles.moreFromAuthorImageWrapper}>
