@@ -251,17 +251,19 @@ const AddProductPage: React.FC = () => {
           )}
 
           {/* Upload Button */}
-          <button
-            type="button"
-            onClick={handleBrowseClick}
-            className="mt-4 px-6 py-3 bg-white border border-gray-300 rounded-full text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 flex items-center justify-center shadow-sm transition-colors"
-            disabled={loading}
-          >
-            <svg className="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-            </svg>
-            {images.length > 0 ? 'Add More Images' : 'Browse Files'}
-          </button>
+          {images.length === 0 && (
+            <button
+              type="button"
+              onClick={handleBrowseClick}
+              className="mt-4 px-6 py-3 bg-white border border-gray-300 rounded-full text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 flex items-center justify-center shadow-sm transition-colors"
+              disabled={loading}
+            >
+              <svg className="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
+              Browse Files
+            </button>
+          )}
           <input
             type="file"
             accept="image/*"

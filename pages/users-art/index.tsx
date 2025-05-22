@@ -1,8 +1,8 @@
 import Navbar from '@/components/navbar';
+import { Archive, PackageOpen, ShoppingCart } from 'lucide-react';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import userService from '../../services/user.service';
-import { HeartCrack, HeartIcon } from 'lucide-react';
 
 interface ArtPiece {
   id: string;
@@ -16,32 +16,28 @@ interface ArtPiece {
   createdAt: string;
 }
 
-interface LikedItem {
-  artPiece: ArtPiece;
-}
-
-const LikedItemsPage: React.FC = () => {
-  const [likedItems, setLikedItems] = useState<LikedItem[]>([]);
+const UsersArt: React.FC = () => {
+  const [ownedArt, setOwnedArt] = useState<ArtPiece[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
 
-  const fetchProducts = async () => {
+  const fetchOwnedArt = async () => {
     const token = sessionStorage.getItem("token");
     if (!token) {
       return [];
     }
-    const result = await userService.getUsersLikedItems(token);
+    const result = await userService.getUsersArtPieces(token);
     return result;
   };
 
-  const fetchLikedItems = async () => {
+  const loadOwnedArt = async () => {
     setLoading(true);
     setError('');
     try {
-      const items = await fetchProducts();
-      setLikedItems(items);
+      const items = await fetchOwnedArt();
+      setOwnedArt(items);
     } catch (err) {
-      setError('Failed to load liked items.');
+      setError('Failed to load your art collection.');
       console.error("failed to load art: ", err);
     } finally {
       setLoading(false);
@@ -49,20 +45,8 @@ const LikedItemsPage: React.FC = () => {
   };
   
   useEffect(() => {
-    
-    fetchLikedItems();
-
+    loadOwnedArt();
   }, []);
-
-  const toggleLike = async (token: string, itemId: string) => {
-  try {
-    await userService.toggleLikeItem(token, itemId);
-    // After toggling, refresh the liked items list
-    fetchLikedItems();
-  } catch (error) {
-    console.error("Failed to toggle like:", error);
-  }
-};
 
   // Format price with commas
   const formatPrice = (price: number) => {
@@ -73,12 +57,23 @@ const LikedItemsPage: React.FC = () => {
     <div className="min-h-screen bg-[#F4EFE7] text-[#655A4A]">
       <Navbar />
       
-      <div className="max-w-screen-xl mx-auto p-8 pt-12">
+      <div className="max-w-screen-xl mx-auto p-8 pt-10">
         <div className="max-w-6xl mx-auto">
-          <div className="flex items-center mb-12">
-            <HeartIcon className="h-7 w-7 text-[#B69985] mr-3" />
-            <h1 className="text-3xl font-light tracking-wide">Favourite Artworks</h1>
+          <div className="flex items-center mb-12 justify-between">
+            <div className='flex items-center'>
+
+            <PackageOpen className="h-7 w-7 text-[#B69985] mr-3" />
+            <h1 className="text-3xl font-light tracking-wide">My Art Collection</h1>
+            </div>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link href={`/addProduct`}
+              className="border border-[#C8977F] text-[#C8977F] hover:bg-[#C8977F]/10 rounded-none px-5 py-3"
+            >
+              Sell Your Art
+            </Link>
+            </div>
           </div>
+
           
           {loading && (
             <div className="flex justify-center py-16">
@@ -96,19 +91,20 @@ const LikedItemsPage: React.FC = () => {
             </div>
           )}
           
-          {!loading && likedItems.length === 0 && (
+          {!loading && ownedArt.length === 0 && (
             <div className="text-center py-20 bg-[#EFE5DD] rounded">
-              <HeartCrack className="h-12 w-12 text-[#D9CFC2] mx-auto mb-6" />
-              <p className="text-lg mb-8 text-[#A3937F]">Your collection is empty</p>
+              <Archive className="h-12 w-12 text-[#D9CFC2] mx-auto mb-6" />
+              <p className="text-lg mb-8 text-[#A3937F]">You don't own any artwork yet</p>
               <Link href="/gallery" className="px-8 py-3 bg-[#B69985] text-[#F4EFE7] rounded-none hover:bg-[#8A5A3B] transition-colors">
-                Explore Gallery
+                Browse Gallery
               </Link>
             </div>
           )}
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-            {likedItems.map((item) => {
-              const art = item.artPiece;
+            {ownedArt.map((item) => {
+              // Unwrap if needed
+              const art = (item as any).artPiece ? (item as any).artPiece : item;
               return (
                 <div
                   key={art.id}
@@ -121,15 +117,9 @@ const LikedItemsPage: React.FC = () => {
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     />
                     <div className="absolute top-3 right-3">
-                      <HeartIcon className="h-5 w-5 text-[#C87D55]" onClick={() => {
-                        const token = sessionStorage.getItem("token");
-                        if (token) {
-                          toggleLike(token, art.id);
-                        }
-                      }} />
+                      <ShoppingCart className="h-5 w-5 text-[#C87D55]" />
                     </div>
                   </div>
-                  
                   <div className="p-5 space-y-3">
                     <div className="flex justify-between items-start">
                       <h2 className="font-light text-lg tracking-wide line-clamp-1">{art.title}</h2>
@@ -137,11 +127,9 @@ const LikedItemsPage: React.FC = () => {
                         €{formatPrice(art.price)}
                       </div>
                     </div>
-                    
                     <p className="text-xs text-[#9D7A64]">
                       {art.artist}, {art.year}
                     </p>
-                    
                     <div className="pt-4">
                       <Link
                         href={`/art/${art.id}`}
@@ -161,4 +149,4 @@ const LikedItemsPage: React.FC = () => {
   );
 };
 
-export default LikedItemsPage;
+export default UsersArt;

@@ -245,16 +245,80 @@ const toggleCartItem = async (token: string, itemId: string) => {
   }
 };
 
+const getUsersArtPieces = async (token: string) => {
+  const userId = decodeJWT(token)?.userId;
+  const url = `${process.env.NEXT_PUBLIC_GET_USERS_CREATED_ART_PIECES_URL}`;
+
+  if (!token) {
+    throw new Error("Token is required");
+  }
+
+  const decodedToken = decodeJWT(token);
+
+  if (!decodedToken) {
+    throw new Error("Invalid token");
+  }
+
+  if (!userId) {
+    throw new Error("User ID is required");
+  }
+
+  try {
+    const response = await fetch(`${url}userId=${userId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch user's art pieces");
+    }
+
+    const data = await response.json(); // { createdPieces: [...] }
+
+    if (!data.createdPieces || !Array.isArray(data.createdPieces)) {
+      return [];
+    }
+
+    // Fetch all art piece details in parallel and return the actual data
+    const artPiecesDetails = await Promise.all(
+      data.createdPieces.map((itemId: string) =>
+        artPieceService.getProductById(itemId)
+      )
+    );
+    return artPiecesDetails;
+  } catch (error) {
+    console.error("Error fetching user's art pieces:", error);
+    throw new Error("Failed to fetch user's art pieces");
+  }
+};
+
 const decodeJWT = (token: string) => {
   if (!token) {
     return null;
   }
 
-  const payload = token.split(".")[1];
-  const decodedPayload = atob(payload);
-  const userData = JSON.parse(decodedPayload);
+  const parts = token.split(".");
+  if (parts.length < 2) {
+    return null;
+  }
 
-  return userData;
+  const payload = parts[1];
+  // Fix base64url to base64
+  let base64 = payload.replace(/-/g, "+").replace(/_/g, "/");
+  while (base64.length % 4 !== 0) {
+    base64 += "=";
+  }
+  try {
+    const decodedPayload = atob(base64);
+    const userData = JSON.parse(decodedPayload);
+    return userData;
+  } catch (e) {
+    console.error("Failed to decode JWT payload:", e);
+    return null;
+  }
 };
 
 const userService = {
@@ -265,6 +329,7 @@ const userService = {
   getUsersCartItems,
   toggleLikeItem,
   toggleCartItem,
+  getUsersArtPieces,
 };
 
 export default userService;

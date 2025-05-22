@@ -1,7 +1,5 @@
 import { uploadArtPieceInput } from "./types";
 
-const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL;
-
 const uploadNewArtPiece = async (artPiece: uploadArtPieceInput) => {
   const formData = new FormData();
 
@@ -27,14 +25,11 @@ const uploadNewArtPiece = async (artPiece: uploadArtPieceInput) => {
   const headers: Record<string, string> = {};
   if (token) headers["Authorization"] = `Bearer ${token}`;
 
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/item/create`,
-    {
-      method: "POST",
-      headers, // No Content-Type!
-      body: formData,
-    }
-  );
+  const response = await fetch(`${process.env.NEXT_PUBLIC_ADD_ART_PIECE_URL}`, {
+    method: "POST",
+    headers, // No Content-Type!
+    body: formData,
+  });
 
   if (!response.ok) {
     const errorText = await response.text();
@@ -94,29 +89,29 @@ const getProductById = async (id: string) => {
   }
 };
 
-const getProductsByArtist = async (name: string, excludeId?: string) => {
-  const url = new URL(`${process.env.NEXT_PUBLIC_API_URL}/item/artist/${name}`);
+// const getProductsByArtist = async (name: string, excludeId?: string) => {
+//   const url = new URL(`${process.env.NEXT_PUBLIC_API_URL}/item/artist/${name}`);
 
-  if (excludeId) {
-    url.searchParams.append("exclude", excludeId);
-  }
+//   if (excludeId) {
+//     url.searchParams.append("exclude", excludeId);
+//   }
 
-  const response = await fetch(url.toString(), {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-    },
-  });
+//   const response = await fetch(url.toString(), {
+//     method: "GET",
+//     headers: {
+//       "Content-Type": "application/json",
+//       Accept: "application/json",
+//     },
+//   });
 
-  return response;
-};
+//   return response;
+// };
 
 const artPieceService = {
   uploadNewArtPiece,
   getAllProducts,
   getProductById,
-  getProductsByArtist,
+  // getProductsByArtist,
 };
 
 export default artPieceService;

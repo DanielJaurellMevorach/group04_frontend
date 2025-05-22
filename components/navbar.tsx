@@ -1,6 +1,6 @@
 "use client"
 
-import { HeartIcon, Menu, ShoppingBag, X } from "lucide-react"
+import { HeartIcon, Menu, PackageOpen, ShoppingBag, X } from "lucide-react"
 import Link from "next/link"
 import { useEffect, useState } from "react"
 
@@ -68,7 +68,7 @@ const Navbar = () => {
                 className="px-3 py-2 text-sm tracking-wider hover:text-[#C8977F] transition-colors duration-200"
                 href={"/gallery"}
               >
-                SHOP
+                DISCOVER
               </Link>
               <Link
                 className="px-3 py-2 text-sm tracking-wider hover:text-[#C8977F] transition-colors duration-200"
@@ -78,7 +78,7 @@ const Navbar = () => {
               </Link>
               <Link
                 className="px-3 py-2 text-sm tracking-wider hover:text-[#C8977F] transition-colors duration-200"
-                href={""}
+                href={"/about"}
               >
                 ABOUT
               </Link>
@@ -95,23 +95,28 @@ const Navbar = () => {
               </Link>
             </div> :
             <div className="flex items-center gap-4">
-            <button aria-label="Shopping cart" className="p-2 hover:text-[#C8977F] transition-colors duration-200">
-              <Link href="/user-cart">
-              <ShoppingBag className="h-5 w-5" />
-              </Link>
-            </button>
-            <button aria-label="Shopping cart" className="p-2 hover:text-[#C8977F] transition-colors duration-200">
-              <Link href="/liked-items">
-              <HeartIcon className="h-5 w-5" />
-              </Link>
-            </button>
-            <Link
-                href="/"
-                className="bg-[#C8977F] hover:bg-[#B78370] text-white border-none rounded-none p-1.5"
-                onClick={() => logoutHandler()}
-              >
-                Log Out, {userName}
-              </Link>
+              <button aria-label="Shopping cart" className="p-2 hover:text-[#C8977F] transition-colors duration-200">
+                <Link href="/user-cart">
+                <ShoppingBag className="h-5 w-5" />
+                </Link>
+              </button>
+              <button aria-label="Shopping cart" className="p-2 hover:text-[#C8977F] transition-colors duration-200">
+                <Link href="/liked-items">
+                <HeartIcon className="h-5 w-5" />
+                </Link>
+              </button>
+              <button aria-label="Shopping cart" className="p-2 hover:text-[#C8977F] transition-colors duration-200">
+                <Link href="/users-art">
+                <PackageOpen href="/users-art" className="h-5 w-5" />
+                </Link>
+              </button>
+              <Link
+                  href="/"
+                  className="bg-[#C8977F] hover:bg-[#B78370] text-white border-none rounded-none p-1.5"
+                  onClick={() => logoutHandler()}
+                >
+                  Log Out, {userName}
+                </Link>
             </div>
             }
           </div>
@@ -133,7 +138,7 @@ const Navbar = () => {
                 href={"/gallery"}
                 onClick={() => setIsMenuOpen(false)}
               >
-                SHOP
+                DISCOVER
               </Link>
               <Link
                 className="px-4 py-3 text-sm tracking-wider hover:text-[#C8977F] hover:bg-[#F3EAE0] transition-colors duration-200"
@@ -144,12 +149,31 @@ const Navbar = () => {
               </Link>
               <Link
                 className="px-4 py-3 text-sm tracking-wider hover:text-[#C8977F] hover:bg-[#F3EAE0] transition-colors duration-200"
-                href={""}
+                href={"/about"}
                 onClick={() => setIsMenuOpen(false)}
               >
                 ABOUT
               </Link>
-              {!isLogged ?
+              
+              <div className="px-4 py-3 flex items-center gap-4">
+              <button aria-label="Shopping cart" className="hover:text-[#C8977F] transition-colors duration-200">
+                  <Link href="/user-cart">
+                  <ShoppingBag className="h-5 w-5" />
+                  </Link>
+                </button>
+                <button aria-label="Shopping cart" className="hover:text-[#C8977F] transition-colors duration-200">
+                  <Link href="/liked-items">
+                  <HeartIcon className="h-5 w-5" />
+                  </Link>
+                </button>
+                <button aria-label="Shopping cart" className="hover:text-[#C8977F] transition-colors duration-200">
+                  <Link href="/users-art">
+                  <PackageOpen href="/users-art" className="h-5 w-5" />
+                  </Link>
+                </button>
+                </div>
+
+                {!isLogged ?
                  <div className="px-4 py-3 border-t border-[#E8D7C9]">
                  <Link
                    href="/login"
@@ -160,15 +184,15 @@ const Navbar = () => {
                  </Link>
                </div> :
               <div className="px-4 py-3 border-t border-[#E8D7C9]">
-              <Link
-                href="/login"
-                className="block w-full py-2 text-center bg-[#C8977F] hover:bg-[#B78370] text-white transition-colors duration-200"
-                onClick={() => logoutHandler()}
-              >
-                Log Out {userName}
-              </Link>
-            </div>
-            }
+                <Link
+                  href="/login"
+                  className="block w-full py-2 text-center bg-[#C8977F] hover:bg-[#B78370] text-white transition-colors duration-200"
+                  onClick={() => logoutHandler()}
+                >
+                  Log Out {userName}
+                </Link>
+              </div>
+              }
             </div>
           </nav>
         )}

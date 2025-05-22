@@ -28,13 +28,16 @@ const RegisterPage: React.FC = () => {
     setError('');
 
     try {
-      const response = await userService.register(
+      const registration = await userService.register(
         username, 
         password, 
         email, 
         firstName, 
         lastName
       );
+      
+
+      const response = await userService.login(username, password);
 
       // Store token, username, and role in sessionStorage
       sessionStorage.setItem('token', response.token);

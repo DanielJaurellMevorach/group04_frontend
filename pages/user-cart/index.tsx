@@ -44,6 +44,7 @@ const UserCartPage: React.FC = () => {
       setCartItems(items);
     } catch (err) {
       setError('Failed to load cart items.');
+      console.error("failed to load art: ", err);
     } finally {
       setLoading(false);
     }
