@@ -50,7 +50,7 @@ jobs:
           npm install @tailwindcss/oxide-linux-x64-gnu
           npm run build
           cat .github/workflows/package.json > .next/standalone/package.json
-          cp .github/workflows/.npmrc > .next/standalone/
+          cp .github/workflows/.npmrc  .next/standalone/
           
 
       - name: copy necessary folders
