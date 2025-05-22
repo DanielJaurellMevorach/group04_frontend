@@ -43,7 +43,7 @@ jobs:
             "$DELETE_URL"
 
 
-      - name: npm install / build
+      - name: npm install and  build
         run: |
           npm install sharp
           npm install lightningcss

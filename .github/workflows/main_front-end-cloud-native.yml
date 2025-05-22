@@ -35,10 +35,10 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Install dependencies
-        working-directory: extracted-package
-        run: |
-          npm install
+      # - name: Install dependencies
+      #   working-directory: extracted-package
+      #   run: |
+      #     npm install
 
 
 
