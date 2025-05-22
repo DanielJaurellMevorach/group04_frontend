@@ -201,9 +201,7 @@ const AddProductPage: React.FC = () => {
 
       </section>
     <div className="max-w-screen-lg mx-auto p-6">
-      <nav className="text-gray-600 mb-8">
-        <a href="/" className="hover:underline">Shop</a> <span>{'>'}</span> <a href="/admin" className="hover:underline">Admin</a> <span>{'>'}</span> Create Listing
-      </nav>
+      
       <h1 className="text-3xl font-bold mb-6">Upload A New Art Piece</h1>
 
       {error && <p className="text-red-600 mb-4">{error}</p>}
