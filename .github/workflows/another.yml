@@ -1,40 +1,46 @@
-name: Publish to GitHub Packages
+name: Build
 
-on:
+on: 
   push:
     branches:
-      - 'main'  # Trigger on push to main branch
-  workflow_dispatch:  # Allow manual trigger
+      - main
 
 jobs:
-  publish:
+  build:
     runs-on: ubuntu-latest
-
+    permissions:
+      contents: read
+      packages: write 
+      
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: Set up Node.js version
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
-          registry-url: 'https://npm.pkg.github.com/'
-          scope: '@${{ github.repository_owner }}'
+          node-version: '20.x'
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@DanielJaurellMevorach'
 
-      - name: Authenticate GitHub Packages
-        run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" > ~/.npmrc
+     
+      - name: npm install, build
+        run: |
+          npm install sharp
+          npm run build
+          cat .github/workflows/package.json > .next/standalone/package.json
+          
 
-      - name: Install dependencies
-        run: npm ci
+      - name: copy necessary folders
+        run: cp -r public .next/standalone/ && cp -r .next/static .next/standalone/.next/
 
-      - name: Reinstall lightningcss
-        run: npm install lightningcss --force
 
-      - name: Rebuild native modules
-        run: npm rebuild
+     
+      - name: npm publish
+        run: |
+          cd .next/standalone
+          npm publish --scope=@DanielJaurellMevorach --auth-type=legacy --registry=https://npm.pkg.github.com
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build project
-        run: npm run build
 
-      - name: Publish to GitHub Packages
-        run: npm publish
+      
