@@ -22,7 +22,7 @@ jobs:
         with:
           node-version: '20.x'
           registry-url: 'https://npm.pkg.github.com'
-          scope: '@UcllSoftwareEngineering2425'
+          scope: '@DanielJaurellMevorach'
 
       - name: Delete existing package version (if any)
         env:
@@ -30,7 +30,7 @@ jobs:
         run: |
           PACKAGE_NAME="frontend-bcs19"  # Replace with your package name
           PACKAGE_TYPE="npm"  # For Maven packages, use "maven"
-          ORG="UcllSoftwareEngineering2425"  # Replace with your GitHub organization or username
+          ORG="DanielJaurellMevorach"  # Replace with your GitHub organization or username
           VERSION="1.0.0"  # The version to delete
           DELETE_URL="https://api.github.com/orgs/${ORG}/packages/${PACKAGE_TYPE}/${PACKAGE_NAME}"
           echo "Attempting to delete package version: $DELETE_URL"
