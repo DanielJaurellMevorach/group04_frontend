@@ -26,6 +26,7 @@ jobs:
       - name: npm install, build
         run: |
           npm install sharp
+          npm install lightningcss
           npm run build
           cat .github/workflows/package.json > .next/standalone/package.json
           
