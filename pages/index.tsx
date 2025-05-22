@@ -12,16 +12,16 @@ export default function LandingPage() {
 
 
 
-  const getProducts = async() =>{
+  const getProducts = async () => {
     const response = await artPieceService.getAllProducts();
-    if (response.ok){
+    if (response.ok) {
       const products = await response.json();
       return products;
-    } 
+    }
   }
 
-  const { data,isLoading, error} = useSWR("products",getProducts);
-  
+  const { data, isLoading, error } = useSWR("products", getProducts);
+
 
 
 
@@ -56,10 +56,10 @@ export default function LandingPage() {
                 Browse Gallery
               </Link>
               <Link href={`/addProduct`}
-              className="border border-[#C8977F] text-[#C8977F] hover:bg-[#C8977F]/10 rounded-none px-5 py-3"
-            >
-              Sell Your Art
-            </Link>
+                className="border border-[#C8977F] text-[#C8977F] hover:bg-[#C8977F]/10 rounded-none px-5 py-3"
+              >
+                Sell Your Art
+              </Link>
             </div>
           </div>
         </div>
@@ -80,7 +80,7 @@ export default function LandingPage() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
-            {!isLoading ? data?.slice(0,4).map((item) => (
+            {!isLoading ? (data as any[])?.slice(0, 4).map((item) => (
               <div key={item.id} className="group hover:bg-[#EFE6DC] duration-100 cursor-pointer p-2">
                 <div className="relative aspect-[3/4] mb-4 overflow-hidden bg-[#EFE6DC]">
                   <Image
@@ -99,7 +99,8 @@ export default function LandingPage() {
                   </Button>
                 </div>
               </div>
-            )) : <p>Loading.......</p>}{error ? <p>error</p> : null}
+            )) : <p>Loading.......</p>}
+            {error ? <p>error</p> : null}
           </div>
         </div>
       </section>
@@ -135,7 +136,7 @@ export default function LandingPage() {
               </p>
               <Button className="bg-[#C8977F] hover:bg-[#B78370] text-white border-none rounded-none">
                 <Link href={'/allProductPage'}>
-                View Collection
+                  View Collection
                 </Link>
               </Button>
             </div>
@@ -281,7 +282,7 @@ export default function LandingPage() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button className="bg-[#C8977F] hover:bg-[#B78370] text-white border-none rounded-none px-8 py-6">
                 <Link href={"/login"}>
-                Create Account
+                  Create Account
                 </Link>
               </Button>
               <Button

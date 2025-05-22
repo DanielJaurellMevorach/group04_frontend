@@ -14,7 +14,7 @@ const AllProductPage: React.FC = () => {
     const response = await service.getAllProducts();
     const result = await response.json();
     return result;
-    
+
   };
 
   const { data, isLoading, error } = useSWR('artPieces', fetcher);
@@ -31,7 +31,7 @@ const AllProductPage: React.FC = () => {
 
   if (isLoading) return <p className="text-center text-[#A67C52] mt-10">Loading...</p>;
   if (error) return <p className="text-center text-[#B78370] mt-10">Failed to load art pieces</p>;
-  
+
 
   return (
     <div className="min-h-screen bg-[#F9F2EA] text-[#8A5A3B]">
@@ -64,7 +64,7 @@ const AllProductPage: React.FC = () => {
               className="w-full max-w-md px-4 py-2 border border-[#C8977F] rounded-none shadow-sm focus:outline-none focus:ring-2 focus:ring-[#C8977F]"
             >
               <option value="">All Artists</option>
-              {artists?.map((artist: string) => (
+              {(artists as string[])?.map((artist) => (
                 <option key={artist} value={artist}>
                   {artist}
                 </option>
@@ -100,14 +100,14 @@ const AllProductPage: React.FC = () => {
                 <p className="text-sm text-[#A67C52]">By: {artPiece.artist}</p>
                 <p className="text-sm text-[#A67C52]">Year: {artPiece.year}</p>
                 <div className='flex w-full justify-between'>
-                <p className="text-sm text-[#8A5A3B] font-medium mt-2">
-                  {artPiece.price.toLocaleString()} €
-                </p>
-                <Link href={`/singleProductPage/${artPiece.id}`}>
-                <Button size="sm" className="bg-[#C8977F] hover:bg-[#B78370] text-white border-none rounded-none cursor-pointer">
-                    More info
-                  </Button>
-                </Link>
+                  <p className="text-sm text-[#8A5A3B] font-medium mt-2">
+                    {artPiece.price.toLocaleString()} €
+                  </p>
+                  <Link href={`/singleProductPage/${artPiece.id}`}>
+                    <Button size="sm" className="bg-[#C8977F] hover:bg-[#B78370] text-white border-none rounded-none cursor-pointer">
+                      More info
+                    </Button>
+                  </Link>
                 </div>
               </div>
             </div>
