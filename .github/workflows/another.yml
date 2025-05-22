@@ -60,7 +60,7 @@ jobs:
       - name: npm publish
         run: |
           cd .next/standalone
-          npm publish --scope=@UcllSoftwareEngineering2425 --auth-type=legacy --registry=https://npm.pkg.github.com
+          npm publish --scope=@DanielJaurellMevorach --auth-type=legacy --registry=https://npm.pkg.github.com
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
