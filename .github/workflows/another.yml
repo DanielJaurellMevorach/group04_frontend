@@ -25,10 +25,15 @@ jobs:
         run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" > ~/.npmrc
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
+
+      - name: Rebuild native modules for Linux
+        run: npm rebuild
 
       - name: Build project
         run: npm run build # Optional
+
+      - name: Change Current Directory
 
       - name: Publish to GitHub Packages
         run: npm publish
