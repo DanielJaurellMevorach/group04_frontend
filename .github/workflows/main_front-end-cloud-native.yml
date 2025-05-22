@@ -18,11 +18,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Java version
-        uses: actions/setup-java@v4
+      - name: Set up Node.js version
+        uses: actions/setup-node@v3
         with:
-          java-version: '21'
-          distribution: 'microsoft'
+          node-version: '20.x'
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@DanielJaurellMevorach'  
 
       - name: Build with Maven
         run: mvn clean install

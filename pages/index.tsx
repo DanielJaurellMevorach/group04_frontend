@@ -18,6 +18,7 @@ export default function LandingPage() {
     const response = await artPieceService.getAllProducts();
     if (response.ok) {
       const products = await response.json();
+<<<<<<< HEAD
       // Always return an array
       if (Array.isArray(products)) return products;
       if (products && Array.isArray(products.artPieces)) return products.artPieces;
@@ -25,6 +26,15 @@ export default function LandingPage() {
     }
     return [];
   };
+=======
+      return products;
+    }
+  }
+
+  const { data, isLoading, error } = useSWR("products", getProducts);
+
+
+>>>>>>> 3b22d095fcae219be7b100de3b6f0af0c40e4366
 
   const { data = [], isLoading, error } = useSWR("products", getProducts);
 
@@ -59,10 +69,10 @@ export default function LandingPage() {
                 Browse Gallery
               </Link>
               <Link href={`/addProduct`}
-              className="border border-[#C8977F] text-[#C8977F] hover:bg-[#C8977F]/10 rounded-none px-5 py-3"
-            >
-              Sell Your Art
-            </Link>
+                className="border border-[#C8977F] text-[#C8977F] hover:bg-[#C8977F]/10 rounded-none px-5 py-3"
+              >
+                Sell Your Art
+              </Link>
             </div>
           </div>
         </div>
@@ -83,7 +93,11 @@ export default function LandingPage() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+<<<<<<< HEAD
             {!isLoading && Array.isArray(data) ? data.slice(0, 4).map((item: any) => (
+=======
+            {!isLoading ? (data as any[])?.slice(0, 4).map((item) => (
+>>>>>>> 3b22d095fcae219be7b100de3b6f0af0c40e4366
               <div key={item.id} className="group hover:bg-[#EFE6DC] duration-100 cursor-pointer p-2">
                 <div className="relative aspect-[3/4] mb-4 overflow-hidden bg-[#EFE6DC]">
                   <Image
@@ -102,7 +116,11 @@ export default function LandingPage() {
                   </Button>
                 </div>
               </div>
+<<<<<<< HEAD
             )) : isLoading ? <p>Loading.......</p> : null}
+=======
+            )) : <p>Loading.......</p>}
+>>>>>>> 3b22d095fcae219be7b100de3b6f0af0c40e4366
             {error ? <p>error</p> : null}
           </div>
         </div>
@@ -138,8 +156,13 @@ export default function LandingPage() {
                 deeply meaningful.
               </p>
               <Button className="bg-[#C8977F] hover:bg-[#B78370] text-white border-none rounded-none">
+<<<<<<< HEAD
                 <Link href={'/gallery'}>
                 View Collection
+=======
+                <Link href={'/allProductPage'}>
+                  View Collection
+>>>>>>> 3b22d095fcae219be7b100de3b6f0af0c40e4366
                 </Link>
               </Button>
             </div>
@@ -285,7 +308,7 @@ export default function LandingPage() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button className="bg-[#C8977F] hover:bg-[#B78370] text-white border-none rounded-none px-8 py-6">
                 <Link href={"/login"}>
-                Create Account
+                  Create Account
                 </Link>
               </Button>
               <Button
