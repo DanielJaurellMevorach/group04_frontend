@@ -1,18 +1,23 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { HeartIcon, Menu, PackageOpen, ShoppingBag, X } from "lucide-react"
 import Link from "next/link"
-import { Menu, ShoppingBag, User, X } from "lucide-react"
+import { useEffect, useState } from "react"
 
-import { Button } from "@/components/ui/button"
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isLogged,setIsLogged] = useState(false);
+  const [userName, setUserName] = useState<string>("");
+  // console.log(userService.decodeJWT(sessionStorage.getItem("token")+"1" || ""));
 
   useEffect(() => {
     if (sessionStorage.getItem("token")) {
       setIsLogged(true);
+    }
+    const user = sessionStorage.getItem("username");
+    if (user) {
+      setUserName(user);
     }
   }, [])
   
@@ -46,14 +51,6 @@ const Navbar = () => {
               MENU
             </button>
 
-            <div className="flex items-center gap-3">
-              <button aria-label="Shopping cart" className="p-2">
-                <ShoppingBag className="h-5 w-5" />
-              </button>
-              {/* <button aria-label="User account" className="p-2">
-                <User className="h-5 w-5" />
-              </button> */}
-            </div>
           </div>
         </div>
 
@@ -69,9 +66,9 @@ const Navbar = () => {
               </Link>
               <Link
                 className="px-3 py-2 text-sm tracking-wider hover:text-[#C8977F] transition-colors duration-200"
-                href={"/allProductPage"}
+                href={"/gallery"}
               >
-                SHOP
+                DISCOVER
               </Link>
               <Link
                 className="px-3 py-2 text-sm tracking-wider hover:text-[#C8977F] transition-colors duration-200"
@@ -81,16 +78,14 @@ const Navbar = () => {
               </Link>
               <Link
                 className="px-3 py-2 text-sm tracking-wider hover:text-[#C8977F] transition-colors duration-200"
-                href={""}
+                href={"/about"}
               >
                 ABOUT
               </Link>
             </div>
             {!isLogged ?
             <div className="flex items-center gap-4">
-            <button aria-label="Shopping cart" className="p-2 hover:text-[#C8977F] transition-colors duration-200">
-              <ShoppingBag className="h-5 w-5" />
-            </button>
+            
             <Link
                 href="/login"
                 className="bg-[#C8977F] hover:bg-[#B78370] text-white border-none rounded-none p-1.5"
@@ -100,16 +95,28 @@ const Navbar = () => {
               </Link>
             </div> :
             <div className="flex items-center gap-4">
-            <button aria-label="Shopping cart" className="p-2 hover:text-[#C8977F] transition-colors duration-200">
-              <ShoppingBag className="h-5 w-5" />
-            </button>
-            <Link
-                href="/"
-                className="bg-[#C8977F] hover:bg-[#B78370] text-white border-none rounded-none p-1.5"
-                onClick={() => logoutHandler()}
-              >
-                Log Out
-              </Link>
+              <button aria-label="Shopping cart" className="p-2 hover:text-[#C8977F] transition-colors duration-200">
+                <Link href="/user-cart">
+                <ShoppingBag className="h-5 w-5" />
+                </Link>
+              </button>
+              <button aria-label="Shopping cart" className="p-2 hover:text-[#C8977F] transition-colors duration-200">
+                <Link href="/liked-items">
+                <HeartIcon className="h-5 w-5" />
+                </Link>
+              </button>
+              <button aria-label="Shopping cart" className="p-2 hover:text-[#C8977F] transition-colors duration-200">
+                <Link href="/users-art">
+                <PackageOpen href="/users-art" className="h-5 w-5" />
+                </Link>
+              </button>
+              <Link
+                  href="/"
+                  className="bg-[#C8977F] hover:bg-[#B78370] text-white border-none rounded-none p-1.5"
+                  onClick={() => logoutHandler()}
+                >
+                  Log Out, {userName}
+                </Link>
             </div>
             }
           </div>
@@ -128,10 +135,10 @@ const Navbar = () => {
               </Link>
               <Link
                 className="px-4 py-3 text-sm tracking-wider hover:text-[#C8977F] hover:bg-[#F3EAE0] transition-colors duration-200"
-                href={"/allProductPage"}
+                href={"/gallery"}
                 onClick={() => setIsMenuOpen(false)}
               >
-                SHOP
+                DISCOVER
               </Link>
               <Link
                 className="px-4 py-3 text-sm tracking-wider hover:text-[#C8977F] hover:bg-[#F3EAE0] transition-colors duration-200"
@@ -142,12 +149,31 @@ const Navbar = () => {
               </Link>
               <Link
                 className="px-4 py-3 text-sm tracking-wider hover:text-[#C8977F] hover:bg-[#F3EAE0] transition-colors duration-200"
-                href={""}
+                href={"/about"}
                 onClick={() => setIsMenuOpen(false)}
               >
                 ABOUT
               </Link>
-              {!isLogged ?
+              
+              <div className="px-4 py-3 flex items-center gap-4">
+              <button aria-label="Shopping cart" className="hover:text-[#C8977F] transition-colors duration-200">
+                  <Link href="/user-cart">
+                  <ShoppingBag className="h-5 w-5" />
+                  </Link>
+                </button>
+                <button aria-label="Shopping cart" className="hover:text-[#C8977F] transition-colors duration-200">
+                  <Link href="/liked-items">
+                  <HeartIcon className="h-5 w-5" />
+                  </Link>
+                </button>
+                <button aria-label="Shopping cart" className="hover:text-[#C8977F] transition-colors duration-200">
+                  <Link href="/users-art">
+                  <PackageOpen href="/users-art" className="h-5 w-5" />
+                  </Link>
+                </button>
+                </div>
+
+                {!isLogged ?
                  <div className="px-4 py-3 border-t border-[#E8D7C9]">
                  <Link
                    href="/login"
@@ -158,15 +184,15 @@ const Navbar = () => {
                  </Link>
                </div> :
               <div className="px-4 py-3 border-t border-[#E8D7C9]">
-              <Link
-                href="/login"
-                className="block w-full py-2 text-center bg-[#C8977F] hover:bg-[#B78370] text-white transition-colors duration-200"
-                onClick={() => logoutHandler()}
-              >
-                Log Out
-              </Link>
-            </div>
-            }
+                <Link
+                  href="/login"
+                  className="block w-full py-2 text-center bg-[#C8977F] hover:bg-[#B78370] text-white transition-colors duration-200"
+                  onClick={() => logoutHandler()}
+                >
+                  Log Out {userName}
+                </Link>
+              </div>
+              }
             </div>
           </nav>
         )}

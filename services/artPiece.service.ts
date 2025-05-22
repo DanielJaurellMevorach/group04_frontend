@@ -1,8 +1,5 @@
 import { uploadArtPieceInput } from "./types";
 
-
-const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL;
-
 const uploadNewArtPiece = async (artPiece: uploadArtPieceInput) => {
   const formData = new FormData();
 
@@ -28,14 +25,11 @@ const uploadNewArtPiece = async (artPiece: uploadArtPieceInput) => {
   const headers: Record<string, string> = {};
   if (token) headers["Authorization"] = `Bearer ${token}`;
 
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/item/create`,
-    {
-      method: "POST",
-      headers, // No Content-Type!
-      body: formData,
-    }
-  );
+  const response = await fetch(`${process.env.NEXT_PUBLIC_ADD_ART_PIECE_URL}`, {
+    method: "POST",
+    headers, // No Content-Type!
+    body: formData,
+  });
 
   if (!response.ok) {
     const errorText = await response.text();
@@ -46,64 +40,78 @@ const uploadNewArtPiece = async (artPiece: uploadArtPieceInput) => {
   return response.json();
 };
 
-
 const getAllProducts = async () => {
   const token = sessionStorage.getItem("token");
 
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/item`,
-    {
-      method: 'GET',
-      headers:{
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-        Authorization: `Bearer ${token}` 
-    },
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_GET_ALL_ART_PIECES_URL}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token ? `Bearer ${token}` : "",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch products");
     }
-  );
-  return response;
-};
 
-const getProductById = async (id : string) => {
-
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/item/${id}`,
-    {
-      method: 'GET',
-      headers:{
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-    },
-    }
-  );
-  return response;
-};
-
-const getProductsByArtist = async (name: string, excludeId?: string) => {
-  const url = new URL(`${process.env.NEXT_PUBLIC_API_URL}/item/artist/${name}`);
-
-  if (excludeId) {
-    url.searchParams.append('exclude', excludeId);
+    return response.json();
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    throw new Error("Failed to fetch products");
   }
-
-  const response = await fetch(url.toString(), {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
-    },
-  });
-
-  return response;
 };
 
+const getProductById = async (id: string) => {
+  const url = process.env.NEXT_PUBLIC_GET_ART_PIECE_BY_ID_URL;
 
+  try {
+    const response = await fetch(`${url}artPieceId=${id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch product");
+    }
+
+    return response.json();
+  } catch (error) {
+    console.error("Error fetching product:", error);
+    throw new Error("Failed to fetch product");
+  }
+};
+
+// const getProductsByArtist = async (name: string, excludeId?: string) => {
+//   const url = new URL(`${process.env.NEXT_PUBLIC_API_URL}/item/artist/${name}`);
+
+//   if (excludeId) {
+//     url.searchParams.append("exclude", excludeId);
+//   }
+
+//   const response = await fetch(url.toString(), {
+//     method: "GET",
+//     headers: {
+//       "Content-Type": "application/json",
+//       Accept: "application/json",
+//     },
+//   });
+
+//   return response;
+// };
 
 const artPieceService = {
   uploadNewArtPiece,
   getAllProducts,
   getProductById,
-  getProductsByArtist
+  // getProductsByArtist,
 };
 
 export default artPieceService;
