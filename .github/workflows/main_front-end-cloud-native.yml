@@ -46,7 +46,7 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'group04_frontend'
+          app-name: 'front-end-cloud-native'
           slot-name: 'Production'
           package: 'extracted-package'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_D87350E32A2A4300BC9CAE76EFF8F9CC }}
