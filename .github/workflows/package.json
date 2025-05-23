@@ -1,5 +1,5 @@
 {
-  "name": "virtual-art-gallery",
+  "name": "@DanielJaurellMevorach/group04_frontend",
   "version": "0.1.0",
   "private": false,
   "scripts": {
@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@DanielJaurellMevorach/group04_frontend": "file:",
     "@radix-ui/react-slot": "^1.2.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -18,7 +19,6 @@
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "^19.0.0",
-    "sharp": "^0.34.1",
     "swr": "^2.3.3",
     "tailwind-merge": "^3.2.0",
     "virtual-art-gallery": "file:"

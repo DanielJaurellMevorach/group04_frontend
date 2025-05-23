@@ -2,9 +2,6 @@
   "name": "@DanielJaurellMevorach/group04_frontend",
   "version": "0.1.0",
   "private": false,
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com/"
-  },
   "scripts": {
     "dev": "next dev --port 8080",
     "build": "next build",

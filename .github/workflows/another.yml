@@ -1,41 +1,69 @@
 name: Build
 
-on:
+on: 
   push:
     branches:
-      - main
+      - workflow
   workflow_dispatch:
+    
 
 jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      packages: write
-
+      packages: write 
+      
     steps:
       - uses: actions/checkout@v4
 
       - name: Set up Node.js version
         uses: actions/setup-node@v3
         with:
-          node-version: "20.x"
-          registry-url: "https://npm.pkg.github.com"
-          scope: "@DanielJaurellMevorach"
+          node-version: '20.x'
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@DanielJaurellMevorach'
 
-      - name: npm install, build
+      - name: Delete existing package version (if any)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PACKAGE_NAME="group04_frontend"  # Replace with your package name
+          PACKAGE_TYPE="npm"  # For Maven packages, use "maven"
+          USER="DanielJaurellMevorach"  # Replace with your GitHub organization or username
+          VERSION="1.0.0"  # The version to delete
+          DELETE_URL="https://api.github.com/users/${USER}/packages/${PACKAGE_TYPE}/${PACKAGE_NAME}"
+          echo "Attempting to delete package version: $DELETE_URL"
+  
+          curl -L \
+            -X DELETE \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer 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" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "$DELETE_URL"
+
+
+      - name: npm install and  build
         run: |
           npm install sharp
           npm install lightningcss
+          npm install @tailwindcss/oxide-linux-x64-gnu
           npm run build
           cat .github/workflows/package.json > .next/standalone/package.json
+          cp .github/workflows/.npmrc  .next/standalone/
+          
 
       - name: copy necessary folders
         run: cp -r public .next/standalone/ && cp -r .next/static .next/standalone/.next/
 
+
+     
       - name: npm publish
         run: |
           cd .next/standalone
           npm publish --scope=@DanielJaurellMevorach --auth-type=legacy --registry=https://npm.pkg.github.com
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
+      

@@ -105,99 +105,74 @@ const SingleProductPage: React.FC = () => {
   );
 
 
-  return (
-    <div className="min-h-screen bg-[#F9F2EA] text-[#8A5A3B]">
-      <Navbar />
+return (
+  <div className="min-h-screen bg-[#F9F2EA] text-[#8A5A3B]">
+    <Navbar />
 
-      {isLoading ? (
-        <p className="text-center py-10">Loading...</p>
-      ) : error ? (
-        <p className="text-center py-10 text-red-500">Error: {error.message}</p>
-      ) : data && (
-        <>
-          <section className="relative overflow-hidden">
-            <div className="absolute inset-0 z-0">
-              <div className="absolute inset-0 bg-[#F9F2EA]/90 z-10"></div>
-            </div>
-            <div className="container relative z-20 mx-auto px-4 py-2 md:py-2"></div>
-          </section>
+    {isLoading ? (
+      <p className="text-center py-10">Loading...</p>
+    ) : error ? (
+      <p className="text-center py-10 text-red-500">Error: {error.message}</p>
+    ) : data && (
+      <>
+        <section className="relative overflow-hidden">
+          <div className="absolute inset-0 z-0">
+            <div className="absolute inset-0 bg-[#F9F2EA]/90 z-10"></div>
+          </div>
+          <div className="container relative z-20 mx-auto px-4 py-2 md:py-2"></div>
+        </section>
 
-          <div className={styles.container}>
-            <div className={styles.breadcrumb}>
-              <Link href="/shop">Shop</Link>
-              <span> &gt; </span>
-              <Link href={`/shop/${data.artist}`}>{data.artist}</Link>
-              <span> &gt; </span>
-              <span>{data.title}</span>
-            </div>
+        <div className={styles.container}>
+          <div className={styles.breadcrumb}>
+            <Link href="/shop">Shop</Link>
+            <span> &gt; </span>
+            <Link href={`/shop/${data.artist}`}>{data.artist}</Link>
+            <span> &gt; </span>
+            <span>{data.title}</span>
+          </div>
 
-            <div className={styles.productContent}>
-              <div className={styles.productImages}>
-                <div className={styles.mainImage}>
-                  <div
-                    className={styles.imageContainer}
-                    ref={imageRef}
-                    onMouseMove={handleMouseMove}
-                    onMouseEnter={() => !isHoveringArrow && setShowZoom(true)}
-                    onMouseLeave={() => setShowZoom(false)}
-                  >
-                    <Image
-                      src={data.url}
-                      alt={`Product image ${currentImageIndex + 1}`}
-                      width={500}
-                      height={600}
-                      objectFit="cover"
-                      className={styles.slideImage}
-                    />
+          <div className={styles.productContent}>
+            <div className={styles.productImages}>
+              <div className={styles.mainImage}>
+                <div
+                  className={styles.imageContainer}
+                  ref={imageRef}
+                  onMouseMove={handleMouseMove}
+                  onMouseEnter={() => !isHoveringArrow && setShowZoom(true)}
+                  onMouseLeave={() => setShowZoom(false)}
+                >
+                  <Image
+                    src={data.url}
+                    alt={`Product image ${currentImageIndex + 1}`}
+                    width={500}
+                    height={600}
+                    objectFit="cover"
+                    className={styles.slideImage}
+                  />
 
-                    {showZoom && !isHoveringArrow && (
-                      <div
-                        className={styles.zoomWindow}
-                        style={{
-                          left: `${mousePosition.x}px`,
-                          top: `${mousePosition.y}px`,
-                          backgroundImage: `url(${data.url})`,
-                          backgroundPosition: `${zoomPosition.x}% ${zoomPosition.y}%`,
-                        }}
-                      />
-                    )}
-                  </div>
-
-                  <div className={styles.indicators}>
-                    {productImages.map((_, index) => (
-                      <button
-                        key={index}
-                        className={`${styles.indicator} ${currentImageIndex === index ? styles.activeIndicator : ''}`}
-                        onClick={() => setCurrentImageIndex(index)}
-                        aria-label={`Go to image ${index + 1}`}
-                      />
-                    ))}
-                  </div>
-
-                  <div className={styles.thumbnailGallery}>
+                  {showZoom && !isHoveringArrow && (
                     <div
-                      className={`${styles.thumbnail} ${currentImageIndex === 1 ? styles.activeThumbnail : ''}`}
-                      onClick={() => setCurrentImageIndex(1)}
-                    >
-                      <div className={styles.thumbnailImageWrapper}>
-                        <Image
-                          src={data.url}
-                          alt={`Thumbnail 1`}
-                          layout="fill"
-                          objectFit="cover"
-                        />
-                      </div>
-                    </div>
-                  </div>
+                      className={styles.zoomWindow}
+                      style={{
+                        left: `${mousePosition.x}px`,
+                        top: `${mousePosition.y}px`,
+                        backgroundImage: `url(${data.url})`,
+                        backgroundPosition: `${zoomPosition.x}% ${zoomPosition.y}%`,
+                      }}
+                    />
+                  )}
                 </div>
-              </div>
 
-              <div className={styles.productDetails}>
-                <h1 className={styles.title}>{data.title}</h1>
-                <p className={styles.artist}>{data.artist}</p>
-                <p className={styles.dimensions}>Made in {data.year}</p>
-                <p className={styles.price}>${data.price}</p>
-                <p className={styles.description}>{data.description}</p>
+                <div className={styles.indicators}>
+                  {productImages.map((_, index) => (
+                    <button
+                      key={index}
+                      className={`${styles.indicator} ${currentImageIndex === index ? styles.activeIndicator : ''}`}
+                      onClick={() => setCurrentImageIndex(index)}
+                      aria-label={`Go to image ${index + 1}`}
+                    />
+                  ))}
+                </div>
 
                 <div className="flex items-end">
                   <button className={styles.buyNowButton}>BUY NOW</button>
@@ -223,41 +198,49 @@ const SingleProductPage: React.FC = () => {
               </div>
             </div>
 
-            <div className={styles.moreFromAuthor}>
-              <h2 className={styles.moreFromAuthorTitle}>More from artist</h2>
-              {artistLoading ? (
-                <p>Loading....</p>
-              ) : artistData && artistData.length === 0 ? (
-                <p>No other painting found</p>
-              ) : (
-                <div className={styles.moreFromAuthorGrid}>
-                  {(artistData as any[])?.map((art) => (
-                    <div key={art.id} className={styles.moreFromAuthorItem}>
-                      <Link href={`/singleProductPage/${art.id}`}>
-                        <div className={styles.moreFromAuthorImageWrapper}>
-                          <Image
-                            src={art.url}
-                            alt={`Author product ${art.id}`}
-                            layout="fill"
-                            objectFit="cover"
-                          />
-                        </div>
-                        <h3 className={styles.moreFromAuthorItemTitle}>{art.title}</h3>
-                        <p className={styles.moreFromAuthorItemPrice}>${art.price}</p>
-                      </Link>
-                    </div>
-                  ))}
-
-                </div>
-              )}
-              {artistError && <p className="text-red-500 mt-2">{artistError.message}</p>}
+            <div className={styles.productDetails}>
+              <h1 className={styles.title}>{data.title}</h1>
+              <p className={styles.artist}>{data.artist}</p>
+              <p className={styles.dimensions}>Made in {data.year}</p>
+              <p className={styles.price}>${data.price}</p>
+              <p className={styles.description}>{data.description}</p>
             </div>
           </div>
-        </>
-      )}
-    </div>
-  );
 
-};
+          <div className={styles.moreFromAuthor}>
+            <h2 className={styles.moreFromAuthorTitle}>More from artist</h2>
+            {artistLoading ? (
+              <p>Loading....</p>
+            ) : artistData && artistData.length === 0 ? (
+              <p>No other painting found</p>
+            ) : (
+              <div className={styles.moreFromAuthorGrid}>
+                {artistData?.map((art: any) => (
+                  <div key={art.id} className={styles.moreFromAuthorItem}>
+                    <Link href={`/singleProductPage/${art.id}`}>
+                      <div className={styles.moreFromAuthorImageWrapper}>
+                        <Image
+                          src={art.url}
+                          alt={`Author product ${art.id}`}
+                          layout="fill"
+                          objectFit="cover"
+                        />
+                      </div>
+                      <h3 className={styles.moreFromAuthorItemTitle}>{art.title}</h3>
+                      <p className={styles.moreFromAuthorItemPrice}>${art.price}</p>
+                    </Link>
+                  </div>
+                ))}
+              </div>
+            )}
+            {artistError && <p className="text-red-500 mt-2">{artistError.message}</p>}
+          </div>
+        </div>
+      </>
+    )}
+  </div>
+);
+}
+
 
 export default SingleProductPage;
