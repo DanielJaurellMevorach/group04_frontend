@@ -111,7 +111,7 @@ const artPieceService = {
   uploadNewArtPiece,
   getAllProducts,
   getProductById,
-  // getProductsByArtist,
+  getProductsByArtist,
 };
 
 export default artPieceService;
