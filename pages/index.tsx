@@ -7,10 +7,11 @@ import { Card, CardContent } from "@/components/ui/card"
 import Navbar from "@/components/navbar"
 import artPieceService from "@/services/artPiece.service"
 import useSWR from "swr"
+import { useRouter } from "next/router"
 
 export default function LandingPage() {
 
-
+  const router = useRouter();
 
   const getProducts = async () => {
     const response = await artPieceService.getAllProducts();
@@ -283,6 +284,7 @@ export default function LandingPage() {
                 </Link>
               </Button>
               <Button
+                onClick={() => router.push('/about')} //
                 variant="outline"
                 className="border-[#C8977F] text-[#C8977F] hover:bg-[#C8977F]/10 rounded-none px-8 py-6"
               >

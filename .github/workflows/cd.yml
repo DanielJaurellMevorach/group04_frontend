@@ -1,8 +1,10 @@
 name: Deploy to Azure
 
-
-
-on: 
+on:
+  workflow_run:
+    workflows: ["Build"] # Name of your CI workflow
+    types:
+      - completed
   workflow_dispatch:
 
 jobs:
@@ -16,9 +18,9 @@ jobs:
       - name: Set up Node.js version
         uses: actions/setup-node@v3
         with:
-          node-version: '20.x'
-          registry-url: 'https://npm.pkg.github.com'
-          scope: '@DanielJaurellMevorach'
+          node-version: "20.x"
+          registry-url: "https://npm.pkg.github.com"
+          scope: "@DanielJaurellMevorach"
 
       - name: npm pack
         run: |
@@ -37,13 +39,11 @@ jobs:
         run: |
           npm install
 
-
-
-      - name: 'Deploy to Azure Web App'
+      - name: "Deploy to Azure Web App"
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'front-end-cloud-native'
-          slot-name: 'Production'
-          package: 'extracted-package'
+          app-name: "front-end-cloud-native"
+          slot-name: "Production"
+          package: "extracted-package"
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_D87350E32A2A4300BC9CAE76EFF8F9CC }}
