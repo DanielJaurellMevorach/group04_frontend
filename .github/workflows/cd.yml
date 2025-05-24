@@ -1,0 +1,49 @@
+name: Deploy to Azure
+
+
+
+on: 
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js version
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.x'
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@DanielJaurellMevorach'
+
+      - name: npm pack
+        run: |
+          npm pack @DanielJaurellMevorach/group04_frontend --registry=https://npm.pkg.github.com          
+          mkdir extracted-package
+          tar -tzf DanielJaurellMevorach-group04_frontend-0.1.0.tgz
+          tar -xzf DanielJaurellMevorach-group04_frontend-0.1.0.tgz -C extracted-package --strip-components=1
+          ls
+          echo "new ls"
+          ls extracted-package
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install dependencies
+        working-directory: extracted-package
+        run: |
+          npm install
+
+
+
+      - name: 'Deploy to Azure Web App'
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: 'front-end-cloud-native'
+          slot-name: 'Production'
+          package: 'extracted-package'
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_D87350E32A2A4300BC9CAE76EFF8F9CC }}
