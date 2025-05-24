@@ -287,7 +287,7 @@ export default function LandingPage() {
                 variant="outline"
                 className="border-[#C8977F] text-[#C8977F] hover:bg-[#C8977F]/10 rounded-none px-8 py-6"
               >
-                <Link href={"/gallery"}>
+                <Link href={"/about"}>
                   Learn More
                 </Link>
               </Button>

@@ -11,17 +11,27 @@ const AllProductPage: React.FC = () => {
   const [selectedArtist, setSelectedArtist] = useState('');
 
   const fetcher = async () => {
-    const response = await service.getAllProducts();
-    const result = await response.json();
-    // Unwrap nested structure if needed
-    if (result.artPieces && Array.isArray(result.artPieces.artPieces)) {
-      return result.artPieces.artPieces;
-    }
-    if (Array.isArray(result.artPieces)) {
-      return result.artPieces;
-    }
-    return Array.isArray(result) ? result : [];
-  };
+  const response = await service.getAllProducts();
+  console.log("API response:", response);
+  const result = await response.json();
+  console.log("Parsed JSON result:", result);
+
+  // Unwrap nested structure if needed
+  if (result.artPieces && Array.isArray(result.artPieces.artPieces)) {
+    console.log("Returning result.artPieces.artPieces:", result.artPieces.artPieces);
+    return result.artPieces.artPieces;
+  }
+  if (Array.isArray(result.artPieces)) {
+    console.log("Returning result.artPieces:", result.artPieces);
+    return result.artPieces;
+  }
+  if (Array.isArray(result)) {
+    console.log("Returning result:", result);
+    return result;
+  }
+  console.log("Returning empty array");
+  return [];
+};
 
   const { data, isLoading, error } = useSWR('artPieces', fetcher);
 
@@ -36,7 +46,12 @@ const AllProductPage: React.FC = () => {
     );
 
   if (isLoading) return <p className="text-center text-[#A67C52] mt-10">Loading...</p>;
-  if (error) return <p className="text-center text-[#B78370] mt-10">Failed to load art pieces</p>;
+  if (error) return (
+    <>
+  <p className="text-center text-[#B78370] mt-10">Failed to load art pieces</p>
+    {console.error("Error fetching art pieces:", error)}
+    </>
+  )
 
 
   return (
