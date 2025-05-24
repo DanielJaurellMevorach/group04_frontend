@@ -83,10 +83,9 @@ export default function LandingPage() {
             {!isLoading ? (data as any[])?.slice(0, 4).map((item) => (
               <div key={item.id} className="group hover:bg-[#EFE6DC] duration-100 cursor-pointer p-2">
                 <div className="relative aspect-[3/4] mb-4 overflow-hidden bg-[#EFE6DC]">
-                  <Image
+                  <img
                     src={item.url}
                     alt={`Featured Artwork ${item.title}`}
-                    fill
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                   />
                 </div>

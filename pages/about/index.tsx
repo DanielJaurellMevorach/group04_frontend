@@ -50,10 +50,9 @@ export default function AboutPage() {
               </p>
             </div>
             <div className="relative aspect-square md:aspect-[4/3] w-full overflow-hidden bg-[#EFE6DC]">
-              <Image
+              <img
                 src="/about-story.jpg"
                 alt="NIMAH Art Studio"
-                fill
                 className="object-cover"
               />
             </div>
@@ -141,10 +140,9 @@ export default function AboutPage() {
             ].map((member, index) => (
               <div key={index} className="group">
                 <div className="relative aspect-square overflow-hidden bg-[#EFE6DC] mb-4">
-                  <Image
+                  <img
                     src={member.image}
                     alt={member.name}
-                    fill
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                   />
                 </div>

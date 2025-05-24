@@ -87,11 +87,9 @@ const AllProductPage: React.FC = () => {
               className="bg-white rounded-none shadow-md overflow-hidden hover:shadow-xl transition duration-300 border border-[#E8D7C9]"
             >
               <div className="relative w-full h-60">
-                <Image
+                <img
                   src={artPiece.url}
                   alt={artPiece.title}
-                  layout="fill"
-                  objectFit="cover"
                   className="rounded-none"
                 />
               </div>

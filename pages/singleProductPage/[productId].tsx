@@ -141,12 +141,11 @@ return (
                   onMouseEnter={() => !isHoveringArrow && setShowZoom(true)}
                   onMouseLeave={() => setShowZoom(false)}
                 >
-                  <Image
+                  <img
                     src={data.url}
                     alt={`Product image ${currentImageIndex + 1}`}
                     width={500}
                     height={600}
-                    objectFit="cover"
                     className={styles.slideImage}
                   />
 
@@ -219,11 +218,9 @@ return (
                   <div key={art.id} className={styles.moreFromAuthorItem}>
                     <Link href={`/singleProductPage/${art.id}`}>
                       <div className={styles.moreFromAuthorImageWrapper}>
-                        <Image
+                        <img
                           src={art.url}
                           alt={`Author product ${art.id}`}
-                          layout="fill"
-                          objectFit="cover"
                         />
                       </div>
                       <h3 className={styles.moreFromAuthorItemTitle}>{art.title}</h3>
