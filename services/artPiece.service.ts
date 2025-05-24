@@ -65,6 +65,8 @@ const getAllProducts = async () => {
       throw new Error("Failed to fetch products");
     }
 
+    console.log("Response from getAllProducts:", response);
+
     return response.json();
   } catch (error) {
     console.error("Error fetching products:", error);
@@ -90,6 +92,8 @@ const getProductById = async (id: string) => {
       throw new Error("Failed to fetch product");
     }
 
+    console.log("Response from getProductById:", response);
+
     return response.json();
   } catch (error) {
     console.error("Error fetching product:", error);
@@ -104,17 +108,24 @@ const getProductsByArtist = async (name: string, excludeId?: string) => {
     url.searchParams.append("exclude", excludeId);
   }
 
-  const response = await fetch(url.toString(), {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      "Acccess-Control-Allow-Origin":
-        "https://front-end-cloud-native-dueuf4arfsfkgebe.westeurope-01.azurewebsites.net",
-      Accept: "application/json",
-    },
-  });
+  try {
+    const response = await fetch(url.toString(), {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Acccess-Control-Allow-Origin":
+          "https://front-end-cloud-native-dueuf4arfsfkgebe.westeurope-01.azurewebsites.net",
+        Accept: "application/json",
+      },
+    });
 
-  return response;
+    console.log("Response from getProductsByArtist:", response);
+
+    return response;
+  } catch (error) {
+    console.error("Error fetching products by artist:", error);
+    throw new Error("Failed to fetch products by artist");
+  }
 };
 
 const artPieceService = {
