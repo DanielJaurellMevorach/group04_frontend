@@ -283,13 +283,12 @@ export default function LandingPage() {
                   Create Account
                 </Link>
               </Button>
-              <Button
-                onClick={() => router.push('/about')} //
-                variant="outline"
-                className="border-[#C8977F] text-[#C8977F] hover:bg-[#C8977F]/10 rounded-none px-8 py-6"
-              >
-                Learn More
-              </Button>
+              <Link
+              href="/about"
+              className="border-[#C8977F] text-[#C8977F] hover:bg-[#C8977F]/10 rounded-none px-8 py-1 flex items-center justify-center transition-colors border bg-transparent"
+            >
+              Learn More
+            </Link>
             </div>
           </div>
         </div>
