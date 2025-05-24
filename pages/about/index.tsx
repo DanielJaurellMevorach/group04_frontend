@@ -49,11 +49,11 @@ export default function AboutPage() {
                 Today, NIMAH represents thousands of artists from over 70 countries, offering a diverse range of styles, mediums, and perspectives that reflect the rich tapestry of human creativity.
               </p>
             </div>
-            <div className="relative aspect-square md:aspect-[4/3] w-full overflow-hidden bg-[#EFE6DC]">
+            <div className="relative w-full overflow-hidden bg-[#EFE6DC]">
               <img
-                src="/about-story.jpg"
+                src="https://cloudnativeproject.blob.core.windows.net/image/art-gallery_2.jpg"
                 alt="NIMAH Art Studio"
-                className="object-cover"
+                className="w-full h-auto object-cover"
               />
             </div>
           </div>
@@ -123,19 +123,19 @@ export default function AboutPage() {
                 name: "Maya Patel",
                 title: "Founder & Creative Director",
                 bio: "Former gallery curator with a passion for discovering emerging artists and making art accessible to all.",
-                image: "/team-maya.jpg"
+                image: "https://cloudnativeproject.blob.core.windows.net/image/anonymous.jpg"
               },
               {
                 name: "David Chen",
                 title: "Chief Technology Officer",
                 bio: "Technology innovator focused on creating intuitive platforms that serve both artists and collectors seamlessly.",
-                image: "/team-david.jpg"
+                image: "https://cloudnativeproject.blob.core.windows.net/image/anonymous.jpg"
               },
               {
                 name: "Sofia Gonzalez",
                 title: "Artist Relations Manager",
                 bio: "Contemporary artist and advocate dedicated to supporting creators and amplifying diverse voices in art.",
-                image: "/team-sofia.jpg"
+                image: "https://cloudnativeproject.blob.core.windows.net/image/anonymous.jpg"
               },
             ].map((member, index) => (
               <div key={index} className="group">
