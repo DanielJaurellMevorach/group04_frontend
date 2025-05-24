@@ -1,5 +1,9 @@
 import { uploadArtPieceInput } from "./types";
 
+// import dotenv
+import * as dotenv from "dotenv";
+dotenv.config();
+
 const uploadNewArtPiece = async (artPiece: uploadArtPieceInput) => {
   const formData = new FormData();
 

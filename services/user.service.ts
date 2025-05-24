@@ -1,5 +1,8 @@
 import artPieceService from "./artPiece.service";
 
+import * as dotenv from "dotenv";
+dotenv.config();
+
 const login = async (username: string, password: string) => {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_USER_AUTHENTICATE_URL}`,

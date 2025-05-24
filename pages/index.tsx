@@ -52,7 +52,7 @@ export default function LandingPage() {
               masterpiece.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href={"/allProductPage"} className="bg-[#C8977F] hover:bg-[#B78370] text-white border-none rounded-none px-5 py-3">
+              <Link href={"/gallery"} className="bg-[#C8977F] hover:bg-[#B78370] text-white border-none rounded-none px-5 py-3">
                 Browse Gallery
               </Link>
               <Link href={`/addProduct`}
