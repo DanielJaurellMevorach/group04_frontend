@@ -74,7 +74,7 @@ export default function LandingPage() {
             <h2 className="text-2xl md:text-3xl font-light tracking-wider">
               Featured <span className="font-medium">Artworks</span>
             </h2>
-            <Link href="/allProductPage" className="flex items-center text-[#C8977F] hover:text-[#B78370] transition-colors">
+            <Link href="/gallery" className="flex items-center text-[#C8977F] hover:text-[#B78370] transition-colors">
               View all <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
           </div>
@@ -132,7 +132,7 @@ export default function LandingPage() {
                 deeply meaningful.
               </p>
               <Button className="bg-[#C8977F] hover:bg-[#B78370] text-white border-none rounded-none">
-                <Link href={'/allProductPage'}>
+                <Link href={'/gallery'}>
                   View Collection
                 </Link>
               </Button>
