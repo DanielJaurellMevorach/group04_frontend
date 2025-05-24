@@ -76,7 +76,7 @@ const SingleProductPage: React.FC = () => {
   const getArt = async (id: string) => {
   try {
     const response = await artPieceService.getProductById(id);
-    const data = await response.json();
+    const data = await response;
     // Unwrap the artPiece property if present
     if (data && data.artPiece) {
       return data.artPiece;
@@ -97,7 +97,7 @@ const SingleProductPage: React.FC = () => {
   const getArtsByArtist = async (artist: string, id: string) => {
     const response = await artPieceService.getProductsByArtist(String(artist), String(id));
     if (response.ok) {
-      return await response.json();
+      return await response
     }
     throw new Error("Failed to fetch arts by artist");
   }
