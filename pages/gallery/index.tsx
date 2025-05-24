@@ -11,27 +11,40 @@ const AllProductPage: React.FC = () => {
   const [selectedArtist, setSelectedArtist] = useState('');
 
   const fetcher = async () => {
-  const response = await service.getAllProducts();
-  console.log("API response:", response);
-  const result = await response.json();
-  console.log("Parsed JSON result:", result);
+    try {
+      const response = await service.getAllProducts();
+      console.log("API response:", response);
 
-  // Unwrap nested structure if needed
-  if (result.artPieces && Array.isArray(result.artPieces.artPieces)) {
-    console.log("Returning result.artPieces.artPieces:", result.artPieces.artPieces);
-    return result.artPieces.artPieces;
-  }
-  if (Array.isArray(result.artPieces)) {
-    console.log("Returning result.artPieces:", result.artPieces);
-    return result.artPieces;
-  }
-  if (Array.isArray(result)) {
-    console.log("Returning result:", result);
-    return result;
-  }
-  console.log("Returning empty array");
-  return [];
-};
+      // Check if response is ok before parsing
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("API error response:", errorText);
+        throw new Error("Failed to fetch art pieces");
+      }
+
+      const result = await response.json();
+      console.log("Parsed JSON result:", result);
+
+      // Unwrap nested structure if needed
+      if (result.artPieces && Array.isArray(result.artPieces.artPieces)) {
+        console.log("Returning result.artPieces.artPieces:", result.artPieces.artPieces);
+        return result.artPieces.artPieces;
+      }
+      if (Array.isArray(result.artPieces)) {
+        console.log("Returning result.artPieces:", result.artPieces);
+        return result.artPieces;
+      }
+      if (Array.isArray(result)) {
+        console.log("Returning result:", result);
+        return result;
+      }
+      console.log("Returning empty array");
+      return [];
+    } catch (e) {
+      console.error("Error in fetcher:", e);
+      throw e;
+    }
+  };
 
   const { data, isLoading, error } = useSWR('artPieces', fetcher);
 
