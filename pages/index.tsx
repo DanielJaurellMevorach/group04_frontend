@@ -114,11 +114,9 @@ export default function LandingPage() {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center">
             <div className="relative aspect-square">
-              <Image
-                src={data ? data[6]?.url : "https://cloudnativeproject.blob.core.windows.net/image/african-art.jpg"}
+              <img
+                src="https://cloudnativeproject.blob.core.windows.net/image/african-art.jpg"
                 alt="Featured Artist"
-                fill
-                quality={100}
                 className="object-cover"
               />
             </div>
