@@ -76,7 +76,9 @@ const SingleProductPage: React.FC = () => {
   const getArt = async (id: string) => {
     const response = await artPieceService.getProductById(id);
     if (response.ok) {
-      return await response.json();
+      const data = await response.json();
+      console.log("Fetched product data:", data);
+      return data;
     }
     throw new Error("Failed to fetch product");
   };
@@ -216,7 +218,7 @@ return (
               <div className={styles.moreFromAuthorGrid}>
                 {artistData?.map((art: any) => (
                   <div key={art.id} className={styles.moreFromAuthorItem}>
-                    <Link href={`/singleProductPage/${art.id}`}>
+                    <Link href={`/product/${art.id}`}>
                       <div className={styles.moreFromAuthorImageWrapper}>
                         <img
                           src={art.url}
