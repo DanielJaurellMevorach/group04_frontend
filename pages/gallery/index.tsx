@@ -13,8 +13,14 @@ const AllProductPage: React.FC = () => {
   const fetcher = async () => {
     const response = await service.getAllProducts();
     const result = await response.json();
-    return result;
-
+    // Unwrap nested structure if needed
+    if (result.artPieces && Array.isArray(result.artPieces.artPieces)) {
+      return result.artPieces.artPieces;
+    }
+    if (Array.isArray(result.artPieces)) {
+      return result.artPieces;
+    }
+    return Array.isArray(result) ? result : [];
   };
 
   const { data, isLoading, error } = useSWR('artPieces', fetcher);

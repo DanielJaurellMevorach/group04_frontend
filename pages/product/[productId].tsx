@@ -74,16 +74,19 @@ const SingleProductPage: React.FC = () => {
   const { productId } = router.query;
 
   const getArt = async (id: string) => {
-    try {
+  try {
     const response = await artPieceService.getProductById(id);
-      const data = await response.json();
-      console.log("Fetched product data:", data);
-      return data;
-    } catch (error) {
-      console.error("Error fetching product data:", error);
-      throw new Error("Failed to fetch product data");
+    const data = await response.json();
+    // Unwrap the artPiece property if present
+    if (data && data.artPiece) {
+      return data.artPiece;
     }
-  };
+    return data;
+  } catch (error) {
+    console.error("Error fetching product data:", error);
+    throw new Error("Failed to fetch product data");
+  }
+};
 
   const { data, isLoading, error } = useSWR(
     productId ? `product-${productId}` : null,
@@ -116,7 +119,7 @@ return (
     {isLoading ? (
       <p className="text-center py-10">Loading...</p>
     ) : error ? (
-      <p className="text-center py-10 text-red-500">Error: {error.message}</p>
+      <p className="text-center py-10 text-[#B78370]">Error: {error.message}</p>
     ) : data && (
       <>
         <section className="relative overflow-hidden">
@@ -234,7 +237,7 @@ return (
                 ))}
               </div>
             )}
-            {artistError && <p className="text-red-500 mt-2">{artistError.message}</p>}
+            {artistError && <p className="text-[#B78370] mt-2">{artistError.message}</p>}
           </div>
         </div>
       </>
