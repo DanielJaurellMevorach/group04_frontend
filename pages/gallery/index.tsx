@@ -12,17 +12,8 @@ const AllProductPage: React.FC = () => {
 
   const fetcher = async () => {
     try {
-      const response = await service.getAllProducts();
-      console.log("API response:", response);
-
-      // Check if response is ok before parsing
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error("API error response:", errorText);
-        throw new Error("Failed to fetch art pieces");
-      }
-
-      const result = await response.json();
+      // This already returns parsed JSON!
+      const result = await service.getAllProducts();
       console.log("Parsed JSON result:", result);
 
       // Unwrap nested structure if needed
