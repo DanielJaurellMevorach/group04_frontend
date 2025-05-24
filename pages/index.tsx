@@ -283,12 +283,14 @@ export default function LandingPage() {
                   Create Account
                 </Link>
               </Button>
-              <Link
-              href="/about"
-              className="border-[#C8977F] text-[#C8977F] hover:bg-[#C8977F]/10 rounded-none px-8 py-1 flex items-center justify-center transition-colors border bg-transparent"
-            >
-              Learn More
-            </Link>
+              <Button
+                variant="outline"
+                className="border-[#C8977F] text-[#C8977F] hover:bg-[#C8977F]/10 rounded-none px-8 py-6"
+              >
+                <Link href={"/gallery"}>
+                  Learn More
+                </Link>
+              </Button>
             </div>
           </div>
         </div>
