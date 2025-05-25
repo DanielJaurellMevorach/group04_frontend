@@ -140,7 +140,7 @@ export default function ConfirmationPage() {
                   <CardTitle className="text-xl font-medium text-[#8A5A3B]">Your Order</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  {orderItems.map((item) => (
+                  {orderItems[0]?.map((item) => (
                     <div key={item.artPiece.id} className="flex gap-4">
                       <div className="relative w-20 h-20 bg-[#EFE6DC] rounded-none overflow-hidden">
                       <img
