@@ -43,7 +43,9 @@ export default function ConfirmationPage() {
   //   },
   // ]
 
-  const subtotal = orderItems.reduce((sum, item) => sum + item.price, 0)
+  const subtotal = orderItems
+  .flat()
+  .reduce((sum, item) => sum + (item.artPiece?.price || 0), 0);
   const shipping = 25
   const tax = subtotal * 0.08
   const total = subtotal + shipping + tax
