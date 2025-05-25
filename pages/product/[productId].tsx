@@ -22,6 +22,21 @@ const SingleProductPage: React.FC = () => {
   const [isHoveringArrow, setIsHoveringArrow] = useState(false);
   const imageRef = useRef<HTMLDivElement>(null);
 
+  const [isLogged,setIsLogged] = useState(false);
+  const [userName, setUserName] = useState<string>("");
+  // console.log(userService.decodeJWT(sessionStorage.getItem("token")+"1" || ""));
+
+  useEffect(() => {
+    if (sessionStorage.getItem("token")) {
+      setIsLogged(true);
+    }
+    const user = sessionStorage.getItem("username");
+    if (user) {
+      setUserName(user);
+    }
+    
+  }, [])
+
   const artistPaintings = [monaLisaImage, dinner];
 
   const goToNextImage = () => {
@@ -77,6 +92,7 @@ const SingleProductPage: React.FC = () => {
   try {
     const response = await artPieceService.getProductById(id);
     const data = await response;
+    console.log(data.artPiece,"this is my data");
     // Unwrap the artPiece property if present
     if (data && data.artPiece) {
       return data.artPiece;
@@ -97,9 +113,8 @@ const SingleProductPage: React.FC = () => {
   const getArtsByArtist = async (artist: string, id: string) => {
     const response = await artPieceService.getProductsByArtist(String(artist), String(id));
     if (response.ok) {
-      return await response
     }
-    throw new Error("Failed to fetch arts by artist");
+    return await response
   }
 
 
@@ -111,6 +126,12 @@ const SingleProductPage: React.FC = () => {
     }
   );
 
+  const handlePayment = (e: React.MouseEvent<HTMLButtonElement, globalThis.MouseEvent>, product: any) => {
+    e.preventDefault(); // Safe even if not needed
+  
+    sessionStorage.setItem("checkoutItem", JSON.stringify([product]));
+    window.location.href = "/checkout";
+  };
 
 return (
   <div className="min-h-screen bg-[#F9F2EA] text-[#8A5A3B]">
@@ -181,7 +202,11 @@ return (
                 </div>
 
                 <div className="flex items-end">
-                  <button className={styles.buyNowButton}>BUY NOW</button>
+                  {isLogged ?
+                    <button onClick={(e) => handlePayment(e, data)} className={styles.buyNowButton}>BUY NOW</button>
+ : 
+                  <button disabled={true} className={styles.buyNowButton}>BUY NOW</button>
+                  }
                   <button
                     className={`${styles.favoriteButton} ${isFavorited ? styles.favorited : ''}`}
                     onClick={handleFavoriteClick}

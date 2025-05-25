@@ -25,6 +25,15 @@ const UserCartPage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
 
+  const handlePayment = (
+    e: React.MouseEvent<HTMLButtonElement, globalThis.MouseEvent>,
+    product: any[] // explicitly an array
+  ) => {
+    e.preventDefault();
+    sessionStorage.setItem("checkoutItem", JSON.stringify(product));
+    window.location.href = "/checkout";
+  };
+
 
   const fetchProducts = async () => {
     console.log("Fetching cart items...");
@@ -150,6 +159,7 @@ const UserCartPage: React.FC = () => {
               );
             })}
           </div>
+                    <button onClick={(e) => handlePayment(e, cartItems)}>BUY NOW</button>
         </div>
       </div>
     </div>
