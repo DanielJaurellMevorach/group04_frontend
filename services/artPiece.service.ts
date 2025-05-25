@@ -1,3 +1,4 @@
+import { cp } from "fs";
 import { uploadArtPieceInput } from "./types";
 
 // import dotenv
@@ -63,7 +64,7 @@ const getAllProducts = async () => {
       throw new Error("Failed to fetch products");
     }
 
-    console.log("Response from getAllProducts:", response);
+    // console.log("Response from getAllProducts:", response);
 
     return await response.json();
   } catch (error) {
@@ -88,7 +89,7 @@ const getProductById = async (id: string) => {
       throw new Error("Failed to fetch product");
     }
 
-    console.log("Response from getProductById:", response);
+    // console.log("Response from getProductById:", response);
 
     return response.json();
   } catch (error) {
@@ -97,28 +98,135 @@ const getProductById = async (id: string) => {
   }
 };
 
-const getProductsByArtist = async (name: string, excludeId?: string) => {
-  const url = new URL(`${process.env.NEXT_PUBLIC_API_URL}/item/artist/${name}`);
+const getProductsByArtist = async (artistName: string) => {
+  const result = await getAllProducts();
 
-  if (excludeId) {
-    url.searchParams.append("exclude", excludeId);
+  let artPieces: any[] = [];
+  if (result.artPieces && Array.isArray(result.artPieces.artPieces)) {
+    // console.log(
+    //   "Returning result.artPieces.artPieces:",
+    //   result.artPieces.artPieces
+    // );
+    artPieces = result.artPieces.artPieces;
+  } else if (Array.isArray(result.artPieces)) {
+    // console.log("Returning result.artPieces:", result.artPieces);
+    artPieces = result.artPieces;
+  } else if (Array.isArray(result)) {
+    // console.log("Returning result:", result);
+    artPieces = result;
+  } else {
+    // console.log("Returning empty array");
+    artPieces = [];
   }
 
+  if (!artPieces || !Array.isArray(artPieces)) {
+    console.error("Invalid response format from getAllProducts:", result);
+    throw new Error("Invalid response format from getAllProducts");
+  }
+
+  const productsByArtist = artPieces.filter(
+    (product: any) => product.artist === artistName
+  );
+
+  if (productsByArtist.length === 0) {
+    throw new Error(`No products found for artist: ${artistName}`);
+  }
+
+  return productsByArtist;
+};
+
+const getProductsToSellByUser = async (userId: string) => {
+  const result = await getAllProducts();
+
+  let artPieces: any[] = [];
+  if (result.artPieces && Array.isArray(result.artPieces.artPieces)) {
+    // console.log(
+    //   "Returning result.artPieces.artPieces:",
+    //   result.artPieces.artPieces
+    // );
+    artPieces = result.artPieces.artPieces;
+  } else if (Array.isArray(result.artPieces)) {
+    console.log("Returning result.artPieces:", result.artPieces);
+    artPieces = result.artPieces;
+  } else if (Array.isArray(result)) {
+    console.log("Returning result:", result);
+    artPieces = result;
+  } else {
+    console.log("Returning empty array");
+    artPieces = [];
+  }
+
+  if (!artPieces || !Array.isArray(artPieces)) {
+    console.error("Invalid response format from getAllProducts:", result);
+    throw new Error("Invalid response format from getAllProducts");
+  }
+
+  const productsToSell = artPieces.filter(
+    (product: any) => product.userId === userId
+  );
+
+  if (productsToSell.length === 0) {
+    throw new Error(`No products found for user: ${userId}`);
+  }
+
+  return productsToSell;
+};
+
+const addProductToUsersCart = async (productId: string, token: string) => {
   try {
-    const response = await fetch(url.toString(), {
-      method: "GET",
+    const url = process.env.NEXT_PUBLIC_USER_ADDS_ART_TO_CART_URL;
+    if (!url) {
+      throw new Error("Cart URL is not defined in environment variables");
+    }
+    const response = await fetch(url, {
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
+        Authorization: `Bearer ${token}`,
       },
+      body: JSON.stringify({ artPieceId: productId }),
     });
 
-    console.log("Response from getProductsByArtist:", response.json());
+    if (!response.ok) {
+      throw new Error("Failed to add product to cart");
+    }
 
-    return await response.json();
+    // console.log("Response from addProductToUsersCart:", response);
+    return response.json();
   } catch (error) {
-    console.error("Error fetching products by artist:", error);
-    throw new Error("Failed to fetch products by artist");
+    // console.error("Error adding product to cart:", error);
+    throw new Error("Failed to add product to cart");
+  }
+};
+
+const addToLikedItems = async (productId: string, token: string) => {
+  try {
+    const url = process.env.NEXT_PUBLIC_USER_LIKES_ART_URL;
+    if (!url) {
+      throw new Error(
+        "Liked items URL is not defined in environment variables"
+      );
+    }
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ artPieceId: productId }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to add product to liked items");
+    }
+
+    // console.log("Response from addToLikedItems:", response);
+    return response.json();
+  } catch (error) {
+    // console.error("Error adding product to liked items:", error);
+    throw new Error("Failed to add product to liked items");
   }
 };
 
@@ -127,6 +235,9 @@ const artPieceService = {
   getAllProducts,
   getProductById,
   getProductsByArtist,
+  getProductsToSellByUser,
+  addToLikedItems,
+  addProductToUsersCart,
 };
 
 export default artPieceService;

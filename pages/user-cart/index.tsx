@@ -139,7 +139,7 @@ const UserCartPage: React.FC = () => {
                     
                     <div className="pt-4">
                       <Link
-                        href={`/art/${art.id}`}
+                        href={`/product/${art.id}`}
                         className="text-sm block border border-[#B69985] text-[#8A5A3B] py-2 px-4 text-center hover:bg-[#B69985] hover:text-[#F4EFE7] transition-colors"
                       >
                         View
