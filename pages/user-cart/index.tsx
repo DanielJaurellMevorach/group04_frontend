@@ -3,6 +3,8 @@ import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import userService from '../../services/user.service';
 import { ShoppingCart } from 'lucide-react';
+import { useRouter } from 'next/router';
+import { Button } from '@/components/ui/button';
 
 interface ArtPiece {
   id: string;
@@ -30,10 +32,22 @@ const UserCartPage: React.FC = () => {
     product: any[] // explicitly an array
   ) => {
     e.preventDefault();
-    sessionStorage.setItem("checkoutItem", JSON.stringify(product));
+    sessionStorage.setItem("checkoutItem", JSON.stringify([product]));
     window.location.href = "/checkout";
   };
 
+  const router = useRouter();
+  const [token, setToken] = useState<string>("");
+    useEffect(() => { 
+      // Fetch token from localStorage or any other secure storage
+      const storedToken = sessionStorage.getItem('token');
+      if (storedToken) {
+        setToken(storedToken);
+      } else {
+        console.error('No token found');
+        router.push('/login'); // Redirect to login if no token
+      }
+    }, []);
 
   const fetchProducts = async () => {
     console.log("Fetching cart items...");
@@ -148,7 +162,7 @@ const UserCartPage: React.FC = () => {
                     
                     <div className="pt-4">
                       <Link
-                        href={`/art/${art.id}`}
+                        href={`/product/${art.id}`}
                         className="text-sm block border border-[#B69985] text-[#8A5A3B] py-2 px-4 text-center hover:bg-[#B69985] hover:text-[#F4EFE7] transition-colors"
                       >
                         View
@@ -159,7 +173,10 @@ const UserCartPage: React.FC = () => {
               );
             })}
           </div>
-                    <button onClick={(e) => handlePayment(e, cartItems)}>BUY NOW</button>
+          <div className='flex justify-center'> 
+
+                    <Button className='' onClick={(e) => handlePayment(e, cartItems)}>BUY NOW</Button>
+          </div>
         </div>
       </div>
     </div>

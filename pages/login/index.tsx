@@ -89,9 +89,7 @@ const LoginPage: React.FC = () => {
               {loading ? 'Logging in...' : 'Login'}
             </button>
 
-            <Link href="/forgot-password" className="text-sm text-[#c9a895] hover:underline">
-              Forgot password?
-            </Link>
+
           </div>
         </form>
 
