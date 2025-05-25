@@ -315,7 +315,7 @@ export default function CheckoutPage() {
                 <CardTitle className="text-xl font-medium text-[#8A5A3B]">Order Summary</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                {orderItems[0]?.map((item) => (
+                {orderItems[0]?.map((item : any) => (
                   
                   <div key={item.artPiece.id} className="flex gap-4">
                     <div className="relative w-20 h-20 bg-[#EFE6DC] rounded-none overflow-hidden">
