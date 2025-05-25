@@ -10,8 +10,6 @@ const login = async (username: string, password: string) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Acccess-Control-Allow-Origin":
-          "https://front-end-cloud-native-dueuf4arfsfkgebe.westeurope-01.azurewebsites.net",
       },
       body: JSON.stringify({ username, password }),
     }
@@ -42,8 +40,6 @@ const register = async (
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Acccess-Control-Allow-Origin":
-          "https://front-end-cloud-native-dueuf4arfsfkgebe.westeurope-01.azurewebsites.net",
       },
       body: JSON.stringify({ username, password, email, firstName, lastName }),
     });
@@ -83,8 +79,6 @@ const getUsersLikedItems = async (token: string) => {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        "Acccess-Control-Allow-Origin":
-          "https://front-end-cloud-native-dueuf4arfsfkgebe.westeurope-01.azurewebsites.net",
         Authorization: `Bearer ${token}`,
       },
     });
@@ -130,8 +124,6 @@ const getUsersCartItems = async (token: string) => {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        "Acccess-Control-Allow-Origin":
-          "https://front-end-cloud-native-dueuf4arfsfkgebe.westeurope-01.azurewebsites.net",
         Authorization: `Bearer ${token}`,
       },
     });
@@ -188,8 +180,6 @@ const toggleLikeItem = async (token: string, itemId: string) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Acccess-Control-Allow-Origin":
-          "https://front-end-cloud-native-dueuf4arfsfkgebe.westeurope-01.azurewebsites.net",
         Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
@@ -238,8 +228,6 @@ const toggleCartItem = async (token: string, itemId: string) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Acccess-Control-Allow-Origin":
-          "https://front-end-cloud-native-dueuf4arfsfkgebe.westeurope-01.azurewebsites.net",
         Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
@@ -283,8 +271,6 @@ const getUsersArtPieces = async (token: string) => {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        "Acccess-Control-Allow-Origin":
-          "https://front-end-cloud-native-dueuf4arfsfkgebe.westeurope-01.azurewebsites.net",
         Authorization: `Bearer ${token}`,
       },
     });

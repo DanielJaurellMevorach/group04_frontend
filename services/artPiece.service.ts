@@ -54,8 +54,6 @@ const getAllProducts = async () => {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          "Acccess-Control-Allow-Origin":
-            "https://front-end-cloud-native-dueuf4arfsfkgebe.westeurope-01.azurewebsites.net",
           Authorization: token ? `Bearer ${token}` : "",
         },
       }
@@ -82,8 +80,6 @@ const getProductById = async (id: string) => {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        "Acccess-Control-Allow-Origin":
-          "https://front-end-cloud-native-dueuf4arfsfkgebe.westeurope-01.azurewebsites.net",
         Accept: "application/json",
       },
     });
@@ -113,8 +109,6 @@ const getProductsByArtist = async (name: string, excludeId?: string) => {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        "Acccess-Control-Allow-Origin":
-          "https://front-end-cloud-native-dueuf4arfsfkgebe.westeurope-01.azurewebsites.net",
         Accept: "application/json",
       },
     });

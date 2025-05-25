@@ -15,44 +15,48 @@ const RegisterPage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    // Validate passwords match
-    if (password !== confirmPassword) {
-      setError('Passwords do not match');
-      return;
-    }
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
 
-    setLoading(true);
-    setError('');
+  // Validate password length
+  if (password.length < 8) {
+    setError('Password must be at least 8 characters long');
+    return;
+  }
 
-    try {
-      const registration = await userService.register(
-        username, 
-        password, 
-        email, 
-        firstName, 
-        lastName
-      );
-      
+  // Validate password match
+  if (password !== confirmPassword) {
+    setError('Passwords do not match');
+    return;
+  }
 
-      const response = await userService.login(username, password);
+  setLoading(true);
+  setError('');
 
-      // Store token, username, and role in sessionStorage
-      sessionStorage.setItem('token', response.token);
-      sessionStorage.setItem('username', response.username);
-      sessionStorage.setItem('role', response.role);
+  try {
+    const registration = await userService.register(
+      username,
+      password,
+      email,
+      firstName,
+      lastName
+    );
 
-      // Redirect to home page after successful registration
-      router.push('/');
-    } catch (err) {
-      console.error(err);
-      setError('Registration failed. Username may already be taken.');
-    } finally {
-      setLoading(false);
-    }
-  };
+    const response = await userService.login(username, password);
+
+    sessionStorage.setItem('token', response.token);
+    sessionStorage.setItem('username', response.username);
+    sessionStorage.setItem('role', response.role);
+
+    router.push('/');
+  } catch (err) {
+    console.error(err);
+    setError('Registration failed. Username may already be taken.');
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <div className="min-h-screen bg-[#F9F2EA] text-[#8A5A3B]">
