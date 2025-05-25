@@ -1,40 +1,76 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+# Project Name
+
+
 
 ## Getting Started
 
-First, run the development server:
+### Clone the Repository
+
+```bash
+git clone https://github.com/DanielJaurellMevorach/group04_frontend
+cd group04_frontend
+```
+
+### Environment Variables
+
+1. Create a `.env` file in the root directory of the project.
+2. Add the following keys (adjust as needed):
+
+   ```
+    JWT_SECRET="2154f4f52194f158c308f668a64a6f4a7f43f3f5ccc5cfeef6ff30fda34fa82"  
+    JWT_EXPIRES_HOURS=8
+
+    COSMOS_KEY="99WUvQ5j9eqRjkEZzJnmDRiWadxZndXmAhSormD3LRzC6I9h5Jq8jzs1OqYjZmTm2WWXO5Qbj1P5ACDb7Enj7Q=="
+    COSMOS_ENDPOINT="https://cloudnativegroup4cosmos.documents.azure.com:443/"
+    COSMOS_DATABASE_ID="ArtGalleryGroup04"
+    AZURE_ACCOUNT_NAME="cloudnativeproject"
+    AZURE_SAS_TOKEN="sv=2024-11-04&ss=bfqt&srt=sco&sp=rwdlacupiytfx&se=2025-05-30T03:53:38Z&st=2025-04-29T19:53:38Z&spr=https&sig=Xg%2F3gzgGjFskDSSORzzraGz%2BQ31m1j6hii5OzSwqbeo%3D"
+
+    AZURE_CACHE_FOR_REDIS_HOST_NAME="artGallery.redis.cache.windows.net"
+    AZURE_CACHE_FOR_REDIS_ACCESS_KEY="aWDt89GvrMERbNHDCDzqCjHWioAJ8N39RAzCaDAH8CM="
+
+    NEXT_PUBLIC_GET_ALL_ART_PIECES_URL="https://art-gallery-04-dzgcgshac3c4erbc.francecentral-01.azurewebsites.net/api/getAllArtPieces?code=4ObgmWDipQxSgPICDkDHOmGM9zr7CfOrRBQDsjDm9aVxAzFuG7fDWg=="
+    NEXT_PUBLIC_ADD_ART_PIECE_URL="https://art-gallery-04-dzgcgshac3c4erbc.francecentral-01.azurewebsites.net/api/addArtPiece?"
+    NEXT_PUBLIC_GET_ART_PIECE_BY_ID_URL="https://art-gallery-04-dzgcgshac3c4erbc.francecentral-01.azurewebsites.net/api/getArtPieceById?"
+
+    NEXT_PUBLIC_ADD_USER_URL="https://art-gallery-04-dzgcgshac3c4erbc.francecentral-01.azurewebsites.net/api/addUser?"
+    GET_ALL_USERS_URL="https://art-gallery-04-dzgcgshac3c4erbc.francecentral-01.azurewebsites.net/api/getAllUsers?code=uHRBChg3z1r9JcOSjp_SVHuAHsEOtOTCjpSI6wUGSczwAzFuogB8fw=="
+    NEXT_PUBLIC_GET_USERS_CART_URL="https://art-gallery-04-dzgcgshac3c4erbc.francecentral-01.azurewebsites.net/api/getUsersCart?"
+    NEXT_PUBLIC_GET_USERS_CREATED_ART_PIECES_URL="https://art-gallery-04-dzgcgshac3c4erbc.francecentral-01.azurewebsites.net/api/getUsersCreatedArtPieces?"
+    NEXT_PUBLIC_GET_USERS_LIKED_ITEMS_URL="https://art-gallery-04-dzgcgshac3c4erbc.francecentral-01.azurewebsites.net/api/getUsersLikedItems?"
+    NEXT_PUBLIC_USER_ADDS_ART_TO_CART_URL="https://art-gallery-04-dzgcgshac3c4erbc.francecentral-01.azurewebsites.net/api/userAddsArtToCart?"
+    NEXT_PUBLIC_USER_LIKES_ART_URL="https://art-gallery-04-dzgcgshac3c4erbc.francecentral-01.azurewebsites.net/api/userLikesArt?"
+
+    SEND_EMAIL_URL="https://art-gallery-04-dzgcgshac3c4erbc.francecentral-01.azurewebsites.net/api/sendEmail?"
+    NEXT_PUBLIC_USER_AUTHENTICATE_URL="https://art-gallery-04-dzgcgshac3c4erbc.francecentral-01.azurewebsites.net/api/userAuthenticate?"
+    VERIFY_EMAIL_URL="https://art-gallery-04-dzgcgshac3c4erbc.francecentral-01.azurewebsites.net/api/verifyEmail?"
+    VERIFY_USER_ACCOUNT_URL="https://art-gallery-04-dzgcgshac3c4erbc.francecentral-01.azurewebsites.net/api/verifyUserAccount?"
+
+    EMAIL_SERVICE_CONNECTION_STRING="endpoint=https://talkingservice.france.communication.azure.com/;accesskey=zmLJC1XxWsdtsHFeeVbapikkyTdd7zYgDj9CKLFltGOsqfO4DYILJQQJ99BDACULyCprKsEqAAAAAZCSf2Z5"
+    REDIRECT_URL="http://localhost:8080"
+   ```
+
+   *Add all necessary environment variables required by your project.*
+
+### Install Dependencies
+
+```bash
+npm i
+```
+
+### Run in Development Mode
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+This will start the development server at `http://localhost:8080`.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+---
 
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+## Deployed Version
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
+You can check out the live version of this project here:  
 
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
+https://front-end-cloud-native-dueuf4arfsfkgebe.westeurope-01.azurewebsites.net/
+---
