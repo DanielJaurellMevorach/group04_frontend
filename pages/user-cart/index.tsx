@@ -3,6 +3,7 @@ import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import userService from '../../services/user.service';
 import { ShoppingCart } from 'lucide-react';
+import { useRouter } from 'next/router';
 
 interface ArtPiece {
   id: string;
@@ -25,6 +26,18 @@ const UserCartPage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
 
+  const router = useRouter();
+  const [token, setToken] = useState<string>("");
+    useEffect(() => { 
+      // Fetch token from localStorage or any other secure storage
+      const storedToken = sessionStorage.getItem('token');
+      if (storedToken) {
+        setToken(storedToken);
+      } else {
+        console.error('No token found');
+        router.push('/login'); // Redirect to login if no token
+      }
+    }, []);
 
   const fetchProducts = async () => {
     console.log("Fetching cart items...");
