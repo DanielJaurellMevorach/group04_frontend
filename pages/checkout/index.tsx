@@ -46,7 +46,9 @@ export default function CheckoutPage() {
   //   },
   // ]
 
-  const subtotal = orderItems.reduce((sum, item) => sum + item.price, 0)
+  const subtotal = orderItems
+  .flat()
+  .reduce((sum, item) => sum + (item.artPiece?.price || 0), 0);
   const shipping = 25
   const tax = subtotal * 0.08
   const total = subtotal + shipping + tax
@@ -54,7 +56,6 @@ export default function CheckoutPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsProcessing(true)
-    sessionStorage.removeItem("checkoutItem");
     // Simulate payment processing
     await new Promise((resolve) => setTimeout(resolve, 2000))
 
@@ -315,22 +316,23 @@ export default function CheckoutPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 {orderItems[0]?.map((item) => (
-                  <div key={item.id} className="flex gap-4">
+                  
+                  <div key={item.artPiece.id} className="flex gap-4">
                     <div className="relative w-20 h-20 bg-[#EFE6DC] rounded-none overflow-hidden">
                     <img
-                    src={item.url}
-                    alt={`${item.title}`}
+                    src={item.artPiece.url}
+                    alt={`${item.artPiece.title}`}
                     className=""
                     style={{objectFit:"cover"}}
                   />
                     </div>
                     <div className="flex-1">
-                      <h3 className="font-medium text-[#8A5A3B]">{item.title}</h3>
-                      <p className="text-sm text-[#A67C52]">by {item.artist}</p>
+                      <h3 className="font-medium text-[#8A5A3B]">{item.artPiece.title}</h3>
+                      <p className="text-sm text-[#A67C52]">by {item.artPiece.artist}</p>
                       {/* <p className="text-sm text-[#A67C52]">Qty: {item.quantity}</p> */}
                     </div>
                     <div className="text-right">
-                      <p className="font-medium text-[#8A5A3B]">${item.price}</p>
+                      <p className="font-medium text-[#8A5A3B]">${item.artPiece.price}</p>
                     </div>
                   </div>
                 ))}

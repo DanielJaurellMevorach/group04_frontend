@@ -141,22 +141,22 @@ export default function ConfirmationPage() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   {orderItems.map((item) => (
-                    <div key={item.id} className="flex gap-4">
+                    <div key={item.artPiece.id} className="flex gap-4">
                       <div className="relative w-20 h-20 bg-[#EFE6DC] rounded-none overflow-hidden">
                       <img
-                    src={item.url}
-                    alt={`${item.title}`}
+                    src={item.artPiece.url}
+                    alt={`${item.artPiece.title}`}
                     className=""
                     style={{objectFit:"cover"}}
                   />                      
                   </div>
                       <div className="flex-1">
-                        <h3 className="font-medium text-[#8A5A3B]">{item.title}</h3>
-                        <p className="text-sm text-[#A67C52]">by {item.artist}</p>
+                        <h3 className="font-medium text-[#8A5A3B]">{item.artPiece.title}</h3>
+                        <p className="text-sm text-[#A67C52]">by {item.artPiece.artist}</p>
                         {/* <p className="text-sm text-[#A67C52]">Qty: {item.quantity}</p> */}
                       </div>
                       <div className="text-right">
-                        <p className="font-medium text-[#8A5A3B]">${item.price}</p>
+                        <p className="font-medium text-[#8A5A3B]">${item.artPiece.price}</p>
                       </div>
                     </div>
                   ))}
