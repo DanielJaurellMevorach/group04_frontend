@@ -54,7 +54,7 @@ const getAllProducts = async () => {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: token ? `Bearer ${token}` : "",
+          Accept: "application/json",
         },
       }
     );
