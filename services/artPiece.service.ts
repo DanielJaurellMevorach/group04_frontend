@@ -67,7 +67,7 @@ const getAllProducts = async () => {
 
     console.log("Response from getAllProducts:", response);
 
-    return response.json();
+    return await response.json();
   } catch (error) {
     console.error("Error fetching products:", error);
     throw new Error("Failed to fetch products");
@@ -119,9 +119,9 @@ const getProductsByArtist = async (name: string, excludeId?: string) => {
       },
     });
 
-    console.log("Response from getProductsByArtist:", response);
+    console.log("Response from getProductsByArtist:", response.json());
 
-    return response.json();
+    return await response.json();
   } catch (error) {
     console.error("Error fetching products by artist:", error);
     throw new Error("Failed to fetch products by artist");

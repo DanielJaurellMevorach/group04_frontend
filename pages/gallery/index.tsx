@@ -126,7 +126,7 @@ const AllProductPage: React.FC = () => {
                   <p className="text-sm text-[#8A5A3B] font-medium mt-2">
                     {artPiece.price.toLocaleString()} €
                   </p>
-                  <Link href={`/singleProductPage/${artPiece.id}`}>
+                  <Link href={`/product/${artPiece.id}`}>
                     <Button size="sm" className="bg-[#C8977F] hover:bg-[#B78370] text-white border-none rounded-none cursor-pointer">
                       More info
                     </Button>
