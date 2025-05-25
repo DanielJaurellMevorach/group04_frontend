@@ -15,9 +15,9 @@ export default function LandingPage() {
 
   const getProducts = async () => {
     const response = await artPieceService.getAllProducts();
-    console.log(response.artPieces.artPieces,"this is reponse");
+    console.log(response.artPieces,"this is reponse");
     
-    return response.artPieces.artPieces;
+    return response.artPieces;
   }
 
   const { data, isLoading, error } = useSWR("products", getProducts);
