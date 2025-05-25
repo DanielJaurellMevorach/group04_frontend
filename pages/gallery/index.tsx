@@ -52,8 +52,8 @@ const AllProductPage: React.FC = () => {
   if (isLoading) return <p className="text-center text-[#A67C52] mt-10">Loading...</p>;
   if (error) return (
     <>
-  <p className="text-center text-[#B78370] mt-10">Failed to load art pieces</p>
-    {console.error("Error fetching art pieces:", error)}
+      <p className="text-center text-[#B78370] mt-10">Failed to load art pieces</p>
+      {console.error("Error fetching art pieces:", error)}
     </>
   )
 
@@ -111,11 +111,11 @@ const AllProductPage: React.FC = () => {
               key={artPiece.id}
               className="bg-white rounded-none shadow-md overflow-hidden hover:shadow-xl transition duration-300 border border-[#E8D7C9]"
             >
-              <div className="relative w-full h-60">
+              <div className="relative w-full h-60 overflow-hidden">
                 <img
                   src={artPiece.url}
                   alt={artPiece.title}
-                  className="rounded-none"
+                  className="w-full h-full object-cover"
                 />
               </div>
               <div className="p-4">
