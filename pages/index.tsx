@@ -14,18 +14,26 @@ export default function LandingPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const getProducts = async () => {
-    try {
-      const response = await artPieceService.getAllProducts();
-      console.log(response.artPieces, "this is response");
+const getProducts = async () => {
+  try {
+    const response = await artPieceService.getAllProducts();
+    console.log(response, "Full response");
+
+    if (response.artPieces && Array.isArray(response.artPieces.artPieces)) {
+      setData(response.artPieces.artPieces);
+    } else if (response.artPieces && Array.isArray(response.artPieces)) {
       setData(response.artPieces);
-    } catch (err) {
-      console.error(err);
-      setError("Failed to load products");
-    } finally {
-      setIsLoading(false);
+    } else {
+      setData([]); 
+      console.warn("Unexpected data format for artPieces");
     }
-  };
+  } catch (err) {
+    console.error(err);
+    setError("Failed to load products");
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   useEffect(() => {
     getProducts();
@@ -84,7 +92,8 @@ export default function LandingPage() {
             ) : error ? (
               <p>{error}</p>
             ) : (
-              data.slice(0, 4).map((item) => (
+              Array.isArray(data) && data.slice(0, 4).map((item) => (
+
                 <div key={item.id} className="group hover:bg-[#EFE6DC] duration-100 cursor-pointer p-2">
                   <div className="relative w-full h-60 overflow-hidden">
                     <img
