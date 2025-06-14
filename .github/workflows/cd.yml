@@ -24,7 +24,7 @@ jobs:
 
       - name: npm pack
         run: |
-          npm pack @DanielJaurellMevorach/group04_frontend --registry=https://npm.pkg.github.com          
+          npm pack @DanielJaurellMevorach/group04_frontend --registry=https://npm.pkg.github.com --//npm.pkg.github.com/:_authToken=${{ secrets.PACKAGE_TOKEN }}          
           mkdir extracted-package
           tar -tzf DanielJaurellMevorach-group04_frontend-0.1.0.tgz
           tar -xzf DanielJaurellMevorach-group04_frontend-0.1.0.tgz -C extracted-package --strip-components=1
