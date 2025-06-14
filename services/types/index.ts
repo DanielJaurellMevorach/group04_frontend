@@ -6,4 +6,5 @@ export type uploadArtPieceInput = {
   year: number;
   tags: string[];
   images: File[];
+  url: string;
 };

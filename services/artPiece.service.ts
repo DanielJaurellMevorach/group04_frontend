@@ -5,34 +5,35 @@ import * as dotenv from "dotenv";
 dotenv.config();
 
 const uploadNewArtPiece = async (artPiece: uploadArtPieceInput) => {
-  const formData = new FormData();
-
-  // Add all images
-  if (artPiece.images && Array.isArray(artPiece.images)) {
-    for (const image of artPiece.images) {
-      formData.append("images", image);
-    }
-  }
-
-  formData.append("title", artPiece.title);
-  formData.append("description", artPiece.description);
-  formData.append("artist", artPiece.artist);
-  formData.append("price", String(artPiece.price));
-  formData.append("year", String(artPiece.year));
-  formData.append("tags", JSON.stringify(artPiece.tags));
-
   const token = sessionStorage.getItem("token");
   const username = sessionStorage.getItem("username");
 
-  if (username) formData.append("username", username);
+  const url = 'urltest';
 
-  const headers: Record<string, string> = {};
-  if (token) headers["Authorization"] = `Bearer ${token}`;
+  // Build the JSON payload
+  const body = {
+    title: artPiece.title,
+    description: artPiece.description,
+    artist: artPiece.artist,
+    price: artPiece.price,
+    year: artPiece.year,
+    tags: artPiece.tags,
+    userId: username, // Assuming userId is the same as username
+    url
+  };
+
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json"
+  };
+
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
 
   const response = await fetch(`${process.env.NEXT_PUBLIC_ADD_ART_PIECE_URL}`, {
     method: "POST",
-    headers, // No Content-Type!
-    body: formData,
+    headers,
+    body: JSON.stringify(body)
   });
 
   if (!response.ok) {
@@ -43,6 +44,7 @@ const uploadNewArtPiece = async (artPiece: uploadArtPieceInput) => {
 
   return response.json();
 };
+
 
 const getAllProducts = async () => {
   const token = sessionStorage.getItem("token");
