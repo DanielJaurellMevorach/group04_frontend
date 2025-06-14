@@ -284,7 +284,7 @@ const artPieceService = {
   getAllProducts,
   getProductById,
   getProductsByArtist,
-  uploadImageToBlob
+  uploadImageToBlob,
   getProductsToSellByUser,
   addToLikedItems,
   addProductToUsersCart,
