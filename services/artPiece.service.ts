@@ -5,14 +5,15 @@ import { uploadArtPieceInput } from "./types";
 import * as dotenv from "dotenv";
 dotenv.config();
 
-
 const uploadImageToBlob = async (file: File) => {
-  const url = `${process.env.NEXT_PUBLIC_UPLOAD_IMAGE}?name=${encodeURIComponent(file.name)}`;
+  const url = `${
+    process.env.NEXT_PUBLIC_UPLOAD_IMAGE
+  }?name=${encodeURIComponent(file.name)}`;
 
   const response = await fetch(url, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': file.type || 'application/octet-stream',
+      "Content-Type": file.type || "application/octet-stream",
     },
     body: file,
   });
@@ -27,11 +28,45 @@ const uploadImageToBlob = async (file: File) => {
   return uploadedUrl;
 };
 
+const decodeJWT = (token: string) => {
+  if (!token) {
+    return null;
+  }
+
+  const parts = token.split(".");
+  if (parts.length < 2) {
+    return null;
+  }
+
+  const payload = parts[1];
+  // Fix base64url to base64
+  let base64 = payload.replace(/-/g, "+").replace(/_/g, "/");
+  while (base64.length % 4 !== 0) {
+    base64 += "=";
+  }
+  try {
+    const decodedPayload = atob(base64);
+    const userData = JSON.parse(decodedPayload);
+    return userData;
+  } catch (e) {
+    console.error("Failed to decode JWT payload:", e);
+    return null;
+  }
+};
+
 const uploadNewArtPiece = async (artPiece: uploadArtPieceInput) => {
   const token = sessionStorage.getItem("token");
-  const userId = sessionStorage.getItem("userId");
 
-  
+  if (!token) {
+    throw new Error("No authentication token found");
+  }
+
+  const decodedToken = decodeJWT(token);
+  if (!decodedToken) {
+    throw new Error("Invalid token");
+  }
+
+  const userId = decodedToken.userId;
 
   // Build the JSON payload
   const body = {
@@ -42,11 +77,11 @@ const uploadNewArtPiece = async (artPiece: uploadArtPieceInput) => {
     year: artPiece.year,
     tags: artPiece.tags,
     userId,
-    url: artPiece.url
+    url: artPiece.url,
   };
 
   const headers: Record<string, string> = {
-    "Content-Type": "application/json"
+    "Content-Type": "application/json",
   };
 
   if (token) {
@@ -56,8 +91,7 @@ const uploadNewArtPiece = async (artPiece: uploadArtPieceInput) => {
   const response = await fetch(`${process.env.NEXT_PUBLIC_ADD_ART_PIECE_URL}`, {
     method: "POST",
     headers,
-    body: JSON.stringify(body)
-
+    body: JSON.stringify(body),
   });
 
   if (!response.ok) {
@@ -68,8 +102,6 @@ const uploadNewArtPiece = async (artPiece: uploadArtPieceInput) => {
 
   return response.json();
 };
-
-
 
 const getAllProducts = async () => {
   const token = sessionStorage.getItem("token");
@@ -162,6 +194,18 @@ const getProductsByArtist = async (artistName: string) => {
 };
 
 const getProductsToSellByUser = async (userId: string) => {
+  let token = sessionStorage.getItem("token");
+
+  if (!token) {
+    throw new Error("No authentication token found");
+  }
+
+  const decodedToken = decodeJWT(token);
+  if (!decodedToken) {
+    throw new Error("Invalid token");
+  }
+
+  userId = decodedToken.userId;
   const result = await getAllProducts();
 
   let artPieces: any[] = [];
@@ -374,17 +418,25 @@ const transferArtPiece = async (
 // };
 
 const transferArtPiece = async (
-  artPieceId: string,
-  token: string,
-  options?: {
-    buyerId?: string;
-    price?: number;
-    metadata?: Record<string, any>;
-    notifyOwner?: boolean;
-    referralCode?: string;
-  }
+  artPieceId: string[],
+  total: number,
+  subtotal: number[],
+  tax: number,
+  shipping: number,
+  orderDate: string,
+  deliveryDate: string
 ): Promise<boolean> => {
   const url = process.env.NEXT_PUBLIC_USER_BUYS_ART_PIECE_URL;
+
+  console.log("all paramaters", {
+    artPieceId,
+    total,
+    subtotal,
+    tax,
+    shipping,
+    orderDate,
+    deliveryDate,
+  });
 
   if (!url) {
     throw new Error("Transfer URL is not defined in environment variables");
@@ -392,11 +444,12 @@ const transferArtPiece = async (
 
   const body = {
     artPieceId,
-    buyerId: options?.buyerId,
-    price: options?.price,
-    metadata: options?.metadata,
-    notifyOwner: options?.notifyOwner !== false, // Defaults to true
-    referralCode: options?.referralCode,
+    total,
+    subtotal,
+    tax,
+    shipping,
+    orderDate,
+    deliveryDate,
   };
 
   const response = await fetch(url, {
@@ -404,7 +457,7 @@ const transferArtPiece = async (
     headers: {
       "Content-Type": "application/json",
       Accept: "application/json",
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${sessionStorage.getItem("token") || ""}`,
     },
     body: JSON.stringify(body),
   });

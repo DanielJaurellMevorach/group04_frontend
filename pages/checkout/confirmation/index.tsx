@@ -25,91 +25,103 @@ export default function ConfirmationPage() {
     typeof p === 'number' && !isNaN(p)
       ? p.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
       : '';
-  // Function to transfer ownership of an art piece, using artPieceService.transferArtPiece
-  const transferArtPiece = async (
-  artPieceId: string,
-  options?: {
-    token?: string;
-    buyerId?: string;
-    price?: number;
-    metadata?: Record<string, any>;
-    notifyOwner?: boolean;
-    referralCode?: string;
-  }
-): Promise<boolean> => {
-  const token = options?.token || sessionStorage.getItem("token");
-  if (!token) {
-    throw new Error("No authentication token found. Please log in again.");
+
+  // // Process all art piece transfers
+  // const processTransfers = async (items: any[]) => {
+  //   if (!items || items.length === 0) return;
+
+  //   setTransferStatus('processing');
+  //   const artPieces = items.flat();
+  //   const processed = new Set<string>();
+    
+  //   try {
+  //     const combinedSubtotal = artPieces.reduce((sum, item) => sum + (item.artPiece?.price || 0), 0);
+  //     artPieceService.transferArtPiece(
+  //       artPieces.map(item => item.artPiece?.id || ''), 
+  //       total,
+  //       combinedSubtotal,
+  //       tax,
+  //       shipping,
+  //       orderDate,
+  //       deliveryDate
+  //     );
+      
+  //     setTransferStatus('completed');
+  //     console.log('All transfers completed successfully');
+  //   } catch (error) {
+  //     console.error('Transfer process failed:', error);
+  //     setTransferError(error instanceof Error ? error.message : 'Unknown error occurred');
+  //     setTransferStatus('error');
+  //   }
+  // };
+
+  const processArtPieces = async (
+  items: any[],
+  
+  shipping: number,
+  orderDate: string,
+  deliveryDate: string
+) => {
+  if (!items || items.length === 0) return;
+
+  setTransferStatus('processing');
+  const artPieces = items.flat();
+  const artPieceIds: string[] = [];
+  const subtotals: number[] = [];
+
+  for (const item of artPieces) {
+    if (item.artPiece?.id) {
+      artPieceIds.push(item.artPiece.id);
+      subtotals.push(item.artPiece.price || 0);
+    }
   }
 
   try {
-    // Using artPieceService for the transfer
-    const result = await artPieceService.transferArtPiece(
-      artPieceId,
-      token,
-      {
-        buyerId: options?.buyerId,
-        price: options?.price,
-        metadata: options?.metadata,
-        notifyOwner: options?.notifyOwner !== false, // Defaults to true
-        referralCode: options?.referralCode
-      }
+    await artPieceService.transferArtPiece(
+      artPieceIds,
+      total,
+      subtotals,
+      tax,
+      shipping,
+      orderDate,
+      deliveryDate
     );
-    
-    console.log("Transfer successful:", result);
-    return true;
+    setProcessedItems(new Set(artPieceIds));
+    setTransferStatus('completed');
+    console.log('All transfers completed successfully');
   } catch (error) {
-    console.error("Transfer failed for art piece:", artPieceId, error);
-    throw error;
+    console.error('Transfer process failed:', error);
+    setTransferError(error instanceof Error ? error.message : 'Unknown error occurred');
+    setTransferStatus('error');
   }
 };
 
-  // Process all art piece transfers
-  const processTransfers = async (items: any[]) => {
-    if (!items || items.length === 0) return;
 
-    setTransferStatus('processing');
-    const artPieces = items.flat();
-    const processed = new Set<string>();
-    
-    try {
-      for (const item of artPieces) {
-        if (item.artPiece?.id) {
-          await transferArtPiece(item.artPiece.id);
-          processed.add(item.artPiece.id);
-          setProcessedItems(new Set(processed));
-        }
-      }
-      
-      setTransferStatus('completed');
-      console.log('All transfers completed successfully');
-    } catch (error) {
-      console.error('Transfer process failed:', error);
-      setTransferError(error instanceof Error ? error.message : 'Unknown error occurred');
-      setTransferStatus('error');
-    }
-  };
+const subtotal = orderItems
+.flat()
+.reduce((sum, item) => sum + (item.artPiece?.price || 0), 0);
+const shipping = 3492.99; 
+const tax = subtotal * 0.04
+const total = subtotal + shipping + tax
 
-  useEffect(() => {
-    const stored = sessionStorage.getItem("checkoutItem");
-    const parsed = stored ? JSON.parse(stored) : [];
-    setOrderItems(parsed);
+useEffect(() => {
+const stored = sessionStorage.getItem("checkoutItem");
+const parsed = stored ? JSON.parse(stored) : [];
+setOrderItems(parsed);
 
-    // Process transfers after items are loaded
-    if (parsed && parsed.length > 0) {
-      // Small delay to ensure the confirmation page renders first
-      setTimeout(() => {
-        processTransfers(parsed);
-      }, 1000);
-    }
-  }, []);
-
-  const subtotal = orderItems
-    .flat()
-    .reduce((sum, item) => sum + (item.artPiece?.price || 0), 0);
-  const shipping = 25
-  const tax = subtotal * 0.08
-  const total = subtotal + shipping + tax
+// Process transfers after items are loaded
+if (parsed && parsed.length > 0) {
+  // Small delay to ensure the confirmation page renders first
+  setTimeout(() => {
+    processArtPieces(
+      parsed,
+      shipping,
+      orderDate,
+      "July 15-17, 2025" // or your actual delivery date logic
+    );
+  }, 1000);
+}
+}, []);
 
   const getTransferStatusIcon = () => {
     switch (transferStatus) {
