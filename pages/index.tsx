@@ -14,6 +14,11 @@ export default function LandingPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const formatPrice = (p: number | undefined | null) =>
+    typeof p === 'number' && !isNaN(p)
+      ? p.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+      : '';
+
 const getProducts = async () => {
   try {
     const response = await artPieceService.getAllProducts();
@@ -106,7 +111,11 @@ const getProducts = async () => {
                   <h3 className="font-medium">{item.title}</h3>
                   <p className="text-sm text-[#A67C52] mb-2">{item.artist}</p>
                   <div className="flex justify-between items-center">
-                    <span className="font-medium">${item.price}</span>
+                    {/* <span className="font-medium">${item.price}</span> */}
+                    {/* €{formatPrice(art.price)} */}
+                    <span className="font-medium text-[#A67C52]">
+                      €{formatPrice(item.price)}
+                    </span>
                     <Button size="sm" className="bg-[#C8977F] hover:bg-[#B78370] text-white border-none rounded-none cursor-pointer">
                       More info
                     </Button>

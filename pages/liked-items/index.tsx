@@ -93,7 +93,7 @@ const LikedItemsPage: React.FC = () => {
         <div className="max-w-6xl mx-auto">
           <div className="flex items-center mb-12">
             <HeartIcon className="h-7 w-7 text-[#B69985] mr-3" />
-            <h1 className="text-3xl font-light tracking-wide">UnFavourite Artworks</h1>
+            <h1 className="text-3xl font-light tracking-wide">Favourite Artworks</h1>
           </div>
           
           {loading && (
