@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import userService from '../../services/user.service';
 import { ShoppingCart } from 'lucide-react';
 import { useRouter } from 'next/router';
+import { Button } from '@/components/ui/button';
 
 interface ArtPiece {
   id: string;
@@ -25,6 +26,15 @@ const UserCartPage: React.FC = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
+
+  const handlePayment = (
+    e: React.MouseEvent<HTMLButtonElement, globalThis.MouseEvent>,
+    product: any[] // explicitly an array
+  ) => {
+    e.preventDefault();
+    sessionStorage.setItem("checkoutItem", JSON.stringify([product]));
+    window.location.href = "/checkout";
+  };
 
   const router = useRouter();
   const [token, setToken] = useState<string>("");
@@ -162,6 +172,10 @@ const UserCartPage: React.FC = () => {
                 </div>
               );
             })}
+          </div>
+          <div className='flex justify-center'> 
+
+                    <Button className='' onClick={(e) => handlePayment(e, cartItems)}>BUY NOW</Button>
           </div>
         </div>
       </div>

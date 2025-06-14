@@ -17,6 +17,7 @@ export default function LandingPage() {
 const getProducts = async () => {
   try {
     const response = await artPieceService.getAllProducts();
+
     console.log(response, "Full response");
 
     if (response.artPieces && Array.isArray(response.artPieces.artPieces)) {

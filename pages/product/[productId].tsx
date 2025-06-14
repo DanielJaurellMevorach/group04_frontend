@@ -21,6 +21,35 @@ const SingleProductPage: React.FC = () => {
   const [isHoveringArrow, setIsHoveringArrow] = useState(false);
   const imageRef = useRef<HTMLDivElement>(null);
 
+  const [isLogged,setIsLogged] = useState(false);
+  const [userName, setUserName] = useState<string>("");
+  // console.log(userService.decodeJWT(sessionStorage.getItem("token")+"1" || ""));
+
+  useEffect(() => {
+    if (sessionStorage.getItem("token")) {
+      setIsLogged(true);
+    }
+    const user = sessionStorage.getItem("username");
+    if (user) {
+      setUserName(user);
+    }
+    
+  }, [])
+
+  const artistPaintings = [monaLisaImage, dinner];
+
+  const goToNextImage = () => {
+    setCurrentImageIndex((prevIndex) =>
+      prevIndex === productImages.length - 1 ? 0 : prevIndex + 1
+    );
+  };
+
+  const goToPrevImage = () => {
+    setCurrentImageIndex((prevIndex) =>
+      prevIndex === 0 ? productImages.length - 1 : prevIndex - 1
+    );
+  };
+
   const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
     if (!imageRef.current || isHoveringArrow) return;
 
@@ -81,6 +110,35 @@ const [userCart, setUserCart] = useState<any[]>([]);
   const router = useRouter();
   const { productId } = router.query;
 
+// <<<<<<< HEAD
+//   const getArt = async (id: string) => {
+//   try {
+//     const response = await artPieceService.getProductById(id);
+//     const data = await response;
+//     console.log(data.artPiece,"this is my data");
+//     // Unwrap the artPiece property if present
+//     if (data && data.artPiece) {
+//       return data.artPiece;
+//     }
+//     return data;
+//   } catch (error) {
+//     console.error("Error fetching product data:", error);
+//     throw new Error("Failed to fetch product data");
+//   }
+// };
+
+//   const { data, isLoading, error } = useSWR(
+//     productId ? `product-${productId}` : null,
+//     () => getArt(String(productId))
+//   );
+
+
+//   const getArtsByArtist = async (artist: string, id: string) => {
+//     const response = await artPieceService.getProductsByArtist(String(artist), String(id));
+//     if (response.ok) {
+//     }
+//     return await response
+// =======
   // State for product and artist data
   const [data, setData] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -218,6 +276,12 @@ const [userCart, setUserCart] = useState<any[]>([]);
   if (isLoading) return <p className="text-center py-10">Loading...</p>;
   if (error) return <p className="text-center py-10 text-[#B78370]">Error: {error.message}</p>;
 
+  const handlePayment = (e: React.MouseEvent<HTMLButtonElement, globalThis.MouseEvent>, product: any) => {
+    e.preventDefault(); // Safe even if not needed
+  
+    sessionStorage.setItem("checkoutItem", JSON.stringify([product]));
+    window.location.href = "/checkout";
+  };
 
   return (
     <div className="min-h-screen bg-[#F9F2EA] text-[#8A5A3B]">
@@ -397,8 +461,46 @@ const [userCart, setUserCart] = useState<any[]>([]);
                     </div>
                   ))}
                 </div>
+// <<<<<<< HEAD
+
+//                 <div className="flex items-end">
+//                   {isLogged ?
+//                     <button onClick={(e) => handlePayment(e, data)} className={styles.buyNowButton}>BUY NOW</button>
+//  : 
+//                   <button disabled={true} className={styles.buyNowButton}>BUY NOW</button>
+//                   }
+//                   <button
+//                     className={`${styles.favoriteButton} ${isFavorited ? styles.favorited : ''}`}
+//                     onClick={handleFavoriteClick}
+//                     aria-label={isFavorited ? 'Remove from favorites' : 'Add to favorites'}
+//                   >
+//                     <svg
+//                       xmlns="http://www.w3.org/2000/svg"
+//                       width="24"
+//                       height="24"
+//                       viewBox="0 0 24 24"
+//                       fill={isFavorited ? '#e25555' : 'none'}
+//                       stroke={isFavorited ? '#e25555' : 'currentColor'}
+//                       strokeWidth="2"
+//                       className={styles.heartIcon}
+//                     >
+//                       <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"></path>
+//                     </svg>
+//                   </button>
+//                 </div>
+//               </div>
+//             </div>
+
+//             <div className={styles.productDetails}>
+//               <h1 className={styles.title}>{data.title}</h1>
+//               <p className={styles.artist}>{data.artist}</p>
+//               <p className={styles.dimensions}>Made in {data.year}</p>
+//               <p className={styles.price}>${data.price}</p>
+//               <p className={styles.description}>{data.description}</p>
+// =======
               )}
               {sellerError && <p className="text-[#B78370] mt-2">{sellerError.message}</p>}
+{/* >>>>>>> a314c2df9394f022d907d1fd5aae1365f3385ed8 */}
             </div>
           </div>
         </>
