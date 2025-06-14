@@ -150,14 +150,19 @@ const AddProductPage: React.FC = () => {
     setError('');
 
     try {
+      
+      const url = await artPieceService.uploadImageToBlob(images[0].file);
+
+      console.log(`url of the newly created image ${url}`);
+
       await artPieceService.uploadNewArtPiece({
-        images: images.map(img => img.file),
         title,
         description,
         artist,
         price: parseFloat(price) || 0,
         year: parseInt(year, 10) || new Date().getFullYear(),
         tags,
+        url: url
       });
 
       router.push('/');
