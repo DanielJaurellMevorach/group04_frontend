@@ -23,6 +23,8 @@ const LoginPage: React.FC = () => {
       sessionStorage.setItem('token', response.token);
       sessionStorage.setItem('username', response.username);
       sessionStorage.setItem('role', response.role);
+      sessionStorage.setItem('userId', response.userId);
+      
 
       // Redirect to home or dashboard page
       router.push('/');

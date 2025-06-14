@@ -5,5 +5,5 @@ export type uploadArtPieceInput = {
   price: number;
   year: number;
   tags: string[];
-  images: File[];
+  url: string;
 };

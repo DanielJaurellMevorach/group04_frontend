@@ -5,37 +5,59 @@ import { uploadArtPieceInput } from "./types";
 import * as dotenv from "dotenv";
 dotenv.config();
 
-const uploadNewArtPiece = async (artPiece: uploadArtPieceInput) => {
-  const formData = new FormData();
 
-  // Add all images
-  if (artPiece.images && Array.isArray(artPiece.images)) {
-    for (const image of artPiece.images) {
-      formData.append("images", image);
-    }
+const uploadImageToBlob = async (file: File) => {
+  const url = `${process.env.NEXT_PUBLIC_UPLOAD_IMAGE}?name=${encodeURIComponent(file.name)}`;
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': file.type || 'application/octet-stream',
+    },
+    body: file,
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Image upload failed: ${errorText}`);
   }
 
-  formData.append("title", artPiece.title);
-  formData.append("description", artPiece.description);
-  formData.append("artist", artPiece.artist);
-  formData.append("price", String(artPiece.price));
-  formData.append("year", String(artPiece.year));
-  formData.append("tags", JSON.stringify(artPiece.tags));
+  // Azure function can return the blob URL or you construct it if you know the format
+  const uploadedUrl = await response.text();
+  return uploadedUrl;
+};
 
+const uploadNewArtPiece = async (artPiece: uploadArtPieceInput) => {
   const token = sessionStorage.getItem("token");
-  const username = sessionStorage.getItem("username");
+  const userId = sessionStorage.getItem("userId");
 
-  if (username) formData.append("username", username);
+  
 
-  const headers: Record<string, string> = {};
-  // if (token) headers["Authorization"] = `Bearer ${token}`;
+  // Build the JSON payload
+  const body = {
+    title: artPiece.title,
+    description: artPiece.description,
+    artist: artPiece.artist,
+    price: artPiece.price,
+    year: artPiece.year,
+    tags: artPiece.tags,
+    userId,
+    url: artPiece.url
+  };
+
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json"
+  };
+
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
 
   const response = await fetch(`${process.env.NEXT_PUBLIC_ADD_ART_PIECE_URL}`, {
     method: "POST",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-    body: formData,
+    headers,
+    body: JSON.stringify(body)
+
   });
 
   if (!response.ok) {
@@ -46,6 +68,8 @@ const uploadNewArtPiece = async (artPiece: uploadArtPieceInput) => {
 
   return response.json();
 };
+
+
 
 const getAllProducts = async () => {
   const token = sessionStorage.getItem("token");
@@ -234,7 +258,6 @@ const addToLikedItems = async (productId: string, token: string) => {
 
 const togglePublishArtPiece = async (artPieceId: string, token: string) => {
   const url = process.env.NEXT_PUBLIC_TOGGLE_PUBLISH_URL;
-
   if (!url) {
     throw new Error(
       "Toggle publish URL is not defined in environment variables"
@@ -400,6 +423,7 @@ const artPieceService = {
   getAllProducts,
   getProductById,
   getProductsByArtist,
+  uploadImageToBlob,
   getProductsToSellByUser,
   addToLikedItems,
   addProductToUsersCart,
