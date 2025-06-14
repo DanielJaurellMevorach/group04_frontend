@@ -53,6 +53,11 @@ jobs:
       - name: copy necessary folders
         run: cp -r public .next/standalone/ && cp -r .next/static .next/standalone/.next/
 
+      - name: insert on line 1 package_token to .npmrc in project root and .github/workflows
+        run: |
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.PACKAGE_TOKEN }}" > .npmrc
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.PACKAGE_TOKEN }}" > .github/workflows/.npmrc
+
       - name: npm publish
         run: |
           cd .next/standalone
