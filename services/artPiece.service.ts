@@ -28,11 +28,13 @@ const uploadNewArtPiece = async (artPiece: uploadArtPieceInput) => {
   if (username) formData.append("username", username);
 
   const headers: Record<string, string> = {};
-  if (token) headers["Authorization"] = `Bearer ${token}`;
+  // if (token) headers["Authorization"] = `Bearer ${token}`;
 
   const response = await fetch(`${process.env.NEXT_PUBLIC_ADD_ART_PIECE_URL}`, {
     method: "POST",
-    headers, // No Content-Type!
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
     body: formData,
   });
 
