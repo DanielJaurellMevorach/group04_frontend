@@ -232,6 +232,30 @@ const addToLikedItems = async (productId: string, token: string) => {
   }
 };
 
+const togglePublishArtPiece = async (artPieceId: string, token: string) => {
+  const url = process.env.NEXT_PUBLIC_TOGGLE_PUBLISH_URL;
+
+  if (!url) {
+    throw new Error(
+      "Toggle publish URL is not defined in environment variables"
+    );
+  }
+
+  const resp = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ artPieceId }),
+  });
+  if (!resp.ok) {
+    throw new Error(`Failed to toggle publish state for ${artPieceId}`);
+  }
+  return resp.json(); // { success, action, artPieceId, publishOnMarket }
+};
+
 const artPieceService = {
   uploadNewArtPiece,
   getAllProducts,
@@ -240,6 +264,7 @@ const artPieceService = {
   getProductsToSellByUser,
   addToLikedItems,
   addProductToUsersCart,
+  togglePublishArtPiece,
 };
 
 export default artPieceService;

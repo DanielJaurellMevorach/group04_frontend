@@ -14,6 +14,7 @@ interface ArtPiece {
   tags: string[];
   year: number;
   url: string;
+  publishOnMarket: boolean;
   createdAt: string;
 }
 
