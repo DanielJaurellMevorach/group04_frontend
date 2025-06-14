@@ -1,4 +1,4 @@
-name: Deploy to Azure
+name: Deploy to Azure Resources
 
 on:
   workflow_run:
