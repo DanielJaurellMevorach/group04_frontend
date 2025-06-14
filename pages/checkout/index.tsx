@@ -54,8 +54,8 @@ export default function CheckoutPage() {
   const subtotal = orderItems
   .flat()
   .reduce((sum, item) => sum + (item.artPiece?.price || 0), 0);
-  const shipping = 25
-  const tax = subtotal * 0.08
+  const shipping = 3492.99; 
+  const tax = subtotal * 0.04
   const total = subtotal + shipping + tax
 
   const handleSubmit = async (e: React.FormEvent) => {
