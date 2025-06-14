@@ -13,7 +13,7 @@ interface ArtPiece {
   year: number;
   price: number;
   url: string;
-  publishOnMarket: boolean;    // ← make sure your API returns this
+  publishOnMarket: boolean;
   createdAt: string;
 }
 
@@ -24,29 +24,32 @@ const UsersArt: React.FC = () => {
   const router = useRouter();
   const token = typeof window !== 'undefined' ? sessionStorage.getItem('token') || '' : '';
 
-  // load art
   useEffect(() => {
     if (!token) {
       router.push('/login');
       return;
     }
-    (async () => {
+    const loadArt = async () => {
+      setLoading(true);
       try {
-        setLoading(true);
+        // getUsersArtPieces returns { artPiece: ArtPiece }[]
         const items = await userService.getUsersArtPieces(token);
-        setOwnedArt(items);
+        // unwrap artPiece
+        const artPieces = items.map((item: { artPiece: ArtPiece }) => item.artPiece);
+        setOwnedArt(artPieces);
+        console.log('Owned art pieces:', artPieces);
       } catch {
         setError('Failed to load your art collection.');
       } finally {
         setLoading(false);
       }
-    })();
+    };
+    loadArt();
   }, [token, router]);
 
   const handleToggle = async (id: string) => {
     try {
       const res = await artPieceService.togglePublishArtPiece(id, token!);
-      // update only the one that changed:
       setOwnedArt((arts) =>
         arts.map((a) =>
           a.id === id ? { ...a, publishOnMarket: res.publishOnMarket } : a
@@ -58,8 +61,10 @@ const UsersArt: React.FC = () => {
     }
   };
 
-  const formatPrice = (p: number) =>
-    p.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  const formatPrice = (p: number | undefined | null) =>
+    typeof p === 'number' && !isNaN(p)
+      ? p.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+      : '';
 
   return (
     <div className="min-h-screen bg-[#F4EFE7] text-[#655A4A]">
@@ -81,9 +86,8 @@ const UsersArt: React.FC = () => {
         </header>
 
         {loading ? (
-          /* … your existing skeleton … */
           <div className="flex justify-center py-16">
-            {/* … */}
+            {/* Loading skeleton here */}
           </div>
         ) : error ? (
           <div className="bg-[#EFE5DD] border-l-2 border-[#C9A895] p-4 mb-8 rounded">
@@ -107,7 +111,7 @@ const UsersArt: React.FC = () => {
             {ownedArt.map((art) => (
               <div
                 key={art.id}
-                className="bg-[#EFE5DD] overflow-hidden group transition-all"
+                className="bg-[#EFE5DD] overflow-hidden group transition-all relative"
               >
                 <div className="relative aspect-[4/5] overflow-hidden">
                   <img
@@ -115,12 +119,39 @@ const UsersArt: React.FC = () => {
                     alt={art.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   />
+                  {/* Slider positioned top-right */}
+<div className="absolute top-3 right-3 flex items-center space-x-3 bg-[#EFE5DD] bg-opacity-90 rounded-full px-3 py-1.5 shadow-sm border border-[#D9CFC2]/30">
+  <span className="text-xs font-light text-[#9D7A64]">Private</span>
+  <label
+    htmlFor={`toggle-${art.id}`}
+    className="inline-flex items-center cursor-pointer"
+  >
+    <div className="relative">
+      <input
+        id={`toggle-${art.id}`}
+        type="checkbox"
+        className="sr-only"
+        checked={art.publishOnMarket}
+        onChange={() => handleToggle(art.id)}
+      />
+      <div className={`block w-10 h-5 rounded-full transition-colors duration-300 ${
+        art.publishOnMarket ? 'bg-[#B69985]' : 'bg-[#D9CFC2]'
+      }`} />
+      <div
+        className={`dot absolute left-0.5 top-0.5 bg-[#F4EFE7] w-4 h-4 rounded-full transition-all duration-300 shadow-sm ${
+          art.publishOnMarket ? 'translate-x-5 ring-1 ring-[#C8977F]/20' : 'ring-1 ring-[#A3937F]/10'
+        }`}
+      />
+    </div>
+  </label>
+  <span className={`text-xs font-light transition-colors duration-300 ${
+    art.publishOnMarket ? 'text-[#8A5A3B]' : 'text-[#9D7A64]'
+  }`}>Sellable</span>
+</div>
                 </div>
                 <div className="p-5 space-y-3">
                   <div className="flex justify-between items-center">
-                    <h2 className="font-light text-lg line-clamp-1">
-                      {art.title}
-                    </h2>
+                    <h2 className="font-light text-lg line-clamp-1">{art.title}</h2>
                     <span className="text-[#9D7A64] font-light text-sm">
                       €{formatPrice(art.price)}
                     </span>
@@ -128,32 +159,6 @@ const UsersArt: React.FC = () => {
                   <p className="text-xs text-[#9D7A64]">
                     {art.artist}, {art.year}
                   </p>
-                  {/* ← Here’s the toggle slider */}
-                  <div className="flex items-center space-x-2">
-                    <label
-                      htmlFor={`toggle-${art.id}`}
-                      className="inline-flex items-center cursor-pointer"
-                    >
-                      <div className="relative">
-                        <input
-                          id={`toggle-${art.id}`}
-                          type="checkbox"
-                          className="sr-only"
-                          checked={art.publishOnMarket}
-                          onChange={() => handleToggle(art.id)}
-                        />
-                        <div className="block w-10 h-6 rounded-full bg-gray-300" />
-                        <div
-                          className={`dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition ${
-                            art.publishOnMarket ? 'translate-x-4' : ''
-                          }`}
-                        />
-                      </div>
-                      <span className="ml-3 text-sm">
-                        {art.publishOnMarket ? 'Published' : 'Hidden'}
-                      </span>
-                    </label>
-                  </div>
                   <Link
                     href={`/product/${art.id}`}
                     className="block text-sm border border-[#B69985] py-2 text-center hover:bg-[#B69985] hover:text-[#F4EFE7] transition-colors"
