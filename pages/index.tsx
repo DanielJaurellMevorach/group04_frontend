@@ -18,6 +18,12 @@ export default function LandingPage() {
     typeof p === 'number' && !isNaN(p)
       ? p.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
       : '';
+  const getProducts = async () => {
+    const response = await artPieceService.getAllProducts();
+    console.log(response.artPieces,"this is reponse");
+    
+    return response.artPieces;
+  }
 
 const getProducts = async () => {
   try {
