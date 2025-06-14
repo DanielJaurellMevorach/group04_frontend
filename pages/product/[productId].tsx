@@ -337,13 +337,13 @@ const SingleProductPage: React.FC = () => {
                     {isInCart ? 'REMOVE FROM CART' : 'ADD TO CART'}
                   </button>
 
-                  {/* Buy Now button with payment functionality */}
+                  {/* Buy Now button with payment functionality
                   <button
                     className={`${styles.buyNowButton} bg-[#8A5A3B] text-white hover:bg-[#6B4530]`}
                     onClick={(e) => handlePayment(e, data)}
                   >
                     BUY NOW
-                  </button>
+                  </button> */}
 
                   <button
                     className={`${styles.favoriteButton} ${isFavorited ? styles.favorited : ''}`}

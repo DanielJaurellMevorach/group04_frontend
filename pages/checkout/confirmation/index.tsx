@@ -1,15 +1,15 @@
 import Image from "next/image"
 import Link from "next/link"
-import { CheckCircle, Download, Mail, Package } from "lucide-react"
+import { CheckCircle, Download, Mail, Package, AlertCircle } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import Navbar from "@/components/navbar"
 import { useEffect, useState } from "react"
+import artPieceService from "@/services/artPiece.service"
 
 export default function ConfirmationPage() {
-  // const orderNumber = "NIMAH-2024-001234"
   const orderDate = new Date().toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
@@ -17,38 +17,136 @@ export default function ConfirmationPage() {
   })
 
   const [orderItems, setOrderItems] = useState<any[]>([]);
+  const [transferStatus, setTransferStatus] = useState<'pending' | 'processing' | 'completed' | 'error'>('pending');
+  const [transferError, setTransferError] = useState<string>('');
+  const [processedItems, setProcessedItems] = useState<Set<string>>(new Set());
+
+  const formatPrice = (p: number | undefined | null) =>
+    typeof p === 'number' && !isNaN(p)
+      ? p.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+      : '';
+  // Function to transfer ownership of an art piece, using artPieceService.transferArtPiece
+  const transferArtPiece = async (
+  artPieceId: string,
+  options?: {
+    token?: string;
+    buyerId?: string;
+    price?: number;
+    metadata?: Record<string, any>;
+    notifyOwner?: boolean;
+    referralCode?: string;
+  }
+): Promise<boolean> => {
+  const token = options?.token || sessionStorage.getItem("token");
+  if (!token) {
+    throw new Error("No authentication token found. Please log in again.");
+  }
+
+  try {
+    // Using artPieceService for the transfer
+    const result = await artPieceService.transferArtPiece(
+      artPieceId,
+      token,
+      {
+        buyerId: options?.buyerId,
+        price: options?.price,
+        metadata: options?.metadata,
+        notifyOwner: options?.notifyOwner !== false, // Defaults to true
+        referralCode: options?.referralCode
+      }
+    );
+    
+    console.log("Transfer successful:", result);
+    return true;
+  } catch (error) {
+    console.error("Transfer failed for art piece:", artPieceId, error);
+    throw error;
+  }
+};
+
+  // Process all art piece transfers
+  const processTransfers = async (items: any[]) => {
+    if (!items || items.length === 0) return;
+
+    setTransferStatus('processing');
+    const artPieces = items.flat();
+    const processed = new Set<string>();
+    
+    try {
+      for (const item of artPieces) {
+        if (item.artPiece?.id) {
+          await transferArtPiece(item.artPiece.id);
+          processed.add(item.artPiece.id);
+          setProcessedItems(new Set(processed));
+        }
+      }
+      
+      setTransferStatus('completed');
+      console.log('All transfers completed successfully');
+    } catch (error) {
+      console.error('Transfer process failed:', error);
+      setTransferError(error instanceof Error ? error.message : 'Unknown error occurred');
+      setTransferStatus('error');
+    }
+  };
 
   useEffect(() => {
     const stored = sessionStorage.getItem("checkoutItem");
     const parsed = stored ? JSON.parse(stored) : [];
     setOrderItems(parsed);
+
+    // Process transfers after items are loaded
+    if (parsed && parsed.length > 0) {
+      // Small delay to ensure the confirmation page renders first
+      setTimeout(() => {
+        processTransfers(parsed);
+      }, 1000);
+    }
   }, []);
 
-  // const orderItems = [
-  //   {
-  //     id: 1,
-  //     title: "Abstract Harmony",
-  //     artist: "Amara Nwosu",
-  //     price: 450,
-  //     image: "/placeholder.svg?height=200&width=200&text=Abstract%20Harmony",
-  //     quantity: 1,
-  //   },
-  //   {
-  //     id: 2,
-  //     title: "Urban Reflections",
-  //     artist: "Marcus Chen",
-  //     price: 320,
-  //     image: "/placeholder.svg?height=200&width=200&text=Urban%20Reflections",
-  //     quantity: 1,
-  //   },
-  // ]
-
   const subtotal = orderItems
-  .flat()
-  .reduce((sum, item) => sum + (item.artPiece?.price || 0), 0);
+    .flat()
+    .reduce((sum, item) => sum + (item.artPiece?.price || 0), 0);
   const shipping = 25
   const tax = subtotal * 0.08
   const total = subtotal + shipping + tax
+
+  const getTransferStatusIcon = () => {
+    switch (transferStatus) {
+      case 'processing':
+        return <div className="animate-spin h-5 w-5 border-2 border-[#C8977F] border-t-transparent rounded-full" />;
+      case 'completed':
+        return <CheckCircle className="h-5 w-5 text-green-600" />;
+      case 'error':
+        return <AlertCircle className="h-5 w-5 text-red-600" />;
+      default:
+        return <Package className="h-5 w-5 text-[#C8977F]" />;
+    }
+  };
+
+  const getTransferStatusText = () => {
+    switch (transferStatus) {
+      case 'processing':
+        return 'Processing ownership transfer...';
+      case 'completed':
+        return 'Ownership transfer completed successfully';
+      case 'error':
+        return `Transfer error: ${transferError}`;
+      default:
+        return 'Preparing ownership transfer...';
+    }
+  };
+
+  const getTransferStatusColor = () => {
+    switch (transferStatus) {
+      case 'completed':
+        return 'text-green-600';
+      case 'error':
+        return 'text-red-600';
+      default:
+        return 'text-[#A67C52]';
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#F9F2EA]">
@@ -67,6 +165,26 @@ export default function ConfirmationPage() {
             </p>
           </div>
 
+          {/* Transfer Status Card */}
+          <Card className="border-none shadow-sm rounded-none bg-white mb-6">
+            <CardContent className="pt-6">
+              <div className="flex items-center gap-3">
+                {getTransferStatusIcon()}
+                <div>
+                  <h3 className="font-medium text-[#8A5A3B] mb-1">Ownership Transfer</h3>
+                  <p className={`text-sm ${getTransferStatusColor()}`}>
+                    {getTransferStatusText()}
+                  </p>
+                  {transferStatus === 'processing' && processedItems.size > 0 && (
+                    <p className="text-xs text-[#A67C52] mt-1">
+                      Processed {processedItems.size} of {orderItems.flat().length} items
+                    </p>
+                  )}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Order Details */}
             <div className="space-y-6">
@@ -75,10 +193,6 @@ export default function ConfirmationPage() {
                   <CardTitle className="text-xl font-medium text-[#8A5A3B]">Order Details</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  {/* <div className="flex justify-between"> */}
-                    {/* <span className="text-[#A67C52]">Order Number</span> */}
-                    {/* <span className="text-[#8A5A3B] font-medium">{orderNumber}</span> */}
-                  {/* </div> */}
                   <div className="flex justify-between">
                     <span className="text-[#A67C52]">Order Date</span>
                     <span className="text-[#8A5A3B] font-medium">{orderDate}</span>
@@ -87,10 +201,6 @@ export default function ConfirmationPage() {
                     <span className="text-[#A67C52]">Payment Method</span>
                     <span className="text-[#8A5A3B] font-medium">•••• •••• •••• 1234</span>
                   </div>
-                  {/* <div className="flex justify-between">
-                    <span className="text-[#A67C52]">Email</span>
-                    <span className="text-[#8A5A3B] font-medium">customer@example.com</span>
-                  </div> */}
                 </CardContent>
               </Card>
 
@@ -104,8 +214,6 @@ export default function ConfirmationPage() {
                 <CardContent className="space-y-3">
                   <div>
                     <p className="text-[#8A5A3B] font-medium">John Doe</p>
-                    {/* <p className="text-[#A67C52]">123 Art Street</p>
-                    <p className="text-[#A67C52]">San Francisco, CA 94102</p> */}
                   </div>
                   <Separator className="bg-[#E8D7C9]" />
                   <div className="flex justify-between">
@@ -142,23 +250,35 @@ export default function ConfirmationPage() {
                   <CardTitle className="text-xl font-medium text-[#8A5A3B]">Your Order</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  {orderItems[0]?.map((item : any) => (
+                  {orderItems[0]?.map((item: any) => (
                     <div key={item.artPiece.id} className="flex gap-4">
                       <div className="relative w-20 h-20 bg-[#EFE6DC] rounded-none overflow-hidden">
-                      <img
-                    src={item.artPiece.url}
-                    alt={`${item.artPiece.title}`}
-                    className=""
-                    style={{objectFit:"cover"}}
-                  />                      
-                  </div>
+                        <img
+                          src={item.artPiece.url}
+                          alt={`${item.artPiece.title}`}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
                       <div className="flex-1">
                         <h3 className="font-medium text-[#8A5A3B]">{item.artPiece.title}</h3>
                         <p className="text-sm text-[#A67C52]">by {item.artPiece.artist}</p>
-                        {/* <p className="text-sm text-[#A67C52]">Qty: {item.quantity}</p> */}
+                        {transferStatus === 'completed' && processedItems.has(item.artPiece.id) && (
+                          <div className="flex items-center gap-1 mt-1">
+                            <CheckCircle className="h-3 w-3 text-green-600" />
+                            <span className="text-xs text-green-600">Ownership transferred</span>
+                          </div>
+                        )}
+                        {transferStatus === 'error' && (
+                          <div className="flex items-center gap-1 mt-1">
+                            <AlertCircle className="h-3 w-3 text-red-600" />
+                            <span className="text-xs text-red-600">Transfer failed</span>
+                          </div>
+                        )}
                       </div>
                       <div className="text-right">
-                        <p className="font-medium text-[#8A5A3B]">${item.artPiece.price}</p>
+                        <p className="font-medium text-[#8A5A3B]">
+                          €{formatPrice(item.artPiece.price)}
+                        </p>
                       </div>
                     </div>
                   ))}
@@ -168,31 +288,26 @@ export default function ConfirmationPage() {
                   <div className="space-y-2">
                     <div className="flex justify-between text-sm">
                       <span className="text-[#A67C52]">Subtotal</span>
-                      <span className="text-[#8A5A3B]">${subtotal}</span>
+                      <span className="text-[#8A5A3B]">€{formatPrice(subtotal)}</span>
                     </div>
                     <div className="flex justify-between text-sm">
                       <span className="text-[#A67C52]">Shipping</span>
-                      <span className="text-[#8A5A3B]">${shipping}</span>
+                      <span className="text-[#8A5A3B]">€{formatPrice(shipping)}</span>
                     </div>
                     <div className="flex justify-between text-sm">
                       <span className="text-[#A67C52]">Tax</span>
-                      <span className="text-[#8A5A3B]">${tax.toFixed(2)}</span>
+                      <span className="text-[#8A5A3B]">€{formatPrice(tax)}</span>
                     </div>
                     <Separator className="bg-[#E8D7C9]" />
                     <div className="flex justify-between text-lg font-medium">
                       <span className="text-[#8A5A3B]">Total</span>
-                      <span className="text-[#8A5A3B]">${total.toFixed(2)}</span>
+                      <span className="text-[#8A5A3B]">€{formatPrice(total)}</span>
                     </div>
                   </div>
                 </CardContent>
               </Card>
 
               <div className="space-y-4">
-                {/* <Button className="w-full bg-[#C8977F] hover:bg-[#B78370] text-white border-none rounded-none py-6">
-                  <Download className="h-5 w-5 mr-2" />
-                  Download Receipt
-                </Button> */}
-
                 <Button
                   variant="outline"
                   className="w-full border-[#C8977F] text-[#C8977F] hover:bg-[#C8977F]/10 rounded-none py-6"
@@ -200,14 +315,6 @@ export default function ConfirmationPage() {
                 >
                   <Link href="/gallery">Continue Shopping</Link>
                 </Button>
-
-                {/* <Button
-                  variant="outline"
-                  className="w-full border-[#C8977F] text-[#C8977F] hover:bg-[#C8977F]/10 rounded-none py-6"
-                  asChild
-                >
-                  <Link href="/account/orders">View Order History</Link>
-                </Button> */}
               </div>
             </div>
           </div>

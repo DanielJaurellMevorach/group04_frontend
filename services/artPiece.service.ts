@@ -256,6 +256,145 @@ const togglePublishArtPiece = async (artPieceId: string, token: string) => {
   return resp.json(); // { success, action, artPieceId, publishOnMarket }
 };
 
+/* front-end
+
+const transferArtPiece = async (
+  artPieceId: string,
+  options?: {
+    token?: string;
+    buyerId?: string;
+    price?: number;
+    metadata?: Record<string, any>;
+    notifyOwner?: boolean;
+    referralCode?: string;
+  }
+): Promise<boolean> => {
+  const token = options?.token || sessionStorage.getItem("token");
+  if (!token) {
+    throw new Error("No authentication token found. Please log in again.");
+  }
+
+  try {
+    // Using artPieceService for the transfer
+    const result = await artPieceService.transferOwnership(
+      artPieceId,
+      token,
+      {
+        buyerId: options?.buyerId,
+        price: options?.price,
+        metadata: options?.metadata,
+        notifyOwner: options?.notifyOwner !== false, // Defaults to true
+        referralCode: options?.referralCode
+      }
+    );
+    
+    console.log("Transfer successful:", result);
+    return true;
+  } catch (error) {
+    console.error("Transfer failed for art piece:", artPieceId, error);
+    throw error;
+  }
+};
+
+*/
+
+// const transferArtPiece = async (
+//   artPieceId: string,
+//   buyerId: string,
+//   sellerId: string,
+//   subtotal: number,
+//   shipping: number,
+//   tax: number,
+//   total: number,
+//   paymentMethod: string,
+//   orderDate: string,
+//   estimatedDeliveryDate: string
+// ): Promise<boolean> => {
+//   const token = sessionStorage.getItem("token");
+//   if (!token) {
+//     throw new Error("No authentication token found. Please log in again.");
+//   }
+
+//   const endpoint = process.env.NEXT_PUBLIC_USER_BUYS_ART_PIECE_URL;
+//   if (!endpoint) {
+//     throw new Error("API endpoint is not configured.");
+//   }
+
+//   try {
+//     const response = await fetch(endpoint, {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json",
+//         Authorization: `Bearer ${token}`,
+//       },
+//       body: JSON.stringify({ artPieceId }),
+//     });
+
+//     if (!response.ok) {
+//       let errorMsg = `HTTP ${response.status}`;
+//       try {
+//         const errorData = await response.json();
+//         errorMsg = errorData.error || errorMsg;
+//       } catch {
+//         // Ignore JSON parse errors
+//       }
+//       throw new Error(`Transfer failed: ${errorMsg}`);
+//     }
+
+//     const result = await response.json();
+//     console.log("Transfer successful:", result);
+//     return true;
+//   } catch (error) {
+//     console.error("Transfer failed for art piece:", artPieceId, error);
+//     throw error;
+//   }
+// };
+
+const transferArtPiece = async (
+  artPieceId: string,
+  token: string,
+  options?: {
+    buyerId?: string;
+    price?: number;
+    metadata?: Record<string, any>;
+    notifyOwner?: boolean;
+    referralCode?: string;
+  }
+): Promise<boolean> => {
+  const url = process.env.NEXT_PUBLIC_USER_BUYS_ART_PIECE_URL;
+
+  if (!url) {
+    throw new Error("Transfer URL is not defined in environment variables");
+  }
+
+  const body = {
+    artPieceId,
+    buyerId: options?.buyerId,
+    price: options?.price,
+    metadata: options?.metadata,
+    notifyOwner: options?.notifyOwner !== false, // Defaults to true
+    referralCode: options?.referralCode,
+  };
+
+  const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    console.error("Transfer error:", errorText);
+    throw new Error(`Failed to transfer art piece: ${response.statusText}`);
+  }
+
+  return response.json();
+};
+
 const artPieceService = {
   uploadNewArtPiece,
   getAllProducts,
@@ -265,6 +404,7 @@ const artPieceService = {
   addToLikedItems,
   addProductToUsersCart,
   togglePublishArtPiece,
+  transferArtPiece,
 };
 
 export default artPieceService;
