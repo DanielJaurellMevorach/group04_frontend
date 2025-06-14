@@ -18,7 +18,7 @@ interface ArtPiece {
   createdAt: string;
 }
 
-const UsersArt: React.FC = () => {
+const UsersCart: React.FC = () => {
   const [ownedArt, setOwnedArt] = useState<ArtPiece[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -171,4 +171,4 @@ const UsersArt: React.FC = () => {
   );
 };
 
-export default UsersArt;
+export default UsersCart;
