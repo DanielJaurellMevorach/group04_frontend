@@ -4,11 +4,33 @@ import { uploadArtPieceInput } from "./types";
 import * as dotenv from "dotenv";
 dotenv.config();
 
+
+const uploadImageToBlob = async (file: File) => {
+  const url = `${process.env.NEXT_PUBLIC_UPLOAD_IMAGE}?name=${encodeURIComponent(file.name)}`;
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': file.type || 'application/octet-stream',
+    },
+    body: file,
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Image upload failed: ${errorText}`);
+  }
+
+  // Azure function can return the blob URL or you construct it if you know the format
+  const uploadedUrl = await response.text();
+  return uploadedUrl;
+};
+
 const uploadNewArtPiece = async (artPiece: uploadArtPieceInput) => {
   const token = sessionStorage.getItem("token");
-  const username = sessionStorage.getItem("username");
+  const userId = sessionStorage.getItem("userId");
 
-  const url = 'urltest';
+  
 
   // Build the JSON payload
   const body = {
@@ -18,8 +40,8 @@ const uploadNewArtPiece = async (artPiece: uploadArtPieceInput) => {
     price: artPiece.price,
     year: artPiece.year,
     tags: artPiece.tags,
-    userId: username, // Assuming userId is the same as username
-    url
+    userId,
+    url: artPiece.url
   };
 
   const headers: Record<string, string> = {
@@ -44,6 +66,7 @@ const uploadNewArtPiece = async (artPiece: uploadArtPieceInput) => {
 
   return response.json();
 };
+
 
 
 const getAllProducts = async () => {
@@ -129,6 +152,7 @@ const artPieceService = {
   getAllProducts,
   getProductById,
   getProductsByArtist,
+  uploadImageToBlob
 };
 
 export default artPieceService;
