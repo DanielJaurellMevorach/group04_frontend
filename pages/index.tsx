@@ -1,18 +1,23 @@
-import Image from "next/image"
-import Link from "next/link"
-import { ArrowRight, Brush, CreditCard, Globe, ShoppingBag, Users } from "lucide-react"
-
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import Navbar from "@/components/navbar"
-import artPieceService from "@/services/artPiece.service"
-import useSWR from "swr"
-import { useRouter } from "next/router"
+import Image from "next/image";
+import Link from "next/link";
+import { ArrowRight, Brush, CreditCard, Globe, ShoppingBag, Users } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import Navbar from "@/components/navbar";
+import artPieceService from "@/services/artPiece.service";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 
 export default function LandingPage() {
-
   const router = useRouter();
+  const [data, setData] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
+  const formatPrice = (p: number | undefined | null) =>
+    typeof p === 'number' && !isNaN(p)
+      ? p.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+      : '';
   const getProducts = async () => {
     const response = await artPieceService.getAllProducts();
     console.log(response.artPieces,"this is reponse");
@@ -20,10 +25,31 @@ export default function LandingPage() {
     return response.artPieces;
   }
 
-  const { data, isLoading, error } = useSWR("products", getProducts);
+const getProducts = async () => {
+  try {
+    const response = await artPieceService.getAllProducts();
 
+    console.log(response, "Full response");
 
+    if (response.artPieces && Array.isArray(response.artPieces.artPieces)) {
+      setData(response.artPieces.artPieces);
+    } else if (response.artPieces && Array.isArray(response.artPieces)) {
+      setData(response.artPieces);
+    } else {
+      setData([]); 
+      console.warn("Unexpected data format for artPieces");
+    }
+  } catch (err) {
+    console.error(err);
+    setError("Failed to load products");
+  } finally {
+    setIsLoading(false);
+  }
+};
 
+  useEffect(() => {
+    getProducts();
+  }, []);
 
   return (
     <div className="min-h-screen bg-[#F9F2EA] text-[#8A5A3B]">
@@ -33,13 +59,6 @@ export default function LandingPage() {
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-[#F9F2EA]/90 z-10"></div>
-          {/* <Image
-            src="/placeholder.svg?height=1080&width=1920"
-            alt="Art Gallery Background"
-            fill
-            className="object-cover"
-            priority
-          /> */}
         </div>
 
         <div className="container relative z-20 mx-auto px-4 py-24 md:py-32">
@@ -80,26 +99,36 @@ export default function LandingPage() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
-            {!isLoading ? (data as any[])?.slice(0, 4).map((item) => (
-              <div key={item.id} className="group hover:bg-[#EFE6DC] duration-100 cursor-pointer p-2">
-                <div className="relative aspect-[3/4] mb-4 overflow-hidden bg-[#EFE6DC]">
-                  <img
-                    src={item.url}
-                    alt={`Featured Artwork ${item.title}`}
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
+            {isLoading ? (
+              <p>Loading.......</p>
+            ) : error ? (
+              <p>{error}</p>
+            ) : (
+              Array.isArray(data) && data.slice(0, 4).map((item) => (
+
+                <div key={item.id} className="group hover:bg-[#EFE6DC] duration-100 cursor-pointer p-2">
+                  <div className="relative w-full h-60 overflow-hidden">
+                    <img
+                      src={item.url}
+                      alt={`Featured Artwork ${item.title}`}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <h3 className="font-medium">{item.title}</h3>
+                  <p className="text-sm text-[#A67C52] mb-2">{item.artist}</p>
+                  <div className="flex justify-between items-center">
+                    {/* <span className="font-medium">${item.price}</span> */}
+                    {/* €{formatPrice(art.price)} */}
+                    <span className="font-medium text-[#A67C52]">
+                      €{formatPrice(item.price)}
+                    </span>
+                    <Button size="sm" className="bg-[#C8977F] hover:bg-[#B78370] text-white border-none rounded-none cursor-pointer">
+                      More info
+                    </Button>
+                  </div>
                 </div>
-                <h3 className="font-medium">{item.title}</h3>
-                <p className="text-sm text-[#A67C52] mb-2">{item.artist}</p>
-                <div className="flex justify-between items-center">
-                  <span className="font-medium">${item.price}</span>
-                  <Button size="sm" className="bg-[#C8977F] hover:bg-[#B78370] text-white border-none rounded-none cursor-pointer">
-                    More info
-                  </Button>
-                </div>
-              </div>
-            )) : <p>Loading.......</p>}
-            {error ? <p>error</p> : null}
+              ))
+            )}
           </div>
         </div>
       </section>
@@ -205,33 +234,6 @@ export default function LandingPage() {
                 </ul>
               </CardContent>
             </Card>
-
-            {/* <Card className="bg-white border-none shadow-sm rounded-none md:col-span-2 lg:col-span-1">
-              <CardContent className="pt-8">
-                <div className="bg-[#C8977F]/10 p-3 rounded-full w-fit mb-6">
-                  <Globe className="h-6 w-6 text-[#C8977F]" />
-                </div>
-                <h3 className="text-xl font-medium mb-2">Our Community</h3>
-                <ul className="space-y-3">
-                  <li className="flex items-start">
-                    <ArrowRight className="h-5 w-5 mr-2 shrink-0 text-[#C8977F]" />
-                    <span>Join a thriving community of art enthusiasts</span>
-                  </li>
-                  <li className="flex items-start">
-                    <ArrowRight className="h-5 w-5 mr-2 shrink-0 text-[#C8977F]" />
-                    <span>Participate in virtual exhibitions and events</span>
-                  </li>
-                  <li className="flex items-start">
-                    <ArrowRight className="h-5 w-5 mr-2 shrink-0 text-[#C8977F]" />
-                    <span>Learn through artist interviews and behind-the-scenes content</span>
-                  </li>
-                  <li className="flex items-start">
-                    <ArrowRight className="h-5 w-5 mr-2 shrink-0 text-[#C8977F]" />
-                    <span>Support diverse artists from around the globe</span>
-                  </li>
-                </ul>
-              </CardContent>
-            </Card> */}
           </div>
         </div>
       </section>
@@ -392,5 +394,5 @@ export default function LandingPage() {
         </div>
       </footer>
     </div>
-  )
+  );
 }

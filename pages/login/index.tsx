@@ -23,6 +23,8 @@ const LoginPage: React.FC = () => {
       sessionStorage.setItem('token', response.token);
       sessionStorage.setItem('username', response.username);
       sessionStorage.setItem('role', response.role);
+      sessionStorage.setItem('userId', response.userId);
+      
 
       // Redirect to home or dashboard page
       router.push('/');
@@ -89,9 +91,7 @@ const LoginPage: React.FC = () => {
               {loading ? 'Logging in...' : 'Login'}
             </button>
 
-            <Link href="/forgot-password" className="text-sm text-[#c9a895] hover:underline">
-              Forgot password?
-            </Link>
+
           </div>
         </form>
 

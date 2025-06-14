@@ -57,12 +57,25 @@ const AddProductPage: React.FC = () => {
   const [artist, setArtist] = useState<string>('');
   const [isDragActive, setIsDragActive] = useState<boolean>(false);
 
+  
   // Clean up object URLs when component unmounts
   useEffect(() => {
     return () => {
       images.forEach(image => URL.revokeObjectURL(image.url));
     };
   }, [images]);
+  
+  const [token, setToken] = useState<string>("");
+  useEffect(() => { 
+    // Fetch token from localStorage or any other secure storage
+    const storedToken = sessionStorage.getItem('token');
+    if (storedToken) {
+      setToken(storedToken);
+    } else {
+      console.error('No token found');
+      router.push('/login'); // Redirect to login if no token
+    }
+  }, []);
 
   // Optimized function to add image files
   const addImageFiles = useCallback((files: File[]) => {
@@ -137,14 +150,19 @@ const AddProductPage: React.FC = () => {
     setError('');
 
     try {
+      
+      const url = await artPieceService.uploadImageToBlob(images[0].file);
+
+      console.log(`url of the newly created image ${url}`);
+
       await artPieceService.uploadNewArtPiece({
-        images: images.map(img => img.file),
         title,
         description,
         artist,
         price: parseFloat(price) || 0,
         year: parseInt(year, 10) || new Date().getFullYear(),
         tags,
+        url: url
       });
 
       router.push('/');

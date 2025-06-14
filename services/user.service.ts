@@ -19,12 +19,14 @@ const login = async (username: string, password: string) => {
     throw new Error("Failed to login");
   }
 
-  const { token, username: actualUsername, role } = await response.json();
+
+  const { token, username: actualUsername, role, userId } = await response.json();
 
   return {
     token,
     username: actualUsername,
     role,
+    userId
   };
 };
 
@@ -48,12 +50,13 @@ const register = async (
       throw new Error("Failed to register");
     }
 
-    const { token, username: actualUsername, role } = await response.json();
+    const { token, username: actualUsername, role, userId } = await response.json();
 
     return {
       token,
       username: actualUsername,
       role,
+      userId
     };
   } catch (error) {
     console.error("Registration error:", error);

@@ -3,6 +3,7 @@ import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import userService from '../../services/user.service';
 import { HeartCrack, HeartIcon } from 'lucide-react';
+import { useRouter } from 'next/router';
 
 interface ArtPiece {
   id: string;
@@ -13,6 +14,7 @@ interface ArtPiece {
   tags: string[];
   year: number;
   url: string;
+  publishOnMarket: boolean;
   createdAt: string;
 }
 
@@ -24,6 +26,20 @@ const LikedItemsPage: React.FC = () => {
   const [likedItems, setLikedItems] = useState<LikedItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
+
+  const router = useRouter();
+
+  const [token, setToken] = useState<string>("");
+    useEffect(() => { 
+      // Fetch token from localStorage or any other secure storage
+      const storedToken = sessionStorage.getItem('token');
+      if (storedToken) {
+        setToken(storedToken);
+      } else {
+        console.error('No token found');
+        router.push('/login'); // Redirect to login if no token
+      }
+    }, []);
 
   const fetchProducts = async () => {
     const token = sessionStorage.getItem("token");
@@ -144,7 +160,7 @@ const LikedItemsPage: React.FC = () => {
                     
                     <div className="pt-4">
                       <Link
-                        href={`/art/${art.id}`}
+                        href={`/product/${art.id}`}
                         className="text-sm block border border-[#B69985] text-[#8A5A3B] py-2 px-4 text-center hover:bg-[#B69985] hover:text-[#F4EFE7] transition-colors"
                       >
                         View

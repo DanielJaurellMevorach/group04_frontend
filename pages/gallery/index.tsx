@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import service from '../../services/artPiece.service';
-import useSWR from 'swr';
 import Navbar from '@/components/navbar';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
@@ -9,35 +8,43 @@ import Link from 'next/link';
 const AllProductPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedArtist, setSelectedArtist] = useState('');
+  const [data, setData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const fetcher = async () => {
-    try {
-      // This already returns parsed JSON!
-      const result = await service.getAllProducts();
-      console.log("Parsed JSON result:", result);
+  useEffect(() => {
+    const fetchProducts = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const result = await service.getAllProducts();
+        console.log("Parsed JSON result:", result);
 
-      // Unwrap nested structure if needed
-      if (result.artPieces && Array.isArray(result.artPieces.artPieces)) {
-        console.log("Returning result.artPieces.artPieces:", result.artPieces.artPieces);
-        return result.artPieces.artPieces;
+        let artPieces: any[] = [];
+        if (result.artPieces && Array.isArray(result.artPieces.artPieces)) {
+          console.log("Returning result.artPieces.artPieces:", result.artPieces.artPieces);
+          artPieces = result.artPieces.artPieces;
+        } else if (Array.isArray(result.artPieces)) {
+          console.log("Returning result.artPieces:", result.artPieces);
+          artPieces = result.artPieces;
+        } else if (Array.isArray(result)) {
+          console.log("Returning result:", result);
+          artPieces = result;
+        } else {
+          console.log("Returning empty array");
+          artPieces = [];
+        }
+        setData(artPieces);
+      } catch (e) {
+        console.error("Error in fetcher:", e);
+        setError("Failed to load art pieces");
+      } finally {
+        setLoading(false);
       }
-      if (Array.isArray(result.artPieces)) {
-        console.log("Returning result.artPieces:", result.artPieces);
-        return result.artPieces;
-      }
-      if (Array.isArray(result)) {
-        console.log("Returning result:", result);
-        return result;
-      }
-      console.log("Returning empty array");
-      return [];
-    } catch (e) {
-      console.error("Error in fetcher:", e);
-      throw e;
-    }
-  };
+    };
 
-  const { data, isLoading, error } = useSWR('artPieces', fetcher);
+    fetchProducts();
+  }, []);
 
   const artists = [...new Set(data?.map((piece: any) => piece.artist))];
 
@@ -49,14 +56,12 @@ const AllProductPage: React.FC = () => {
       selectedArtist ? artPiece.artist === selectedArtist : true
     );
 
-  if (isLoading) return <p className="text-center text-[#A67C52] mt-10">Loading...</p>;
+  if (loading) return <p className="text-center text-[#A67C52] mt-10">Loading...</p>;
   if (error) return (
     <>
-      <p className="text-center text-[#B78370] mt-10">Failed to load art pieces</p>
-      {console.error("Error fetching art pieces:", error)}
+      <p className="text-center text-[#B78370] mt-10">{error}</p>
     </>
-  )
-
+  );
 
   return (
     <div className="min-h-screen bg-[#F9F2EA] text-[#8A5A3B]">
@@ -65,9 +70,7 @@ const AllProductPage: React.FC = () => {
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-[#F9F2EA]/90 z-10"></div>
         </div>
-
         <div className="container relative z-20 mx-auto px-4 py-2 md:py-2"></div>
-
       </section>
 
       <div className="container mx-auto px-4 py-24 md:py-32">
