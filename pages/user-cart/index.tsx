@@ -31,7 +31,6 @@ const UserCartPage: React.FC = () => {
     e: React.MouseEvent<HTMLElement, globalThis.MouseEvent>,
     product: any[] // explicitly an array
   ) => {
-    e.preventDefault();
     sessionStorage.setItem("checkoutItem", JSON.stringify([product]));
     window.location.href = "/checkout";
   };
