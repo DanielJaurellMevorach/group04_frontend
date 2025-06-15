@@ -121,6 +121,8 @@ export default function ConfirmationPage() {
   return `${month} ${start.getDate()}-${end.getDate()}, ${year}`;
 }
 
+const [deliveryDateRange, setDeliveryDateRange] = useState<string>(getDeliveryDateRangeString());
+
   // Process transfers when all costs are calculated
   useEffect(() => {
     if (orderItems.length > 0 && total > 0) {
@@ -130,7 +132,7 @@ export default function ConfirmationPage() {
           orderItems,
           shipping,
           orderDate,
-          getDeliveryDateRangeString() 
+          deliveryDateRange
         );
       }, 1000);
 
@@ -245,7 +247,7 @@ export default function ConfirmationPage() {
                   <Separator className="bg-[#E8D7C9]" />
                   <div className="flex justify-between">
                     <span className="text-[#A67C52]">Estimated Delivery</span>
-                    <span className="text-[#8A5A3B] font-medium">July 15-17, 2025</span>
+                    <span className="text-[#8A5A3B] font-medium">{deliveryDateRange}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-[#A67C52]">Tracking Number</span>
