@@ -50,13 +50,13 @@ const register = async (
       throw new Error("Failed to register");
     }
 
-    const { token, username: actualUsername, role, userId } = await response.json();
+    const { token, username: actualUsername, role, id } = await response.json();
 
     return {
       token,
       username: actualUsername,
       role,
-      userId
+      id
     };
   } catch (error) {
     console.error("Registration error:", error);

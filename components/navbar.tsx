@@ -23,6 +23,10 @@ const Navbar = () => {
   
   const logoutHandler = () => {
     sessionStorage.removeItem("token");
+    sessionStorage.removeItem("username");
+    sessionStorage.removeItem("userId");
+    sessionStorage.removeItem("role");
+
     setIsMenuOpen(false);
     setIsLogged(false);
   }
