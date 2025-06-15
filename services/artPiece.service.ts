@@ -216,7 +216,7 @@ const getProductsToSellByUser = async (userId: string) => {
     // );
     artPieces = result.artPieces.artPieces;
   } else if (Array.isArray(result.artPieces)) {
-    console.log("Returning result.artPieces:", result.artPieces);
+    console.log(result.artPieces);
     artPieces = result.artPieces;
   } else if (Array.isArray(result)) {
     console.log("Returning result:", result);
@@ -231,15 +231,7 @@ const getProductsToSellByUser = async (userId: string) => {
     throw new Error("Invalid response format from getAllProducts");
   }
 
-  const productsToSell = artPieces.filter(
-    (product: any) => product.userId === userId
-  );
-
-  if (productsToSell.length === 0) {
-    throw new Error(`No products found for user: ${userId}`);
-  }
-
-  return productsToSell;
+  return artPieces;
 };
 
 const addProductToUsersCart = async (productId: string, token: string) => {
