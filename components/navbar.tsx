@@ -74,12 +74,12 @@ const Navbar = () => {
               >
                 DISCOVER
               </Link>
-              <Link
+              {/* <Link
                 className="px-3 py-2 text-sm tracking-wider hover:text-[#C8977F] transition-colors duration-200"
                 href={""}
               >
                 ARTISTS
-              </Link>
+              </Link> */}
               <Link
                 className="px-3 py-2 text-sm tracking-wider hover:text-[#C8977F] transition-colors duration-200"
                 href={"/about"}
@@ -144,13 +144,13 @@ const Navbar = () => {
               >
                 DISCOVER
               </Link>
-              <Link
+              {/* <Link
                 className="px-4 py-3 text-sm tracking-wider hover:text-[#C8977F] hover:bg-[#F3EAE0] transition-colors duration-200"
                 href={""}
                 onClick={() => setIsMenuOpen(false)}
               >
                 ARTISTS
-              </Link>
+              </Link> */}
               <Link
                 className="px-4 py-3 text-sm tracking-wider hover:text-[#C8977F] hover:bg-[#F3EAE0] transition-colors duration-200"
                 href={"/about"}
