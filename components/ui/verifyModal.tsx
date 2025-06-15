@@ -1,4 +1,5 @@
 "use client"
+import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 
 interface VerifyModalProps {
@@ -7,6 +8,7 @@ interface VerifyModalProps {
 }
 
 const VerifyModal: React.FC<VerifyModalProps> = ({ functionality, onClose }) => {
+    const router = useRouter();
   // Disable scrolling when modal opens
   useEffect(() => {
     // Save original overflow setting
@@ -51,7 +53,10 @@ const VerifyModal: React.FC<VerifyModalProps> = ({ functionality, onClose }) => 
             <p className="mb-3">You cannot <span className=" text-[#B78370] font-bold">{functionality}</span> until your account is verified.</p>
             <p className="mb-3">Please check your email to verify your account.</p>
             <p className="text-sm text-[#B78370]">You might need to log out and log back in after verifying your email.</p>
-          </div>
+            <p className="text-sm text-[#B78370] mt-2">Not a member yet? <span className="text-[#B78370] font-bold" onClick={
+              () => router.push('/register')
+            }>Sign up!</span></p>
+            </div>
           
           {/* Actions */}
           <div className="flex justify-end gap-3">
