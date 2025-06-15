@@ -1,6 +1,6 @@
 "use client"
 
-import { HeartIcon, Menu, PackageOpen, ShoppingBag, X } from "lucide-react"
+import { HeartIcon, LayoutDashboard, Menu, PackageOpen, ShoppingBag, X } from "lucide-react"
 import Link from "next/link"
 import { useEffect, useState } from "react"
 
@@ -9,6 +9,7 @@ const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isLogged,setIsLogged] = useState(false);
   const [userName, setUserName] = useState<string>("");
+  const [isAdmin,setIsAdmin] = useState(false);
   // console.log(userService.decodeJWT(sessionStorage.getItem("token")+"1" || ""));
 
   useEffect(() => {
@@ -18,6 +19,9 @@ const Navbar = () => {
     const user = sessionStorage.getItem("username");
     if (user) {
       setUserName(user);
+    }
+    if(sessionStorage.getItem("role") === "admin") {
+      setIsAdmin(true);
     }
   }, [])
   
@@ -29,10 +33,11 @@ const Navbar = () => {
 
     setIsMenuOpen(false);
     setIsLogged(false);
+    setIsAdmin(false);
   }
 
   return (
-    <header className="w-full bg-[#F9F2EA] text-[#A67C52] font-normal top-0 z-50 shadow-sm">
+    <header className="w-full bg-[#F9F2EA] text-[#A67C52] font-normal top-0 z-50">
       <div className="flex flex-col justify-center items-center w-full max-w-7xl mx-auto px-4">
         {/* Logo */}
         <div className="py-4 md:py-6">
@@ -114,6 +119,12 @@ const Navbar = () => {
                 <PackageOpen href="/users-art" className="h-5 w-5" />
                 </Link>
               </button>
+              {isAdmin &&               
+              <button aria-label="Admin Dashboard" className="p-2 hover:text-[#C8977F] transition-colors duration-200">
+                <Link href="/admin">
+                <LayoutDashboard  href="/admin" className="h-5 w-5"/>
+                </Link>
+              </button>}
               <Link
                   href="/"
                   className="bg-[#C8977F] hover:bg-[#B78370] text-white border-none rounded-none p-1.5"
@@ -175,6 +186,12 @@ const Navbar = () => {
                   <PackageOpen href="/users-art" className="h-5 w-5" />
                   </Link>
                 </button>
+                {isAdmin &&               
+              <button aria-label="Admin Dashboard" className="p-2 hover:text-[#C8977F] transition-colors duration-200">
+                <Link href="/admin">
+                <LayoutDashboard  href="/admin" className="h-5 w-5"/>
+                </Link>
+              </button>}
                 </div>
 
                 {!isLogged ?

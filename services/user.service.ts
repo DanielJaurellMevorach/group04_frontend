@@ -301,6 +301,36 @@ const getUsersArtPieces = async (token: string) => {
   }
 };
 
+
+const getAllUsers = async (token : string | null) => {
+  const url = process.env.NEXT_PUBLIC_GET_ALL_USERS_URL_DASHBOARD;
+
+  try {
+    const response = await fetch(
+      `${url}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch users");
+    }
+
+    // console.log("Response from getAllProducts:", response);
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    throw new Error("Failed to fetch users");
+  }
+};
+
 const decodeJWT = (token: string) => {
   if (!token) {
     return null;
@@ -336,6 +366,7 @@ const userService = {
   toggleLikeItem,
   toggleCartItem,
   getUsersArtPieces,
+  getAllUsers
 };
 
 export default userService;
