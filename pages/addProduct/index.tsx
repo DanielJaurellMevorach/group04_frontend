@@ -165,7 +165,7 @@ const AddProductPage: React.FC = () => {
         url: url
       });
 
-      router.push('/');
+      router.push('/users-art');
     } catch (err) {
       console.error(err);
       setError('Failed to upload art piece. Please try again.');
