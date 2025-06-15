@@ -28,7 +28,7 @@ const UserCartPage: React.FC = () => {
   const [error, setError] = useState<string>('');
 
   const handlePayment = (
-    e: React.MouseEvent<HTMLButtonElement, globalThis.MouseEvent>,
+    e: React.MouseEvent<HTMLElement, globalThis.MouseEvent>,
     product: any[] // explicitly an array
   ) => {
     e.preventDefault();
@@ -89,15 +89,33 @@ const UserCartPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#F4EFE7] text-[#655A4A]">
-      <Navbar />
+        <Navbar />
+
+  <div className="max-w-screen-xl mx-auto p-8 pt-10">
+    <div className="max-w-6xl mx-auto">
       
-      <div className="max-w-screen-xl mx-auto p-8 pt-12">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex items-center mb-12">
-            <ShoppingCart className="h-7 w-7 text-[#B69985] mr-3" />
-            <h1 className="text-3xl font-light tracking-wide">Your Shopping Cart</h1>
-          </div>
-          
+      {/* Updated header for perfect horizontal alignment */}
+      <header className="flex items-center mb-12 justify-between">
+        <div className="flex items-center">
+          <ShoppingCart className="h-7 w-7 text-[#B69985] mr-3" />
+          <h1 className="text-3xl font-light tracking-wide">Your Shopping Cart</h1>
+        </div>
+        <Link
+          href="/checkout"
+          className="border border-[#B69985] text-[#B69985] px-5 py-3 hover:bg-[#B69985]/10 transition-colors"
+          onClick={(e) => {
+            if (cartItems.length === 0) {
+              e.preventDefault();
+              alert("Your cart is empty. Please add items before proceeding to checkout.");
+            } else {
+              handlePayment(e, cartItems);
+            }
+          }}
+        >
+          Buy Cart
+        </Link>
+      </header>
+
           {loading && (
             <div className="flex justify-center py-16">
               <div className="animate-pulse space-y-6 w-full max-w-md">
@@ -173,10 +191,10 @@ const UserCartPage: React.FC = () => {
               );
             })}
           </div>
-          <div className='flex justify-center'> 
+          {/* <div className='flex justify-center'> 
 
                     <Button className='' onClick={(e) => handlePayment(e, cartItems)}>BUY NOW</Button>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
