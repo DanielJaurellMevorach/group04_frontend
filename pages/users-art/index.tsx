@@ -153,7 +153,7 @@ const UsersArt: React.FC = () => {
                   <div className="flex justify-between items-center">
                     <h2 className="font-light text-lg line-clamp-1">{art.title}</h2>
                     <span className="text-[#9D7A64] font-light text-sm">
-                      {formatPrice(art.price)} €
+                      {Number(art.price).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €
                     </span>
                   </div>
                   <p className="text-xs text-[#9D7A64]">

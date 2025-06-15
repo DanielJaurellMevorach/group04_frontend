@@ -127,7 +127,7 @@ const AllProductPage: React.FC = () => {
                 <p className="text-sm text-[#A67C52]">Year: {artPiece.year}</p>
                 <div className='flex w-full justify-between'>
                   <p className="text-sm text-[#8A5A3B] font-medium mt-2">
-                    {artPiece.price.toLocaleString()} €
+                    {Number(artPiece.price).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €
                   </p>
                   <Link href={`/product/${artPiece.id}`}>
                     <Button size="sm" className="bg-[#C8977F] hover:bg-[#B78370] text-white border-none rounded-none cursor-pointer">

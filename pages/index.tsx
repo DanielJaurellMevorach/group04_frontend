@@ -114,7 +114,7 @@ const getProducts = async () => {
                     {/* <span className="font-medium">${item.price}</span> */}
                     {/* €{formatPrice(art.price)} */}
                     <span className="font-medium text-[#A67C52]">
-                      {formatPrice(item.price)} €
+                      {Number(item.price).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €
                     </span>
                     <Button size="sm" className="bg-[#C8977F] hover:bg-[#B78370] text-white border-none rounded-none cursor-pointer">
                       More info
@@ -154,11 +154,11 @@ const getProducts = async () => {
                 combine vibrant colors with powerful symbolism, creating works that are both visually striking and
                 deeply meaningful.
               </p>
-              <Button className="bg-[#C8977F] hover:bg-[#B78370] text-white border-none rounded-none">
+              {/* <Button className="bg-[#C8977F] hover:bg-[#B78370] text-white border-none rounded-none">
                 <Link href={'/gallery'}>
                   View Collection
                 </Link>
-              </Button>
+              </Button> */}
             </div>
           </div>
         </div>

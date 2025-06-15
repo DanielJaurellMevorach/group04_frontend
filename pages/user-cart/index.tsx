@@ -99,7 +99,23 @@ const UserCartPage: React.FC = () => {
           <ShoppingCart className="h-7 w-7 text-[#B69985] mr-3" />
           <h1 className="text-3xl font-light tracking-wide">Your Shopping Cart</h1>
         </div>
-        <Link
+        {/* <Link
+          href="/checkout"
+          className="border border-[#B69985] text-[#B69985] px-5 py-3 hover:bg-[#B69985]/10 transition-colors"
+          onClick={(e) => {
+            if (cartItems.length === 0) {
+              e.preventDefault();
+              alert("Your cart is empty. Please add items before proceeding to checkout.");
+            } else {
+              handlePayment(e, cartItems);
+            }
+          }}
+        >
+          Buy Cart
+        </Link> */}
+        {/* only show if at least one item in cart */}
+        {cartItems.length > 0 && (
+          <Link
           href="/checkout"
           className="border border-[#B69985] text-[#B69985] px-5 py-3 hover:bg-[#B69985]/10 transition-colors"
           onClick={(e) => {
@@ -113,6 +129,7 @@ const UserCartPage: React.FC = () => {
         >
           Buy Cart
         </Link>
+        )}
       </header>
 
           {loading && (
@@ -169,7 +186,7 @@ const UserCartPage: React.FC = () => {
                     <div className="flex justify-between items-start">
                       <h2 className="font-light text-lg tracking-wide line-clamp-1">{art.title}</h2>
                       <div className="text-[#9D7A64] font-light text-sm">
-                        {formatPrice(art.price)} €
+                        {Number(art.price).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €
                       </div>
                     </div>
                     

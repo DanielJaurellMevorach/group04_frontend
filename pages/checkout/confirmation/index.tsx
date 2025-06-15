@@ -306,7 +306,7 @@ const [deliveryDateRange, setDeliveryDateRange] = useState<string>(getDeliveryDa
                       </div>
                       <div className="text-right">
                         <p className="font-medium text-[#8A5A3B]">
-                          {formatPrice(item.artPiece.price)} €
+                          {Number(item.artPiece.price).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €
                         </p>
                       </div>
                     </div>
@@ -317,20 +317,20 @@ const [deliveryDateRange, setDeliveryDateRange] = useState<string>(getDeliveryDa
                   <div className="space-y-2">
                     <div className="flex justify-between text-sm">
                       <span className="text-[#A67C52]">Subtotal</span>
-                      <span className="text-[#8A5A3B]">{formatPrice(subTotal)} €</span>
+                      <span className="text-[#8A5A3B]">{Number(subTotal).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €</span>
                     </div>
                     <div className="flex justify-between text-sm">
                       <span className="text-[#A67C52]">Shipping</span>
-                      <span className="text-[#8A5A3B]">{formatPrice(shipping)} €</span>
+                      <span className="text-[#8A5A3B]">{Number(shipping).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €</span>
                     </div>
                     <div className="flex justify-between text-sm">
                       <span className="text-[#A67C52]">Tax</span>
-                      <span className="text-[#8A5A3B]">{formatPrice(tax)} €</span>
+                      <span className="text-[#8A5A3B]">{Number(tax).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €</span>
                     </div>
                     <Separator className="bg-[#E8D7C9]" />
                     <div className="flex justify-between text-lg font-medium">
                       <span className="text-[#8A5A3B]">Total</span>
-                      <span className="text-[#8A5A3B]">{formatPrice(total)} €</span>
+                      <span className="text-[#8A5A3B]">{Number(total).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €</span>
                     </div>
                   </div>
                 </CardContent>
