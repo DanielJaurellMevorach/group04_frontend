@@ -114,7 +114,7 @@ const getProducts = async () => {
                     {/* <span className="font-medium">${item.price}</span> */}
                     {/* €{formatPrice(art.price)} */}
                     <span className="font-medium text-[#A67C52]">
-                      €{formatPrice(item.price)}
+                      {formatPrice(item.price)} €
                     </span>
                     <Button size="sm" className="bg-[#C8977F] hover:bg-[#B78370] text-white border-none rounded-none cursor-pointer">
                       More info
