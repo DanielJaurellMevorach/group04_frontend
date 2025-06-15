@@ -81,51 +81,67 @@ const getProducts = async () => {
       </section>
 
       {/* Featured Artworks */}
-      <section className="py-16 md:py-24">
-        <div className="container mx-auto px-4">
-          <div className="flex justify-between items-end mb-12">
-            <h2 className="text-2xl md:text-3xl font-light tracking-wider">
-              Featured <span className="font-medium">Artworks</span>
-            </h2>
-            <Link href="/gallery" className="flex items-center text-[#C8977F] hover:text-[#B78370] transition-colors">
-              View all <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
-          </div>
+<section className="py-8 md:py-12">
+  <div className="container mx-auto px-4">
+    <div className="flex justify-between items-end mb-6">
+      <h2 className="text-2xl md:text-3xl font-light tracking-wider">
+        Featured <span className="font-medium">Artworks</span>
+      </h2>
+      <Link href="/gallery" className="flex items-center text-[#C8977F] hover:text-[#B78370] transition-colors">
+        View all <ArrowRight className="ml-2 h-4 w-4" />
+      </Link>
+    </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
-            {isLoading ? (
-              <p>Loading.......</p>
-            ) : error ? (
-              <p>{error}</p>
-            ) : (
-              Array.isArray(data) && data.slice(0, 4).map((item) => (
-
-                <div key={item.id} className="group hover:bg-[#EFE6DC] duration-100 cursor-pointer p-2">
-                  <div className="relative w-full h-60 overflow-hidden">
-                    <img
-                      src={item.url}
-                      alt={`Featured Artwork ${item.title}`}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <h3 className="font-medium">{item.title}</h3>
-                  <p className="text-sm text-[#A67C52] mb-2">{item.artist}</p>
-                  <div className="flex justify-between items-center">
-                    {/* <span className="font-medium">${item.price}</span> */}
-                    {/* €{formatPrice(art.price)} */}
-                    <span className="font-medium text-[#A67C52]">
-                      €{formatPrice(item.price)}
-                    </span>
-                    <Button size="sm" className="bg-[#C8977F] hover:bg-[#B78370] text-white border-none rounded-none cursor-pointer">
-                      More info
-                    </Button>
+    <div className="grid grid-cols-4 gap-4">
+      {isLoading ? (
+        <p>Loading.......</p>
+      ) : error ? (
+        <p>{error}</p>
+      ) : (
+        Array.isArray(data) && 
+        [...data] // Create a copy of the array
+          .sort(() => 0.5 - Math.random()) // Randomize order
+          .slice(0, 4) // Take only 4 items
+          .map((item) => (
+            <div
+              key={item.id}
+              className="bg-[#EFE5DD] overflow-hidden group transition-all duration-300"
+            >
+              <div className="relative aspect-[1/1] overflow-hidden">
+                <img
+                  src={item.url}
+                  alt={item.title}
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+              </div>
+              
+              <div className="p-3 space-y-1">
+                <div className="flex justify-between items-start">
+                  <h2 className="font-light text-sm tracking-wide line-clamp-1">{item.title}</h2>
+                  <div className="text-[#9D7A64] font-light text-xs">
+                    {Number(item.price).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €
                   </div>
                 </div>
-              ))
-            )}
-          </div>
-        </div>
-      </section>
+                
+                <p className="text-xs text-[#9D7A64] truncate">
+                  {item.artist}
+                </p>
+                
+                <div className="pt-2">
+                  <Link
+                    href={`/product/${item.id}`}
+                    className="text-xs block border border-[#B69985] text-[#8A5A3B] py-1 px-2 text-center hover:bg-[#B69985] hover:text-[#F4EFE7] transition-colors"
+                  >
+                    View
+                  </Link>
+                </div>
+              </div>
+            </div>
+          ))
+      )}
+    </div>
+  </div>
+</section>
 
       {/* Artist Spotlight */}
       <section className="py-16 md:py-24 bg-[#EFE6DC]">
@@ -154,11 +170,11 @@ const getProducts = async () => {
                 combine vibrant colors with powerful symbolism, creating works that are both visually striking and
                 deeply meaningful.
               </p>
-              <Button className="bg-[#C8977F] hover:bg-[#B78370] text-white border-none rounded-none">
+              {/* <Button className="bg-[#C8977F] hover:bg-[#B78370] text-white border-none rounded-none">
                 <Link href={'/gallery'}>
                   View Collection
                 </Link>
-              </Button>
+              </Button> */}
             </div>
           </div>
         </div>

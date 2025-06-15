@@ -150,7 +150,7 @@ const LikedItemsPage: React.FC = () => {
                     <div className="flex justify-between items-start">
                       <h2 className="font-light text-lg tracking-wide line-clamp-1">{art.title}</h2>
                       <div className="text-[#9D7A64] font-light text-sm">
-                        €{formatPrice(art.price)}
+                        {Number(art.price).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €
                       </div>
                     </div>
                     

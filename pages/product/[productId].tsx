@@ -10,6 +10,7 @@ import Navbar from '@/components/navbar';
 import artPieceService from '@/services/artPiece.service';
 import { useRouter } from 'next/router';
 import userService from '@/services/user.service';
+import VerifyModal from '@/components/ui/verifyModal';
 
 const SingleProductPage: React.FC = () => {
   const productImages = [paintingImage1, paintingImage2];
@@ -21,10 +22,16 @@ const SingleProductPage: React.FC = () => {
   const [isHoveringArrow, setIsHoveringArrow] = useState(false);
   const imageRef = useRef<HTMLDivElement>(null);
 
+  const [isVerified, setIsVerified] = useState(false);
+
   // Authentication state
   const [isLogged, setIsLogged] = useState(false);
   const [userName, setUserName] = useState<string>("");
   const [token, setToken] = useState<string>("");
+
+  // Modal state
+  const [showVerifyModal, setShowVerifyModal] = useState(false);
+  const [modalFunctionality, setModalFunctionality] = useState("");
 
   // Cart and favorites state
   const [userCart, setUserCart] = useState<any[]>([]);
@@ -59,6 +66,8 @@ const SingleProductPage: React.FC = () => {
     if (user) {
       setUserName(user);
     }
+
+    setIsVerified(userService.decodeJWT(sessionStorage.getItem("token") || "")?.isVerified || false);
   }, []);
 
   const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
@@ -209,25 +218,41 @@ const SingleProductPage: React.FC = () => {
     fetchCartAndLiked();
   }, [fetchCartAndLiked]);
 
+  // Helper function to check verification and show modal if needed
+  const checkVerificationAndExecute = (functionality: string, callback: () => void) => {
+    if (!isVerified) {
+      setModalFunctionality(functionality);
+      setShowVerifyModal(true);
+      return;
+    }
+    callback();
+  };
+
   // Handlers
   const handleCartClick = async () => {
     if (!data?.id) return;
-    try {
-      await artPieceService.addProductToUsersCart(data.id, token);
-      await fetchCartAndLiked();
-    } catch (e) {
-      console.error(e);
-    }
+    
+    checkVerificationAndExecute("add items to cart", async () => {
+      try {
+        await artPieceService.addProductToUsersCart(data.id, token);
+        await fetchCartAndLiked();
+      } catch (e) {
+        console.error(e);
+      }
+    });
   };
 
   const handleFavoriteClick = async () => {
     if (!data?.id) return;
-    try {
-      await artPieceService.addToLikedItems(data.id, token);
-      await fetchCartAndLiked();
-    } catch (e) {
-      console.error(e);
-    }
+    
+    checkVerificationAndExecute("add items to favorites", async () => {
+      try {
+        await artPieceService.addToLikedItems(data.id, token);
+        await fetchCartAndLiked();
+      } catch (e) {
+        console.error(e);
+      }
+    });
   };
 
   // Payment handler - from first file
@@ -238,12 +263,25 @@ const SingleProductPage: React.FC = () => {
     window.location.href = "/checkout";
   };
 
+  const handleCloseModal = () => {
+    setShowVerifyModal(false);
+    setModalFunctionality("");
+  };
+
   if (isLoading) return <p className="text-center py-10">Loading...</p>;
   if (error) return <p className="text-center py-10 text-[#B78370]">Error: {error.message}</p>;
 
   return (
     <div className="min-h-screen bg-[#F9F2EA] text-[#8A5A3B]">
       <Navbar />
+
+      {/* Verify Modal */}
+      {showVerifyModal && (
+        <VerifyModal 
+          functionality={modalFunctionality} 
+          onClose={handleCloseModal} 
+        />
+      )}
 
       {isLoading ? (
         <p className="text-center py-10">Loading...</p>

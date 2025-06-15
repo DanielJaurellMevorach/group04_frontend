@@ -16,6 +16,11 @@ export default function ConfirmationPage() {
     day: "numeric",
   })
 
+  const [shipping, setShipping] = useState<number>(0);
+  const [tax, setTax] = useState<number>(0);
+  const [subTotal, setSubTotal] = useState<number>(0); 
+  const [total, setTotal] = useState<number>(0);
+
   const [orderItems, setOrderItems] = useState<any[]>([]);
   const [transferStatus, setTransferStatus] = useState<'pending' | 'processing' | 'completed' | 'error'>('pending');
   const [transferError, setTransferError] = useState<string>('');
@@ -26,58 +31,27 @@ export default function ConfirmationPage() {
       ? p.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
       : '';
 
-  // // Process all art piece transfers
-  // const processTransfers = async (items: any[]) => {
-  //   if (!items || items.length === 0) return;
-
-  //   setTransferStatus('processing');
-  //   const artPieces = items.flat();
-  //   const processed = new Set<string>();
-    
-  //   try {
-  //     const combinedSubtotal = artPieces.reduce((sum, item) => sum + (item.artPiece?.price || 0), 0);
-  //     artPieceService.transferArtPiece(
-  //       artPieces.map(item => item.artPiece?.id || ''), 
-  //       total,
-  //       combinedSubtotal,
-  //       tax,
-  //       shipping,
-  //       orderDate,
-  //       deliveryDate
-  //     );
-      
-  //     setTransferStatus('completed');
-  //     console.log('All transfers completed successfully');
-  //   } catch (error) {
-  //     console.error('Transfer process failed:', error);
-  //     setTransferError(error instanceof Error ? error.message : 'Unknown error occurred');
-  //     setTransferStatus('error');
-  //   }
-  // };
-
   const processArtPieces = async (
-  items: any[],
-  
-  shipping: number,
-  orderDate: string,
-  deliveryDate: string
-) => {
-  if (!items || items.length === 0) return;
+    items: any[],
+    shipping: number,
+    orderDate: string,
+    deliveryDate: string
+  ) => {
+    if (!items || items.length === 0) return;
 
-  setTransferStatus('processing');
-  const artPieces = items.flat();
-  const artPieceIds: string[] = [];
-  const subtotals: number[] = [];
+    setTransferStatus('processing');
+    const artPieces = items.flat();
+    const artPieceIds: string[] = [];
+    const subtotals: number[] = [];
 
-  for (const item of artPieces) {
-    if (item.artPiece?.id) {
-      artPieceIds.push(item.artPiece.id);
-      subtotals.push(item.artPiece.price || 0);
+    for (const item of artPieces) {
+      if (item.artPiece?.id) {
+        artPieceIds.push(item.artPiece.id);
+        subtotals.push(item.artPiece.price || 0);
+      }
     }
-  }
 
-  try {
-    await artPieceService.transferArtPiece(
+    console.log("processing with parameters:", {
       artPieceIds,
       total,
       subtotals,
@@ -85,43 +59,86 @@ export default function ConfirmationPage() {
       shipping,
       orderDate,
       deliveryDate
-    );
-    setProcessedItems(new Set(artPieceIds));
-    setTransferStatus('completed');
-    console.log('All transfers completed successfully');
-  } catch (error) {
-    console.error('Transfer process failed:', error);
-    setTransferError(error instanceof Error ? error.message : 'Unknown error occurred');
-    setTransferStatus('error');
-  }
-};
+    })
 
+    try {
+      await artPieceService.transferArtPiece(
+        artPieceIds,
+        total,
+        subtotals,
+        tax,
+        shipping,
+        orderDate,
+        deliveryDate
+      );
+      setProcessedItems(new Set(artPieceIds));
+      setTransferStatus('completed');
+      console.log('All transfers completed successfully');
+    } catch (error) {
+      console.error('Transfer process failed:', error);
+      setTransferError(error instanceof Error ? error.message : 'Unknown error occurred');
+      setTransferStatus('error');
+    }
+  };
 
-const subtotal = orderItems
-.flat()
-.reduce((sum, item) => sum + (item.artPiece?.price || 0), 0);
-const shipping = 3492.99; 
-const tax = subtotal * 0.04
-const total = subtotal + shipping + tax
+  // Load order items from sessionStorage
+  useEffect(() => {
+    const stored = sessionStorage.getItem("checkoutItem");
+    const parsed = stored ? JSON.parse(stored) : [];
+    setOrderItems(parsed);
+  }, []);
 
-useEffect(() => {
-const stored = sessionStorage.getItem("checkoutItem");
-const parsed = stored ? JSON.parse(stored) : [];
-setOrderItems(parsed);
+  // Calculate costs when orderItems change
+  useEffect(() => {
+    if (orderItems.length > 0) {
+      const calculatedSubTotal = orderItems
+        .flat()
+        .reduce((sum, item) => sum + (item.artPiece?.price || 0), 0);
+      
+      const calculatedShipping = 3492.99;
+      const calculatedTax = calculatedSubTotal * 0.04;
+      const calculatedTotal = calculatedSubTotal + calculatedShipping + calculatedTax;
 
-// Process transfers after items are loaded
-if (parsed && parsed.length > 0) {
-  // Small delay to ensure the confirmation page renders first
-  setTimeout(() => {
-    processArtPieces(
-      parsed,
-      shipping,
-      orderDate,
-      "July 15-17, 2025" // or your actual delivery date logic
-    );
-  }, 1000);
+      setSubTotal(calculatedSubTotal);
+      setShipping(calculatedShipping);
+      setTax(calculatedTax);
+      setTotal(calculatedTotal);
+    }
+  }, [orderItems]);
+
+  function getDeliveryDateRangeString(): string {
+  const now = new Date();
+  const start = new Date(now);
+  const end = new Date(now);
+
+  start.setDate(now.getDate() + 5);
+  end.setDate(now.getDate() + 7);
+
+  const options: Intl.DateTimeFormatOptions = { month: 'long' };
+  const month = start.toLocaleDateString('en-US', options);
+  const year = start.getFullYear();
+
+  return `${month} ${start.getDate()}-${end.getDate()}, ${year}`;
 }
-}, []);
+
+const [deliveryDateRange, setDeliveryDateRange] = useState<string>(getDeliveryDateRangeString());
+
+  // Process transfers when all costs are calculated
+  useEffect(() => {
+    if (orderItems.length > 0 && total > 0) {
+      // Small delay to ensure the confirmation page renders first
+      const timer = setTimeout(() => {
+        processArtPieces(
+          orderItems,
+          shipping,
+          orderDate,
+          deliveryDateRange
+        );
+      }, 1000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [orderItems, total, shipping, orderDate]);
 
   const getTransferStatusIcon = () => {
     switch (transferStatus) {
@@ -230,7 +247,7 @@ if (parsed && parsed.length > 0) {
                   <Separator className="bg-[#E8D7C9]" />
                   <div className="flex justify-between">
                     <span className="text-[#A67C52]">Estimated Delivery</span>
-                    <span className="text-[#8A5A3B] font-medium">July 15-17, 2025</span>
+                    <span className="text-[#8A5A3B] font-medium">{deliveryDateRange}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-[#A67C52]">Tracking Number</span>
@@ -289,7 +306,7 @@ if (parsed && parsed.length > 0) {
                       </div>
                       <div className="text-right">
                         <p className="font-medium text-[#8A5A3B]">
-                          €{formatPrice(item.artPiece.price)}
+                          {Number(item.artPiece.price).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €
                         </p>
                       </div>
                     </div>
@@ -300,20 +317,20 @@ if (parsed && parsed.length > 0) {
                   <div className="space-y-2">
                     <div className="flex justify-between text-sm">
                       <span className="text-[#A67C52]">Subtotal</span>
-                      <span className="text-[#8A5A3B]">€{formatPrice(subtotal)}</span>
+                      <span className="text-[#8A5A3B]">{Number(subTotal).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €</span>
                     </div>
                     <div className="flex justify-between text-sm">
                       <span className="text-[#A67C52]">Shipping</span>
-                      <span className="text-[#8A5A3B]">€{formatPrice(shipping)}</span>
+                      <span className="text-[#8A5A3B]">{Number(shipping).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €</span>
                     </div>
                     <div className="flex justify-between text-sm">
                       <span className="text-[#A67C52]">Tax</span>
-                      <span className="text-[#8A5A3B]">€{formatPrice(tax)}</span>
+                      <span className="text-[#8A5A3B]">{Number(tax).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €</span>
                     </div>
                     <Separator className="bg-[#E8D7C9]" />
                     <div className="flex justify-between text-lg font-medium">
                       <span className="text-[#8A5A3B]">Total</span>
-                      <span className="text-[#8A5A3B]">€{formatPrice(total)}</span>
+                      <span className="text-[#8A5A3B]">{Number(total).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €</span>
                     </div>
                   </div>
                 </CardContent>
