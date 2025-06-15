@@ -46,11 +46,16 @@ export default function CheckoutPage() {
   //   },
   // ]
 
+  const formatPrice = (p: number | undefined | null) =>
+    typeof p === 'number' && !isNaN(p)
+      ? p.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+      : '';
+
   const subtotal = orderItems
   .flat()
   .reduce((sum, item) => sum + (item.artPiece?.price || 0), 0);
-  const shipping = 25
-  const tax = subtotal * 0.08
+  const shipping = 3492.99; 
+  const tax = subtotal * 0.04
   const total = subtotal + shipping + tax
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -332,7 +337,8 @@ export default function CheckoutPage() {
                       {/* <p className="text-sm text-[#A67C52]">Qty: {item.quantity}</p> */}
                     </div>
                     <div className="text-right">
-                      <p className="font-medium text-[#8A5A3B]">${item.artPiece.price}</p>
+                      {/* <p className="font-medium text-[#8A5A3B]">${item.artPiece.price}</p> */}
+                      <p className="font-medium text-[#8A5A3B]">€{formatPrice(item.artPiece.price)}</p>
                     </div>
                   </div>
                 ))}
@@ -342,20 +348,20 @@ export default function CheckoutPage() {
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm">
                     <span className="text-[#A67C52]">Subtotal</span>
-                    <span className="text-[#8A5A3B]">${subtotal}</span>
+                    <span className="text-[#8A5A3B]">€{formatPrice(subtotal)}</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-[#A67C52]">Shipping</span>
-                    <span className="text-[#8A5A3B]">${shipping}</span>
+                    <span className="text-[#8A5A3B]">€{formatPrice(shipping)}</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-[#A67C52]">Tax</span>
-                    <span className="text-[#8A5A3B]">${tax.toFixed(2)}</span>
+                    <span className="text-[#8A5A3B]">€{formatPrice(tax)}</span>
                   </div>
                   <Separator className="bg-[#E8D7C9]" />
                   <div className="flex justify-between text-lg font-medium">
                     <span className="text-[#8A5A3B]">Total</span>
-                    <span className="text-[#8A5A3B]">${total.toFixed(2)}</span>
+                    <span className="text-[#8A5A3B]">€{formatPrice(total)}</span>
                   </div>
                 </div>
               </CardContent>
@@ -409,7 +415,8 @@ export default function CheckoutPage() {
                 disabled={isProcessing}
                 className="w-full bg-[#C8977F] hover:bg-[#B78370] text-white border-none rounded-none py-6 text-lg"
               >
-                {isProcessing ? "Processing Payment..." : `Complete Order - $${total.toFixed(2)}`}
+                {/* {isProcessing ? "Processing Payment..." : `Complete Order - $${total.toFixed(2)}`} */}
+                {isProcessing ? "Processing Payment..." : `Complete Order - €${formatPrice(total)}`}
               </Button>
             )}
 
