@@ -106,6 +106,21 @@ export default function ConfirmationPage() {
     }
   }, [orderItems]);
 
+  function getDeliveryDateRangeString(): string {
+  const now = new Date();
+  const start = new Date(now);
+  const end = new Date(now);
+
+  start.setDate(now.getDate() + 5);
+  end.setDate(now.getDate() + 7);
+
+  const options: Intl.DateTimeFormatOptions = { month: 'long' };
+  const month = start.toLocaleDateString('en-US', options);
+  const year = start.getFullYear();
+
+  return `${month} ${start.getDate()}-${end.getDate()}, ${year}`;
+}
+
   // Process transfers when all costs are calculated
   useEffect(() => {
     if (orderItems.length > 0 && total > 0) {
@@ -115,7 +130,7 @@ export default function ConfirmationPage() {
           orderItems,
           shipping,
           orderDate,
-          "July 15-17, 2025" // or your actual delivery date logic
+          getDeliveryDateRangeString() 
         );
       }, 1000);
 
