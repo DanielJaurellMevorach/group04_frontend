@@ -149,7 +149,9 @@ const getProductById = async (id: string) => {
 
     // console.log("Response from getProductById:", response);
 
-    return response.json();
+    const data = await response.json();
+    console.log("Product by id:", data);
+    return data;
   } catch (error) {
     console.error("Error fetching product:", error);
     throw new Error("Failed to fetch product");
@@ -205,7 +207,12 @@ const getProductsToSellByUser = async (userId: string) => {
     throw new Error("Invalid token");
   }
 
-  userId = decodedToken.userId;
+  // userId = decodedToken.userId;
+
+  // if (!userId) {
+  //   userId = decodedToken.userId;
+  // }
+
   const result = await getAllProducts();
 
   let artPieces: any[] = [];
@@ -230,6 +237,8 @@ const getProductsToSellByUser = async (userId: string) => {
     console.error("Invalid response format from getAllProducts:", result);
     throw new Error("Invalid response format from getAllProducts");
   }
+
+  artPieces = artPieces.filter((artPiece: any) => artPiece.userId === userId);
 
   return artPieces;
 };

@@ -86,6 +86,8 @@ const SingleProductPage: React.FC = () => {
     });
   };
 
+  const [sellerId, setSellerId] = useState<string>("");
+
   // Fetch product data
   useEffect(() => {
     setToken(sessionStorage.getItem('token') || '');
@@ -96,6 +98,8 @@ const SingleProductPage: React.FC = () => {
       .then((response: any) => {
         const art = response?.artPiece ? response.artPiece : response;
         setData(art);
+        // console.log("Fetched product data:", art.userId);
+        setSellerId(art.userId);
         setIsLoading(false);
       })
       .catch((err: any) => {
@@ -129,9 +133,8 @@ const SingleProductPage: React.FC = () => {
     setSellerError(null);
     artPieceService.getProductsToSellByUser(String(data.userId))
       .then((response: any) => {
-        // Filter out the current product from seller's other works
-        const filteredSellerData = response.filter((art: any) => art.id !== data.id);
-        setSellerData(filteredSellerData);
+        setSellerData(response);
+        console.log("Fetched seller's other paintings:", response);
         setSellerLoading(false);
       })
       .catch((err: any) => {
@@ -315,7 +318,7 @@ const SingleProductPage: React.FC = () => {
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
                     </svg>
-                    Delivery in 3-5 business days
+                    Delivery in 5-7 business days
                   </div>
                 </div>
                 
