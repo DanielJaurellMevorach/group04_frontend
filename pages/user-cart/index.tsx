@@ -28,10 +28,8 @@ const UserCartPage: React.FC = () => {
   const [error, setError] = useState<string>('');
 
   const handlePayment = (
-    e: React.MouseEvent<HTMLButtonElement, globalThis.MouseEvent>,
     product: any[] // explicitly an array
   ) => {
-    e.preventDefault();
     sessionStorage.setItem("checkoutItem", JSON.stringify([product]));
     window.location.href = "/checkout";
   };
@@ -174,8 +172,13 @@ const UserCartPage: React.FC = () => {
             })}
           </div>
           <div className='flex justify-center'> 
-
-                    <Button className='' onClick={(e) => handlePayment(e, cartItems)}>BUY NOW</Button>
+          {!loading && cartItems.length > 0 && (
+            <div className="text-center mt-10 bg-[#EFE5DD] rounded" onClick={() => handlePayment(cartItems)}>
+              <Link href="/gallery" className="px-8 py-3 bg-[#B69985] text-[#F4EFE7] rounded-none hover:bg-[#8A5A3B] transition-colors">
+                BUY NOW
+              </Link>
+            </div>
+          )}
           </div>
         </div>
       </div>
