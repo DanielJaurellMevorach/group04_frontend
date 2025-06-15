@@ -5,6 +5,7 @@ import { Archive, PackageOpen } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import artPieceService from '@/services/artPiece.service';
+import VerifyModal from '@/components/ui/verifyModal';
 
 interface ArtPiece {
   id: string;
@@ -23,6 +24,12 @@ const UsersArt: React.FC = () => {
   const [error, setError] = useState('');
   const router = useRouter();
   const token = typeof window !== 'undefined' ? sessionStorage.getItem('token') || '' : '';
+
+  const [isVerified, setIsVerified] = useState(false);
+  
+  // Add modal state
+  const [showVerifyModal, setShowVerifyModal] = useState(false);
+  const [modalFunctionality, setModalFunctionality] = useState('');
 
   useEffect(() => {
     if (!token) {
@@ -44,8 +51,26 @@ const UsersArt: React.FC = () => {
         setLoading(false);
       }
     };
+    setIsVerified(userService.decodeJWT(sessionStorage.getItem("token") || "")?.isVerified || false);
     loadArt();
   }, [token, router]);
+
+  // Helper function to check verification and show modal if needed
+  const checkVerificationAndExecute = (functionality: string, callback: () => void) => {
+    if (!isVerified) {
+      setModalFunctionality(functionality);
+      setShowVerifyModal(true);
+      return;
+    }
+    callback();
+  };
+
+  // Updated handleSellArt function to use verification check
+  const handleSellArt = () => {
+    checkVerificationAndExecute('sell your art', () => {
+      router.push('/addProduct');
+    });
+  };
 
   const handleToggle = async (id: string) => {
     try {
@@ -77,12 +102,13 @@ const UsersArt: React.FC = () => {
               My Art Collection
             </h1>
           </div>
-          <Link
-            href="/addProduct"
-            className="border border-[#C8977F] text-[#C8977F] px-5 py-3 hover:bg-[#C8977F]/10"
+          {/* Updated button to use handleSellArt function */}
+          <button
+            onClick={handleSellArt}
+            className="border border-[#C8977F] text-[#C8977F] px-5 py-3 hover:bg-[#C8977F]/10 transition-colors"
           >
             Sell Your Art
-          </Link>
+          </button>
         </header>
 
         {loading ? (
@@ -97,7 +123,7 @@ const UsersArt: React.FC = () => {
           <div className="text-center py-20 bg-[#EFE5DD] rounded">
             <Archive className="h-12 w-12 text-[#D9CFC2] mx-auto mb-6" />
             <p className="text-lg mb-8 text-[#A3937F]">
-              You don’t own any artwork yet
+              You don't own any artwork yet
             </p>
             <Link
               href="/gallery"
@@ -120,34 +146,34 @@ const UsersArt: React.FC = () => {
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   />
                   {/* Slider positioned top-right */}
-<div className="absolute top-3 right-3 flex items-center space-x-3 bg-[#EFE5DD] bg-opacity-90 rounded-full px-3 py-1.5 shadow-sm border border-[#D9CFC2]/30">
-  <span className="text-xs font-light text-[#9D7A64]">Private</span>
-  <label
-    htmlFor={`toggle-${art.id}`}
-    className="inline-flex items-center cursor-pointer"
-  >
-    <div className="relative">
-      <input
-        id={`toggle-${art.id}`}
-        type="checkbox"
-        className="sr-only"
-        checked={art.publishOnMarket}
-        onChange={() => handleToggle(art.id)}
-      />
-      <div className={`block w-10 h-5 rounded-full transition-colors duration-300 ${
-        art.publishOnMarket ? 'bg-[#B69985]' : 'bg-[#D9CFC2]'
-      }`} />
-      <div
-        className={`dot absolute left-0.5 top-0.5 bg-[#F4EFE7] w-4 h-4 rounded-full transition-all duration-300 shadow-sm ${
-          art.publishOnMarket ? 'translate-x-5 ring-1 ring-[#C8977F]/20' : 'ring-1 ring-[#A3937F]/10'
-        }`}
-      />
-    </div>
-  </label>
-  <span className={`text-xs font-light transition-colors duration-300 ${
-    art.publishOnMarket ? 'text-[#8A5A3B]' : 'text-[#9D7A64]'
-  }`}>Sellable</span>
-</div>
+                  <div className="absolute top-3 right-3 flex items-center space-x-3 bg-[#EFE5DD] bg-opacity-90 rounded-full px-3 py-1.5 shadow-sm border border-[#D9CFC2]/30">
+                    <span className="text-xs font-light text-[#9D7A64]">Private</span>
+                    <label
+                      htmlFor={`toggle-${art.id}`}
+                      className="inline-flex items-center cursor-pointer"
+                    >
+                      <div className="relative">
+                        <input
+                          id={`toggle-${art.id}`}
+                          type="checkbox"
+                          className="sr-only"
+                          checked={art.publishOnMarket}
+                          onChange={() => handleToggle(art.id)}
+                        />
+                        <div className={`block w-10 h-5 rounded-full transition-colors duration-300 ${
+                          art.publishOnMarket ? 'bg-[#B69985]' : 'bg-[#D9CFC2]'
+                        }`} />
+                        <div
+                          className={`dot absolute left-0.5 top-0.5 bg-[#F4EFE7] w-4 h-4 rounded-full transition-all duration-300 shadow-sm ${
+                            art.publishOnMarket ? 'translate-x-5 ring-1 ring-[#C8977F]/20' : 'ring-1 ring-[#A3937F]/10'
+                          }`}
+                        />
+                      </div>
+                    </label>
+                    <span className={`text-xs font-light transition-colors duration-300 ${
+                      art.publishOnMarket ? 'text-[#8A5A3B]' : 'text-[#9D7A64]'
+                    }`}>Sellable</span>
+                  </div>
                 </div>
                 <div className="p-5 space-y-3">
                   <div className="flex justify-between items-center">
@@ -171,6 +197,14 @@ const UsersArt: React.FC = () => {
           </div>
         )}
       </div>
+
+      {/* Verification Modal */}
+      {showVerifyModal && (
+        <VerifyModal
+          functionality={modalFunctionality}
+          onClose={() => setShowVerifyModal(false)}
+        />
+      )}
     </div>
   );
 };
