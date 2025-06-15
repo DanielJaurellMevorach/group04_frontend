@@ -47,6 +47,8 @@ const handleSubmit = async (e: React.FormEvent) => {
     sessionStorage.setItem('token', response.token);
     sessionStorage.setItem('username', response.username);
     sessionStorage.setItem('role', response.role);
+    sessionStorage.setItem('userId', response.userId);
+
 
     router.push('/');
   } catch (err) {
