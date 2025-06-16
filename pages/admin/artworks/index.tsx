@@ -190,6 +190,20 @@ export default function ArtworksManagement() {
       </div>
     );
   }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#F9F2EA]">
+      <Navbar />
+      <div className="container mx-auto px-4 py-8 ">
+        <p className="text-3xl font-light tracking-wider text-[#8A5A3B] mb-2">
+          LOADING.....
+        </p>
+      </div>
+      </div>
+    );
+  }
+  
   return (
     <div className="min-h-screen bg-[#F9F2EA]">
       <Navbar />

@@ -47,9 +47,11 @@ export default function UsersManagement() {
   const [checkedAuth, setCheckedAuth] = useState(false); // flag to prevent premature render
   const [data, setData] = useState<any[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true)
 
 
   const getUsers = async (token : string | null) => {
+    setLoading(true);
     try {
       const response = await userService.getAllUsers(token);
   
@@ -67,6 +69,8 @@ export default function UsersManagement() {
     } catch (err) {
       console.error(err);
       setError("Failed to load users");
+    } finally {
+      setLoading(false);
     }
   };
   
@@ -104,6 +108,18 @@ export default function UsersManagement() {
             This is an admin-only page!
           </p>
         </div>
+      </div>
+    );
+  }
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#F9F2EA]">
+      <Navbar />
+      <div className="container mx-auto px-4 py-8 ">
+        <p className="text-3xl font-light tracking-wider text-[#8A5A3B] mb-2">
+          LOADING.....
+        </p>
+      </div>
       </div>
     );
   }
