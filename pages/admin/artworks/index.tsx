@@ -59,7 +59,7 @@ export default function ArtworksManagement() {
         status: piece.publishOnMarket ? "visible" : "disabled",
         uploadDate: piece.createdAt || new Date().toISOString(),
         image: piece.url || "/placeholder.svg",
-        likes: piece.likes || 0,
+        likes: piece.likedBy.length || 0,
         createdPieces: piece.createdPieces || []
       }));
 
@@ -139,7 +139,7 @@ export default function ArtworksManagement() {
           status: piece.publishOnMarket ? "visible" : "disabled",
           uploadDate: piece.createdAt || new Date().toISOString(),
           image: piece.url || "/placeholder.svg",
-          likes: piece.likes || 0,
+          likes: piece.likedBy.length || 0,
           createdPieces: piece.createdPieces || []
         }));
 
