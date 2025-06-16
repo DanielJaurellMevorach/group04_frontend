@@ -36,7 +36,7 @@ export default function AdminDashboard() {
         </div>
 
         {/* Stats Overview */}
-        <StatsOverview />
+        {/* <StatsOverview /> */}
         {/* Management Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 mt-8">
           <Card className="border-none shadow-sm rounded-none bg-white hover:shadow-md transition-shadow cursor-pointer">
