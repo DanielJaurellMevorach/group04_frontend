@@ -50,7 +50,7 @@ export default function ArtworksManagement() {
         artPieces = response;
       }
 
-      const transformedArtPieces = artPieces.map(piece => ({
+      const transformedArtPieces = artPieces.map((piece: { id: any; title: any; artist: any; price: any; description: any; publishOnMarket: any; createdAt: any; url: any; likedBy: string | any[]; createdPieces: any }) => ({
         id: piece.id,
         title: piece.title,
         artist: piece.artist,
@@ -130,7 +130,7 @@ export default function ArtworksManagement() {
           artPieces = response;
         }
 
-        const transformedArtPieces = artPieces.map(piece => ({
+        const transformedArtPieces = artPieces.map((piece: { id: any; title: any; artist: any; price: any; description: any; publishOnMarket: any; createdAt: any; url: any; likedBy: string | any[]; createdPieces: any }) => ({
           id: piece.id,
           title: piece.title,
           artist: piece.artist,
