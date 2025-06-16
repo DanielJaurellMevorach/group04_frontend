@@ -149,7 +149,9 @@ const getProductById = async (id: string) => {
 
     // console.log("Response from getProductById:", response);
 
-    return response.json();
+    const data = await response.json();
+    console.log("Product by id:", data);
+    return data;
   } catch (error) {
     console.error("Error fetching product:", error);
     throw new Error("Failed to fetch product");
@@ -205,7 +207,12 @@ const getProductsToSellByUser = async (userId: string) => {
     throw new Error("Invalid token");
   }
 
-  userId = decodedToken.userId;
+  // userId = decodedToken.userId;
+
+  // if (!userId) {
+  //   userId = decodedToken.userId;
+  // }
+
   const result = await getAllProducts();
 
   let artPieces: any[] = [];
@@ -216,7 +223,7 @@ const getProductsToSellByUser = async (userId: string) => {
     // );
     artPieces = result.artPieces.artPieces;
   } else if (Array.isArray(result.artPieces)) {
-    console.log("Returning result.artPieces:", result.artPieces);
+    console.log(result.artPieces);
     artPieces = result.artPieces;
   } else if (Array.isArray(result)) {
     console.log("Returning result:", result);
@@ -231,15 +238,9 @@ const getProductsToSellByUser = async (userId: string) => {
     throw new Error("Invalid response format from getAllProducts");
   }
 
-  const productsToSell = artPieces.filter(
-    (product: any) => product.userId === userId
-  );
+  artPieces = artPieces.filter((artPiece: any) => artPiece.userId === userId);
 
-  if (productsToSell.length === 0) {
-    throw new Error(`No products found for user: ${userId}`);
-  }
-
-  return productsToSell;
+  return artPieces;
 };
 
 const addProductToUsersCart = async (productId: string, token: string) => {

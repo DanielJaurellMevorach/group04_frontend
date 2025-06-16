@@ -86,58 +86,7 @@ const SingleProductPage: React.FC = () => {
     });
   };
 
-  const getUsersCart = async () => {
-    try {
-      const response = await userService.getUsersCartItems(token);
-      // Flatten the cart items to just the artPiece objects for easier use
-      if (Array.isArray(response)) {
-        const formatted = response
-          .map((item: any) => item.artPiece)
-          .filter(Boolean); // Remove undefined/null
-        return formatted;
-      }
-      return [];
-    } catch (error) {
-      console.error("Error fetching user's cart:", error);
-      throw new Error("Failed to fetch user's cart");
-    }
-  }
-
-  const getUserLikedItems = async () => {
-    try {
-      const response = await userService.getUsersLikedItems(token);
-      // Flatten the liked items to just the artPiece objects for easier use
-      if (Array.isArray(response)) {
-        const formatted = response
-          .map((item: any) => item.artPiece)
-          .filter(Boolean); // Remove undefined/null
-        return formatted;
-      }
-      return [];
-    } catch (error) {
-      console.error("Error fetching user's liked items:", error);
-      throw new Error("Failed to fetch user's liked items");
-    }
-  }
-
-  const addToCart = async (productId: string) => {
-    try {
-      if (!productId) {
-        throw new Error('Product ID is required to add to cart');
-      }
-
-      if (!token) {
-        throw new Error('User is not authenticated');
-      }
-
-      await artPieceService.addProductToUsersCart(productId, token);
-      
-    }
-    catch (error) {
-      console.error('Error adding product to cart:', error);
-      setError(error);
-    }
-  }
+  const [sellerId, setSellerId] = useState<string>("");
 
   // Fetch product data
   useEffect(() => {
@@ -149,6 +98,8 @@ const SingleProductPage: React.FC = () => {
       .then((response: any) => {
         const art = response?.artPiece ? response.artPiece : response;
         setData(art);
+        // console.log("Fetched product data:", art.userId);
+        setSellerId(art.userId);
         setIsLoading(false);
       })
       .catch((err: any) => {
@@ -164,7 +115,9 @@ const SingleProductPage: React.FC = () => {
     setArtistError(null);
     artPieceService.getProductsByArtist(String(data.artist))
       .then((response: any) => {
-        setArtistData(response);
+        // Filter out the current product from artist's other works
+        const filteredArtistData = response.filter((art: any) => art.id !== data.id);
+        setArtistData(filteredArtistData);
         setArtistLoading(false);
       })
       .catch((err: any) => {
@@ -181,13 +134,14 @@ const SingleProductPage: React.FC = () => {
     artPieceService.getProductsToSellByUser(String(data.userId))
       .then((response: any) => {
         setSellerData(response);
+        console.log("Fetched seller's other paintings:", response);
         setSellerLoading(false);
       })
       .catch((err: any) => {
         setSellerError(err);
         setSellerLoading(false);
       });
-  }, [data?.userId]);
+  }, [data?.userId, data?.id]);
 
   // Fetch cart & liked items
   const fetchCartAndLiked = useCallback(async () => {
@@ -255,17 +209,19 @@ const SingleProductPage: React.FC = () => {
     });
   };
 
-  // Payment handler - from first file
-  const handlePayment = (e: React.MouseEvent<HTMLButtonElement, globalThis.MouseEvent>, product: any) => {
-    e.preventDefault(); // Safe even if not needed
-  
-    sessionStorage.setItem("checkoutItem", JSON.stringify([product]));
-    window.location.href = "/checkout";
-  };
-
   const handleCloseModal = () => {
     setShowVerifyModal(false);
     setModalFunctionality("");
+  };
+
+  // Filter function to remove duplicates between artist and seller data
+  const getFilteredSellerData = () => {
+    if (!sellerData || !artistData) return sellerData;
+    
+    // Remove items that are already shown in "More from artist" section
+    return sellerData.filter(sellerArt => 
+      !artistData.some(artistArt => artistArt.id === sellerArt.id)
+    );
   };
 
   if (isLoading) return <p className="text-center py-10">Loading...</p>;
@@ -362,7 +318,7 @@ const SingleProductPage: React.FC = () => {
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
                     </svg>
-                    Delivery in 3-5 business days
+                    Delivery in 5-7 business days
                   </div>
                 </div>
                 
@@ -408,6 +364,7 @@ const SingleProductPage: React.FC = () => {
             {/* More from artist */}
             <div className={styles.moreFromAuthor}>
               <h2 className={styles.moreFromAuthorTitle}>More from artist</h2>
+
               {(() => {
                 if (artistLoading) {
                   return <p>Loading....</p>;
@@ -422,7 +379,7 @@ const SingleProductPage: React.FC = () => {
                             <div className={styles.moreFromAuthorImageWrapper}>
                               <img
                                 src={art.url}
-                                alt={`Author product ${art.id}`}
+                                alt={`Artist product ${art.id}`}
                               />
                             </div>
                             <h3 className={styles.moreFromAuthorItemTitle}>{art.title}</h3>
@@ -444,28 +401,33 @@ const SingleProductPage: React.FC = () => {
               <h2 className={styles.moreFromAuthorTitle}>More from seller</h2>
               {sellerLoading ? (
                 <p>Loading....</p>
-              ) : sellerData && sellerData.length === 0 ? (
-                <p>No other paintings found</p>
-              ) : (
-                <div className={styles.moreFromAuthorGrid}>
-                  {sellerData?.map((art: any) => (
-                    <div key={art.id} className={styles.moreFromAuthorItem}>
-                      <Link href={`/product/${art.id}`}>
-                        <div className={styles.moreFromAuthorImageWrapper}>
-                          <img
-                            src={art.url}
-                            alt={`Seller product ${art.id}`}
-                          />
+              ) : (() => {
+                const filteredSellerData = getFilteredSellerData();
+                if (filteredSellerData && filteredSellerData.length === 0) {
+                  return <p>No other paintings found</p>;
+                } else {
+                  return (
+                    <div className={styles.moreFromAuthorGrid}>
+                      {filteredSellerData?.map((art: any) => (
+                        <div key={art.id} className={styles.moreFromAuthorItem}>
+                          <Link href={`/product/${art.id}`}>
+                            <div className={styles.moreFromAuthorImageWrapper}>
+                              <img
+                                src={art.url}
+                                alt={`Seller product ${art.id}`}
+                              />
+                            </div>
+                            <h3 className={styles.moreFromAuthorItemTitle}>{art.title}</h3>
+                            <p className={styles.moreFromAuthorItemPrice}>
+                              {Number(art.price).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €
+                            </p>
+                          </Link>
                         </div>
-                        <h3 className={styles.moreFromAuthorItemTitle}>{art.title}</h3>
-                        <p className={styles.moreFromAuthorItemPrice}>
-                          {Number(art.price).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €
-                        </p>
-                      </Link>
+                      ))}
                     </div>
-                  ))}
-                </div>
-              )}
+                  );
+                }
+              })()}
               {sellerError && <p className="text-[#B78370] mt-2">{sellerError.message}</p>}
             </div>
           </div>

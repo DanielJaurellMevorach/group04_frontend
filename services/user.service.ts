@@ -19,14 +19,18 @@ const login = async (username: string, password: string) => {
     throw new Error("Failed to login");
   }
 
-
-  const { token, username: actualUsername, role, userId } = await response.json();
+  const {
+    token,
+    username: actualUsername,
+    role,
+    userId,
+  } = await response.json();
 
   return {
     token,
     username: actualUsername,
     role,
-    userId
+    userId,
   };
 };
 
@@ -56,7 +60,7 @@ const register = async (
       token,
       username: actualUsername,
       role,
-      id
+      id,
     };
   } catch (error) {
     console.error("Registration error:", error);
@@ -147,7 +151,7 @@ const getUsersCartItems = async (token: string) => {
         artPieceService.getProductById(itemId)
       )
     );
-    console.log("likedUserCart", likedItemsDetails);
+    // console.log("likedUserCart", likedItemsDetails);
     return likedItemsDetails;
   } catch (error) {
     console.error("Error fetching liked items:", error);
