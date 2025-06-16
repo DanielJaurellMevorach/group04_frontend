@@ -331,6 +331,29 @@ const getAllUsers = async (token : string | null) => {
   }
 };
 
+const deleteUser = async (userId: string, token: string) => {
+  const url = process.env.NEXT_PUBLIC_DELETE_USER_URL;
+
+  try {
+    const response = await fetch(`${url}userId=${userId}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to delete user");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    throw new Error("Failed to delete user");
+  }
+};
+
 const decodeJWT = (token: string) => {
   if (!token) {
     return null;
@@ -366,7 +389,8 @@ const userService = {
   toggleLikeItem,
   toggleCartItem,
   getUsersArtPieces,
-  getAllUsers
+  getAllUsers,
+  deleteUser
 };
 
 export default userService;

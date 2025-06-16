@@ -26,10 +26,20 @@ import userService from "@/services/user.service"
 export default function UsersManagement() {
   const [searchTerm, setSearchTerm] = useState("")
   const [roleFilter, setRoleFilter] = useState("all")
+  const handleDeleteUser = async (userId: string) => {
+    try {
+      const token = sessionStorage.getItem("token");
+      if (!token) {
+        console.error("No token found");
+        return;
+      }
 
-  const handleDeleteUser = (userId: number) => {
-    console.log("deleted");
-    
+      await userService.deleteUser(userId, token);
+      // Refresh the users list after successful deletion
+      getUsers(token);
+    } catch (error) {
+      console.error("Error deleting user:", error);
+    }
   }
 
 
@@ -41,27 +51,22 @@ export default function UsersManagement() {
 
   const getUsers = async (token : string | null) => {
     try {
-      setCheckedAuth(false);
       const response = await userService.getAllUsers(token);
   
       console.log(response, "these are users");
   
       if (response.users && Array.isArray(response.users.users)) {
         setData(response.users.users);
-        setCheckedAuth(true)
       } else if (response.users && Array.isArray(response.users)) {
         setData(response.users);
-        setCheckedAuth(true)
         console.log(data);
       } else {
         setData([]); 
         console.warn("Unexpected data format for users");
-        setCheckedAuth(true)
       }
     } catch (err) {
       console.error(err);
       setError("Failed to load users");
-      setCheckedAuth(true)
     }
   };
   
@@ -185,7 +190,7 @@ export default function UsersManagement() {
                           {user?.createdAt ? format(new Date(user.createdAt), 'dd/MM/yyyy') : 'Loading...'}
                         </div>
                       </TableCell>
-                      <TableCell className="text-[#A67C52]">{user.createdPieces.length}</TableCell>
+                      <TableCell className="text-[#A67C52]">{user?.createdPieces?.length}</TableCell>
                       <TableCell className="text-right">
                         <div className="flex items-center justify-end gap-2">
                           <AlertDialog>

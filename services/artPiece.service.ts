@@ -103,8 +103,7 @@ const uploadNewArtPiece = async (artPiece: uploadArtPieceInput) => {
   return response.json();
 };
 
-const getAllProducts = async () => {
-  const token = sessionStorage.getItem("token");
+const getAllProducts = async (token? : string | null) => {
 
   try {
     const response = await fetch(
@@ -113,6 +112,7 @@ const getAllProducts = async () => {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
           Accept: "application/json",
         },
       }
@@ -323,6 +323,46 @@ const togglePublishArtPiece = async (artPieceId: string, token: string) => {
   return resp.json(); // { success, action, artPieceId, publishOnMarket }
 };
 
+interface ArtPieceUpdate {
+  title?: string;
+  description?: string;
+  price?: number;
+  publishOnMarket?: boolean;
+  tags?: string[];
+  year?: number;
+}
+
+const editArtPiece = async (artPieceId: string, updateData: ArtPieceUpdate, token: string) => {
+  if (!artPieceId) {
+    throw new Error("Art piece ID is required");
+  }
+
+  const url = new URL(process.env.NEXT_PUBLIC_EDIT_ART_PIECE_URL || "");
+  url.searchParams.append("artPieceId", artPieceId);
+
+
+  try {
+    const response = await fetch(url.toString(), {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(updateData),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Failed to edit art piece");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error editing art piece:", error);
+    throw error;
+  }
+};
+
 /* front-end
 
 const transferArtPiece = async (
@@ -482,6 +522,7 @@ const artPieceService = {
   addProductToUsersCart,
   togglePublishArtPiece,
   transferArtPiece,
+  editArtPiece
 };
 
 export default artPieceService;
