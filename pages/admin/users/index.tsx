@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import Navbar from "@/components/navbar"
 import userService from "@/services/user.service"
+import Head from "next/head"
 
 export default function UsersManagement() {
   const [searchTerm, setSearchTerm] = useState("")
@@ -126,7 +127,9 @@ export default function UsersManagement() {
   return (
     <div className="min-h-screen bg-[#F9F2EA]">
       <Navbar />
-
+            <Head>
+        <title>Manage Users - Art Gallery Admin</title>
+      </Head>
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-light tracking-wider text-[#8A5A3B] mb-2">
